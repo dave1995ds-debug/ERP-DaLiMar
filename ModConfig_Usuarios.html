@@ -1,0 +1,610 @@
+<div style="display: flex; flex-direction: column; gap: 25px; width: 100%; box-sizing: border-box;">
+
+  <div class="erp-main-card">
+    <div class="erp-card-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box;">
+      <h3 style="margin: 0;">
+        <i class="fa-solid fa-user-gear" style="color: var(--accent);"></i> Usuarios, Roles y Auditoría
+      </h3>
+    </div>
+
+    <div class="erp-card-body" style="padding-top: 16px; box-sizing: border-box;">
+
+      <div style="display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;">
+        <button type="button" id="usr-tab-usuarios" onclick="window.usr_CambiarTab('usuarios')" style="flex:1; min-width:160px; height: 42px; border-radius: 8px; border: 2px solid var(--accent); background: var(--accent); color: white; font-size: 12px; font-weight: 600; cursor: pointer;">
+          <i class="fa-solid fa-users"></i> Usuarios
+        </button>
+        <button type="button" id="usr-tab-roles" onclick="window.usr_CambiarTab('roles')" style="flex:1; min-width:160px; height: 42px; border-radius: 8px; border: 2px solid #cbd5e1; background: #ffffff; color: #475569; font-size: 12px; font-weight: 600; cursor: pointer;">
+          <i class="fa-solid fa-shield-halved"></i> Roles y Permisos
+        </button>
+        <button type="button" id="usr-tab-departamentos" onclick="window.usr_CambiarTab('departamentos')" style="flex:1; min-width:160px; height: 42px; border-radius: 8px; border: 2px solid #cbd5e1; background: #ffffff; color: #475569; font-size: 12px; font-weight: 600; cursor: pointer;">
+          <i class="fa-solid fa-building"></i> Departamentos
+        </button>
+        <button type="button" id="usr-tab-auditoria" onclick="window.usr_CambiarTab('auditoria')" style="flex:1; min-width:160px; height: 42px; border-radius: 8px; border: 2px solid #cbd5e1; background: #ffffff; color: #475569; font-size: 12px; font-weight: 600; cursor: pointer;">
+          <i class="fa-solid fa-clipboard-list"></i> Auditoría
+        </button>
+      </div>
+
+      <!-- PESTAÑA USUARIOS -->
+      <div id="usr-panel-usuarios">
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 14px;">
+          <button type="button" onclick="window.usr_AbrirModalUsuario()" style="height: 40px; padding: 0 16px; background: #16a34a; color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-plus"></i> Nuevo Usuario
+          </button>
+        </div>
+        <div id="usr-lista-usuarios" style="display: flex; flex-direction: column; gap: 10px;"></div>
+      </div>
+
+      <!-- PESTAÑA ROLES -->
+      <div id="usr-panel-roles" style="display: none;">
+        <div style="display: flex; justify-content: flex-end; margin-bottom: 14px;">
+          <button type="button" onclick="window.usr_AbrirModalRol()" style="height: 40px; padding: 0 16px; background: #16a34a; color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-plus"></i> Nuevo Rol
+          </button>
+        </div>
+        <div id="usr-lista-roles" style="display: flex; flex-direction: column; gap: 10px;"></div>
+      </div>
+
+      <!-- PESTAÑA DEPARTAMENTOS -->
+      <div id="usr-panel-departamentos" style="display: none;">
+        <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+          <input type="text" id="depto-nombre" placeholder="Nombre del departamento (Ej. Ventas)" style="flex:1; height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; box-sizing: border-box;">
+          <button type="button" id="depto-btn-crear" style="width: 90px; height: 40px; background: var(--accent); color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">Crear</button>
+        </div>
+        <div id="usr-lista-departamentos" style="display: flex; flex-direction: column; gap: 6px;"></div>
+      </div>
+
+      <!-- PESTAÑA AUDITORIA -->
+      <div id="usr-panel-auditoria" style="display: none;">
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 16px;">
+          <select id="aud-filtro-modulo" onchange="window.usr_FiltrarAuditoria()" style="height: 38px; padding: 0 10px; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; font-size: 12px;">
+            <option value="">Todos los módulos</option>
+          </select>
+          <input type="text" id="aud-filtro-usuario" placeholder="Filtrar por correo..." oninput="window.usr_FiltrarAuditoria()" style="flex:1; min-width:180px; height: 38px; padding: 0 10px; border-radius: 6px; border: 1px solid #cbd5e1; box-sizing: border-box;">
+          <button type="button" id="aud-btn-exportar" style="height: 38px; padding: 0 14px; background: var(--accent); color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-file-excel"></i> Exportar
+          </button>
+        </div>
+        <div style="overflow-x: auto; max-height: 480px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+            <thead>
+              <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; position: sticky; top: 0;">
+                <th style="padding: 10px 12px; text-align: left; color: #64748b; font-weight: 700;">Fecha</th>
+                <th style="padding: 10px 12px; text-align: left; color: #64748b; font-weight: 700;">Usuario</th>
+                <th style="padding: 10px 12px; text-align: left; color: #64748b; font-weight: 700;">Módulo</th>
+                <th style="padding: 10px 12px; text-align: left; color: #64748b; font-weight: 700;">Acción</th>
+                <th style="padding: 10px 12px; text-align: left; color: #64748b; font-weight: 700;">Detalle</th>
+              </tr>
+            </thead>
+            <tbody id="usr-tabla-auditoria"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL: USUARIO -->
+<dialog id="usr-modal-usuario" class="modal-dialog-erp" style="max-width: 420px !important;">
+  <div style="display: flex; justify-content: space-between; align-items: center; background: var(--accent); padding: 14px 20px; color: #ffffff;">
+    <h4 id="usr-modal-usuario-titulo" style="margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Nuevo Usuario</h4>
+    <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px; color: rgba(255,255,255,0.8);" onclick="this.closest('dialog').close()"></i>
+  </div>
+  <div style="padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px;">
+    <input type="hidden" id="usr-correo-original">
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Correo (Google):</span>
+      <input type="text" id="usr-correo" placeholder="nombre@empresa.com" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; box-sizing: border-box; width: 100%;">
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Nombre:</span>
+      <input type="text" id="usr-nombre" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; box-sizing: border-box; width: 100%;">
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <div style="flex:1; display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Departamento:</span>
+        <select id="usr-departamento" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; background:#ffffff; width:100%;">
+          <option value="">-- Selecciona --</option>
+        </select>
+      </div>
+      <div style="flex:1; display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Rol:</span>
+        <select id="usr-rol" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; background:#ffffff; width:100%;">
+          <option value="">-- Selecciona --</option>
+        </select>
+      </div>
+    </div>
+    <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #334155; cursor: pointer;">
+      <input type="checkbox" id="usr-activo" checked style="accent-color: var(--accent); width: 16px; height: 16px;"> Usuario activo
+    </label>
+    <button type="button" id="usr-btn-guardar" style="height: 42px; background: var(--accent); color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;"><i class="fa-solid fa-floppy-disk"></i> Guardar Usuario</button>
+  </div>
+</dialog>
+
+<!-- MODAL: ROL Y PERMISOS -->
+<dialog id="usr-modal-rol" class="modal-dialog-erp" style="max-width: 560px !important;">
+  <div style="display: flex; justify-content: space-between; align-items: center; background: var(--accent); padding: 14px 20px; color: #ffffff;">
+    <h4 id="usr-modal-rol-titulo" style="margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Nuevo Rol</h4>
+    <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px; color: rgba(255,255,255,0.8);" onclick="this.closest('dialog').close()"></i>
+  </div>
+  <div style="padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px;">
+    <input type="hidden" id="rol-nombre-original">
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Nombre del Rol:</span>
+      <input type="text" id="rol-nombre" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; box-sizing: border-box; width: 100%;">
+    </div>
+
+    <div style="overflow-x: auto; border: 1px solid #e2e8f0; border-radius: 8px;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+        <thead>
+          <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+            <th style="padding: 8px 10px; text-align: left; color: #64748b; font-weight: 700;">Módulo</th>
+            <th style="padding: 8px 6px; text-align: center; color: #64748b; font-weight: 700;">Ver</th>
+            <th style="padding: 8px 6px; text-align: center; color: #64748b; font-weight: 700;">Crear</th>
+            <th style="padding: 8px 6px; text-align: center; color: #64748b; font-weight: 700;">Editar</th>
+            <th style="padding: 8px 6px; text-align: center; color: #64748b; font-weight: 700;">Eliminar</th>
+          </tr>
+        </thead>
+        <tbody id="rol-tabla-permisos"></tbody>
+      </table>
+    </div>
+
+    <button type="button" id="rol-btn-guardar" style="height: 42px; background: var(--accent); color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;"><i class="fa-solid fa-floppy-disk"></i> Guardar Rol</button>
+  </div>
+</dialog>
+
+<style>
+  .modal-dialog-erp {
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 460px !important;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25) !important;
+    background: #f8fafc !important;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    margin: 0 !important;
+  }
+  .modal-dialog-erp::backdrop {
+    background: rgba(15, 23, 42, 0.45) !important;
+    backdrop-filter: blur(2px) !important;
+  }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+(function() {
+  console.log("Core-Usuarios: script inicializado correctamente.");
+
+  // Lista fija de modulos sobre los que se otorgan permisos (nivel modulo completo).
+  const MODULOS_SISTEMA = [
+    "Clientes", "Ventas", "Productos", "Inventarios", "Requisiciones",
+    "Recepción", "Compras", "Proveedores", "Usuarios", "Configuración"
+  ];
+
+  let USUARIOS_GLOBAL = [];
+  let ROLES_GLOBAL = [];
+  let DEPARTAMENTOS_GLOBAL = [];
+  let AUDITORIA_GLOBAL = [];
+  let permisosTempRol = {};
+
+  setTimeout(() => {
+    inicializarEventosUsr();
+    window.usr_CargarTodo();
+  }, 50);
+
+  function inicializarEventosUsr() {
+    const btnGuardarUsuario = document.getElementById('usr-btn-guardar');
+    if (btnGuardarUsuario) btnGuardarUsuario.addEventListener('click', () => window.usr_GuardarUsuario());
+
+    const btnGuardarRol = document.getElementById('rol-btn-guardar');
+    if (btnGuardarRol) btnGuardarRol.addEventListener('click', () => window.usr_GuardarRol());
+
+    const btnCrearDepto = document.getElementById('depto-btn-crear');
+    if (btnCrearDepto) btnCrearDepto.addEventListener('click', () => window.usr_CrearDepartamento());
+
+    const btnExportarAud = document.getElementById('aud-btn-exportar');
+    if (btnExportarAud) btnExportarAud.addEventListener('click', () => window.usr_ExportarAuditoria());
+  }
+
+  window.usr_CargarTodo = function() {
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+
+    google.script.run.withSuccessHandler(function(usuarios) { USUARIOS_GLOBAL = usuarios || []; renderizarUsuarios(); }).obtenerUsuariosServidor();
+    google.script.run.withSuccessHandler(function(roles) { ROLES_GLOBAL = roles || []; renderizarRoles(); poblarSelectorRolUsuario(); }).obtenerRolesServidor();
+    google.script.run.withSuccessHandler(function(deptos) { DEPARTAMENTOS_GLOBAL = deptos || []; renderizarDepartamentos(); poblarSelectorDeptoUsuario(); }).obtenerDepartamentosServidor();
+    google.script.run.withSuccessHandler(function(reg) { AUDITORIA_GLOBAL = reg || []; poblarFiltroModuloAuditoria(); pintarTablaAuditoria(); }).obtenerAuditoriaServidor(null);
+  };
+
+  window.usr_CambiarTab = function(tab) {
+    const tabs = { usuarios: 'usr-tab-usuarios', roles: 'usr-tab-roles', departamentos: 'usr-tab-departamentos', auditoria: 'usr-tab-auditoria' };
+    const paneles = { usuarios: 'usr-panel-usuarios', roles: 'usr-panel-roles', departamentos: 'usr-panel-departamentos', auditoria: 'usr-panel-auditoria' };
+
+    Object.keys(tabs).forEach(key => {
+      const btn = document.getElementById(tabs[key]);
+      const activo = key === tab;
+      btn.style.background = activo ? 'var(--accent)' : '#ffffff';
+      btn.style.color = activo ? 'white' : '#475569';
+      btn.style.border = activo ? '2px solid var(--accent)' : '2px solid #cbd5e1';
+      document.getElementById(paneles[key]).style.display = activo ? 'block' : 'none';
+    });
+  };
+
+  // ==========================================================================
+  // USUARIOS
+  // ==========================================================================
+  function poblarSelectorDeptoUsuario() {
+    const select = document.getElementById('usr-departamento');
+    if (!select) return;
+    const valorActual = select.value;
+    select.innerHTML = '<option value="">-- Selecciona --</option>';
+    DEPARTAMENTOS_GLOBAL.forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d;
+      opt.innerText = d;
+      select.appendChild(opt);
+    });
+    if (valorActual) select.value = valorActual;
+  }
+
+  function poblarSelectorRolUsuario() {
+    const select = document.getElementById('usr-rol');
+    if (!select) return;
+    const valorActual = select.value;
+    select.innerHTML = '<option value="">-- Selecciona --</option>';
+    ROLES_GLOBAL.forEach(r => {
+      const opt = document.createElement('option');
+      opt.value = r.nombre;
+      opt.innerText = r.nombre;
+      select.appendChild(opt);
+    });
+    if (valorActual) select.value = valorActual;
+  }
+
+  window.usr_AbrirModalUsuario = function() {
+    document.getElementById('usr-modal-usuario-titulo').innerText = 'Nuevo Usuario';
+    document.getElementById('usr-correo-original').value = '';
+    document.getElementById('usr-correo').value = '';
+    document.getElementById('usr-correo').disabled = false;
+    document.getElementById('usr-nombre').value = '';
+    document.getElementById('usr-departamento').value = '';
+    document.getElementById('usr-rol').value = '';
+    document.getElementById('usr-activo').checked = true;
+    document.getElementById('usr-modal-usuario').showModal();
+  };
+
+  window.usr_EditarUsuario = function(correo) {
+    const usuario = USUARIOS_GLOBAL.find(u => u.correo === correo);
+    if (!usuario) return;
+    document.getElementById('usr-modal-usuario-titulo').innerText = 'Editar Usuario';
+    document.getElementById('usr-correo-original').value = usuario.correo;
+    document.getElementById('usr-correo').value = usuario.correo;
+    document.getElementById('usr-correo').disabled = true;
+    document.getElementById('usr-nombre').value = usuario.nombre;
+    document.getElementById('usr-departamento').value = usuario.departamento;
+    document.getElementById('usr-rol').value = usuario.rol;
+    document.getElementById('usr-activo').checked = usuario.activo;
+    document.getElementById('usr-modal-usuario').showModal();
+  };
+
+  window.usr_GuardarUsuario = function() {
+    const correoOriginal = document.getElementById('usr-correo-original').value;
+    const datos = {
+      esEdicion: !!correoOriginal,
+      correoOriginal: correoOriginal,
+      correo: document.getElementById('usr-correo').value.trim(),
+      nombre: document.getElementById('usr-nombre').value.trim(),
+      departamento: document.getElementById('usr-departamento').value,
+      rol: document.getElementById('usr-rol').value,
+      activo: document.getElementById('usr-activo').checked
+    };
+
+    if (!datos.correo || !datos.nombre) { window.erpToast("Correo y nombre son obligatorios.", "error"); return; }
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+          if (res.exito) { document.getElementById('usr-modal-usuario').close(); window.usr_CargarTodo(); }
+        })
+        .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+        .registrarUsuarioServidor(datos);
+    }
+  };
+
+  window.usr_CambiarEstadoUsuario = function(correo, nuevoEstado) {
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) { window.erpToast(res.mensaje, res.exito ? 'exito' : 'error'); if (res.exito) window.usr_CargarTodo(); })
+        .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+        .cambiarEstadoUsuarioServidor(correo, nuevoEstado);
+    }
+  };
+
+  function renderizarUsuarios() {
+    const cont = document.getElementById('usr-lista-usuarios');
+    if (!cont) return;
+    cont.innerHTML = '';
+    if (USUARIOS_GLOBAL.length === 0) {
+      cont.innerHTML = '<div style="text-align:center; padding:30px; color:#94a3b8;">Aún no hay usuarios registrados.</div>';
+      return;
+    }
+
+    USUARIOS_GLOBAL.forEach(u => {
+      const ultimaAct = u.ultimaActividad ? new Date(u.ultimaActividad).toLocaleString() : 'Sin actividad registrada';
+      const tarjeta = document.createElement('div');
+      tarjeta.style.cssText = "border:1px solid #e2e8f0; border-radius:8px; background:white; padding:14px 18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;";
+      tarjeta.innerHTML =
+        '<div style="flex:1; min-width:220px;">' +
+          '<div style="font-weight:700; color:#0f172a; font-size:13px; display:flex; align-items:center; gap:8px;">' + u.nombre +
+          (u.activo ? '<span style="background:#dcfce7; color:#16a34a; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px;">ACTIVO</span>' : '<span style="background:#f1f5f9; color:#94a3b8; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px;">INACTIVO</span>') +
+          '</div>' +
+          '<div style="font-size:11px; color:#64748b; margin-top:2px;">' + u.correo + ' · ' + (u.departamento || 'Sin depto.') + ' · ' + (u.rol || 'Sin rol') + '</div>' +
+          '<div style="font-size:10px; color:#94a3b8; margin-top:2px;">Última actividad: ' + ultimaAct + '</div>' +
+        '</div>' +
+        '<div style="display:flex; gap:6px;">' +
+          '<button type="button" data-action="editar" style="height:32px; padding:0 12px; background:#e0f2fe; color:#0369a1; border:none; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer;">Editar</button>' +
+          '<button type="button" data-action="toggle" style="height:32px; padding:0 12px; background:' + (u.activo ? '#fee2e2' : '#dcfce7') + '; color:' + (u.activo ? '#b91c1c' : '#16a34a') + '; border:none; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer;">' + (u.activo ? 'Desactivar' : 'Activar') + '</button>' +
+        '</div>';
+      tarjeta.querySelector('[data-action="editar"]').addEventListener('click', () => window.usr_EditarUsuario(u.correo));
+      tarjeta.querySelector('[data-action="toggle"]').addEventListener('click', () => window.usr_CambiarEstadoUsuario(u.correo, !u.activo));
+      cont.appendChild(tarjeta);
+    });
+  }
+
+  // ==========================================================================
+  // ROLES Y PERMISOS
+  // ==========================================================================
+  window.usr_AbrirModalRol = function() {
+    document.getElementById('usr-modal-rol-titulo').innerText = 'Nuevo Rol';
+    document.getElementById('rol-nombre-original').value = '';
+    document.getElementById('rol-nombre').value = '';
+    permisosTempRol = {};
+    pintarTablaPermisos();
+    document.getElementById('usr-modal-rol').showModal();
+  };
+
+  window.usr_EditarRol = function(nombre) {
+    const rol = ROLES_GLOBAL.find(r => r.nombre === nombre);
+    if (!rol) return;
+    document.getElementById('usr-modal-rol-titulo').innerText = 'Editar Rol';
+    document.getElementById('rol-nombre-original').value = rol.nombre;
+    document.getElementById('rol-nombre').value = rol.nombre;
+    permisosTempRol = JSON.parse(JSON.stringify(rol.permisos || {}));
+    pintarTablaPermisos();
+    document.getElementById('usr-modal-rol').showModal();
+  };
+
+  function pintarTablaPermisos() {
+    const tbody = document.getElementById('rol-tabla-permisos');
+    tbody.innerHTML = '';
+    MODULOS_SISTEMA.forEach(modulo => {
+      const permisosModulo = permisosTempRol[modulo] || { ver: false, crear: false, editar: false, eliminar: false };
+      const tr = document.createElement('tr');
+      tr.style.cssText = "border-bottom: 1px solid #f1f5f9;";
+      tr.innerHTML =
+        '<td style="padding:8px 10px; font-weight:600; color:#1e293b;">' + modulo + '</td>' +
+        '<td style="padding:8px 6px; text-align:center;"><input type="checkbox" class="chk-ver" ' + (permisosModulo.ver ? 'checked' : '') + ' style="accent-color: var(--accent); width:16px; height:16px;"></td>' +
+        '<td style="padding:8px 6px; text-align:center;"><input type="checkbox" class="chk-crear" ' + (permisosModulo.crear ? 'checked' : '') + ' style="accent-color: var(--accent); width:16px; height:16px;"></td>' +
+        '<td style="padding:8px 6px; text-align:center;"><input type="checkbox" class="chk-editar" ' + (permisosModulo.editar ? 'checked' : '') + ' style="accent-color: var(--accent); width:16px; height:16px;"></td>' +
+        '<td style="padding:8px 6px; text-align:center;"><input type="checkbox" class="chk-eliminar" ' + (permisosModulo.eliminar ? 'checked' : '') + ' style="accent-color: var(--accent); width:16px; height:16px;"></td>';
+
+      ['ver', 'crear', 'editar', 'eliminar'].forEach(accion => {
+        const chk = tr.querySelector('.chk-' + accion);
+        chk.addEventListener('change', () => {
+          if (!permisosTempRol[modulo]) permisosTempRol[modulo] = { ver: false, crear: false, editar: false, eliminar: false };
+          permisosTempRol[modulo][accion] = chk.checked;
+        });
+      });
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  window.usr_GuardarRol = function() {
+    const nombreOriginal = document.getElementById('rol-nombre-original').value;
+    const nombre = document.getElementById('rol-nombre').value.trim();
+    if (!nombre) { window.erpToast("El nombre del rol es obligatorio.", "error"); return; }
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+          if (res.exito) { document.getElementById('usr-modal-rol').close(); window.usr_CargarTodo(); }
+        })
+        .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+        .guardarRolServidor({ esEdicion: !!nombreOriginal, nombreOriginal: nombreOriginal, nombre: nombre, permisos: permisosTempRol });
+    }
+  };
+
+  window.usr_EliminarRol = async function(nombre) {
+    const confirmar = await window.erpConfirm('¿Eliminar el rol "' + nombre + '"?');
+    if (!confirmar) return;
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) { window.erpToast(res.mensaje, res.exito ? 'exito' : 'error'); if (res.exito) window.usr_CargarTodo(); })
+        .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+        .eliminarRolServidor(nombre);
+    }
+  };
+
+  function renderizarRoles() {
+    const cont = document.getElementById('usr-lista-roles');
+    if (!cont) return;
+    cont.innerHTML = '';
+    if (ROLES_GLOBAL.length === 0) {
+      cont.innerHTML = '<div style="text-align:center; padding:30px; color:#94a3b8;">Aún no hay roles registrados.</div>';
+      return;
+    }
+
+    ROLES_GLOBAL.forEach(r => {
+      const modulosConPermiso = Object.keys(r.permisos || {}).filter(m => {
+        const p = r.permisos[m];
+        return p && (p.ver || p.crear || p.editar || p.eliminar);
+      });
+
+      const tarjeta = document.createElement('div');
+      tarjeta.style.cssText = "border:1px solid #e2e8f0; border-radius:8px; background:white; padding:14px 18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;";
+      tarjeta.innerHTML =
+        '<div style="flex:1; min-width:200px;">' +
+          '<div style="font-weight:700; color:#0f172a; font-size:13px;">' + r.nombre + '</div>' +
+          '<div style="font-size:11px; color:#94a3b8; margin-top:2px;">' + modulosConPermiso.length + ' módulo(s) con permisos asignados</div>' +
+        '</div>' +
+        '<div style="display:flex; gap:6px;">' +
+          '<button type="button" data-action="editar" style="height:32px; padding:0 12px; background:#e0f2fe; color:#0369a1; border:none; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer;">Editar</button>' +
+          '<button type="button" data-action="eliminar" style="height:32px; padding:0 12px; background:#fee2e2; color:#b91c1c; border:none; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer;">Eliminar</button>' +
+        '</div>';
+      tarjeta.querySelector('[data-action="editar"]').addEventListener('click', () => window.usr_EditarRol(r.nombre));
+      tarjeta.querySelector('[data-action="eliminar"]').addEventListener('click', () => window.usr_EliminarRol(r.nombre));
+      cont.appendChild(tarjeta);
+    });
+  }
+
+  // ==========================================================================
+  // DEPARTAMENTOS
+  // ==========================================================================
+  window.usr_CrearDepartamento = function() {
+    const nombre = document.getElementById('depto-nombre').value.trim();
+    if (!nombre) { window.erpToast("Escribe el nombre del departamento.", "error"); return; }
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+          if (res.exito) { document.getElementById('depto-nombre').value = ''; window.usr_CargarTodo(); }
+        })
+        .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+        .crearDepartamentoServidor(nombre);
+    }
+  };
+
+  window.usr_EliminarDepartamento = async function(nombre) {
+    const confirmar = await window.erpConfirm('¿Eliminar el departamento "' + nombre + '"?');
+    if (!confirmar) return;
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) { window.erpToast(res.mensaje, res.exito ? 'exito' : 'error'); if (res.exito) window.usr_CargarTodo(); })
+        .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+        .eliminarDepartamentoServidor(nombre);
+    }
+  };
+
+  function renderizarDepartamentos() {
+    const cont = document.getElementById('usr-lista-departamentos');
+    if (!cont) return;
+    cont.innerHTML = '';
+    if (DEPARTAMENTOS_GLOBAL.length === 0) {
+      cont.innerHTML = '<div style="text-align:center; padding:20px; color:#94a3b8; font-size:12px;">Aún no hay departamentos creados.</div>';
+      return;
+    }
+    DEPARTAMENTOS_GLOBAL.forEach(d => {
+      const fila = document.createElement('div');
+      fila.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:#ffffff; border:1px solid #e2e8f0; border-radius:6px; padding:10px 14px;";
+      fila.innerHTML =
+        '<span style="font-size:13px; font-weight:600; color:#1e293b;"><i class="fa-solid fa-building" style="color:var(--accent); margin-right:8px;"></i>' + d + '</span>' +
+        '<button type="button" style="background:#fee2e2; color:#b91c1c; border:none; width:28px; height:28px; border-radius:4px; cursor:pointer; font-size:11px;"><i class="fa-solid fa-trash-can"></i></button>';
+      fila.querySelector('button').addEventListener('click', () => window.usr_EliminarDepartamento(d));
+      cont.appendChild(fila);
+    });
+  }
+
+  // ==========================================================================
+  // AUDITORIA
+  // ==========================================================================
+  function poblarFiltroModuloAuditoria() {
+    const select = document.getElementById('aud-filtro-modulo');
+    if (!select) return;
+    const modulosUsados = [...new Set(AUDITORIA_GLOBAL.map(r => r.modulo))].sort();
+    const valorActual = select.value;
+    select.innerHTML = '<option value="">Todos los módulos</option>';
+    modulosUsados.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m;
+      opt.innerText = m;
+      select.appendChild(opt);
+    });
+    if (valorActual) select.value = valorActual;
+  }
+
+  window.usr_FiltrarAuditoria = function() {
+    pintarTablaAuditoria();
+  };
+
+  function pintarTablaAuditoria() {
+    const tbody = document.getElementById('usr-tabla-auditoria');
+    if (!tbody) return;
+
+    const filtroModulo = document.getElementById('aud-filtro-modulo').value;
+    const filtroUsuario = document.getElementById('aud-filtro-usuario').value.toLowerCase().trim();
+
+    const filtrados = AUDITORIA_GLOBAL.filter(r => {
+      const coincideModulo = !filtroModulo || r.modulo === filtroModulo;
+      const coincideUsuario = !filtroUsuario || r.usuario.toLowerCase().includes(filtroUsuario);
+      return coincideModulo && coincideUsuario;
+    });
+
+    tbody.innerHTML = '';
+    if (filtrados.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:#94a3b8; font-size:12px;">Sin registros para esta búsqueda.</td></tr>';
+      return;
+    }
+
+    const coloresAccion = { Crear: '#16a34a', Editar: '#1e40af', Eliminar: '#b91c1c' };
+
+    filtrados.slice(0, 300).forEach(r => {
+      const tr = document.createElement('tr');
+      tr.style.cssText = "border-bottom: 1px solid #f1f5f9;";
+      const colorAccion = coloresAccion[r.accion] || '#64748b';
+      tr.innerHTML =
+        '<td style="padding:8px 12px; color:#94a3b8; white-space:nowrap;">' + (r.fecha ? new Date(r.fecha).toLocaleString() : '') + '</td>' +
+        '<td style="padding:8px 12px; color:#334155;">' + r.usuario + '</td>' +
+        '<td style="padding:8px 12px; color:#1e293b; font-weight:600;">' + r.modulo + '</td>' +
+        '<td style="padding:8px 12px; color:' + colorAccion + '; font-weight:600;">' + r.accion + '</td>' +
+        '<td style="padding:8px 12px; color:#64748b;">' + r.detalle + '</td>';
+      tbody.appendChild(tr);
+    });
+
+    if (filtrados.length > 300) {
+      const trAviso = document.createElement('tr');
+      trAviso.innerHTML = '<td colspan="5" style="text-align:center; padding:10px; color:#94a3b8; font-size:11px;">Mostrando los 300 registros más recientes. Usa los filtros o exporta para ver todo.</td>';
+      tbody.appendChild(trAviso);
+    }
+  }
+
+  window.usr_ExportarAuditoria = function() {
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+
+    const filtroModulo = document.getElementById('aud-filtro-modulo').value;
+    const filtroUsuario = document.getElementById('aud-filtro-usuario').value.trim();
+
+    const btn = document.getElementById('aud-btn-exportar');
+    if (btn) btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando...';
+
+    google.script.run
+      .withSuccessHandler(function(filas) {
+        if (btn) btn.innerHTML = '<i class="fa-solid fa-file-excel"></i> Exportar';
+        try {
+          const ws = XLSX.utils.aoa_to_sheet(filas);
+          const wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, "Auditoria");
+          const fecha = new Date().toISOString().slice(0, 10);
+          XLSX.writeFile(wb, "Auditoria_" + fecha + ".xlsx");
+          window.erpToast("Bitácora exportada con éxito.", "exito");
+        } catch (e) {
+          window.erpToast("Error al generar el archivo: " + e.message, "error");
+        }
+      })
+      .withFailureHandler(function(err) {
+        if (btn) btn.innerHTML = '<i class="fa-solid fa-file-excel"></i> Exportar';
+        window.erpToast("Error al obtener datos: " + err.message, "error");
+      })
+      .obtenerDatosExportacionAuditoriaServidor({ modulo: filtroModulo, usuario: filtroUsuario });
+  };
+
+})();
+</script>
