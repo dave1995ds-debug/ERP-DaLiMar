@@ -1,0 +1,898 @@
+<div style="display: flex; flex-direction: column; gap: 25px; width: 100%; box-sizing: border-box;">
+
+  <div class="erp-main-card">
+
+    <div class="erp-card-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box;">
+      <h3 style="margin: 0;">
+        <i class="fa-solid fa-truck-field" style="color: var(--accent);"></i> Proveedores
+      </h3>
+      <div style="display: inline-flex; align-items: center; gap: 8px;">
+        <span id="compras-prov-info-modo-estandar" style="display: inline-block; cursor: help; color: #64748b; font-size: 14px;" title="Especificaciones de la Licencia Activa: conteo de ordenes de compra por proveedor.">
+          <i class="fa-solid fa-circle-info"></i>
+        </span>
+        <div id="compras-prov-badge-modo-pro" style="display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; border: 1px solid #cbd5e1; background: #f1f5f9; color: #64748b;">
+          MODULO ESTANDAR
+        </div>
+      </div>
+    </div>
+
+    <div class="erp-card-body" style="padding-top: 16px; box-sizing: border-box;">
+
+      <div style="padding: 10px 0 20px 0; box-sizing: border-box; display: flex; flex-direction: row; gap: 20px; width: 100%; flex-wrap: wrap; align-items: stretch;">
+
+        <!-- FICHA DE REGISTRO -->
+        <div style="flex: 1 1 0; min-width: 320px; background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 16px; box-sizing: border-box;">
+          <label id="prov-modal-titulo" style="font-weight: 700; display: block; color: #334155; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">
+            <i class="fa-solid fa-id-card" style="color: var(--accent);"></i> Ficha de Registro de Proveedor
+          </label>
+            <input type="hidden" id="prov-nit-original">
+
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Tipo de Proveedor:</span>
+              <div style="display: flex; gap: 10px;">
+                <label style="flex:1; display:flex; align-items:center; gap:8px; background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; padding:10px 12px; cursor:pointer; font-size:12px; color:#334155;">
+                  <input type="radio" name="prov-tipo-persona" value="Empresa" onchange="window.compras_AlCambiarTipoPersonaProveedor()" style="accent-color: var(--accent);"> Empresa (Jurídica)
+                </label>
+                <label style="flex:1; display:flex; align-items:center; gap:8px; background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; padding:10px 12px; cursor:pointer; font-size:12px; color:#334155;">
+                  <input type="radio" name="prov-tipo-persona" value="Persona Natural" checked onchange="window.compras_AlCambiarTipoPersonaProveedor()" style="accent-color: var(--accent);"> Persona Natural
+                </label>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Nombre / Razón Social:</span>
+              <input type="text" id="prov-nombre" class="form-control-erp" style="height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; width: 100%; background:#ffffff;">
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">NIT / DUI:</span>
+                <input type="text" id="prov-nit" class="form-control-erp" style="height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; width: 100%; background:#ffffff;">
+              </div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <span id="prov-nrc-label" style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">NRC (opcional):</span>
+                <input type="text" id="prov-nrc" class="form-control-erp" style="height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; width: 100%; background:#ffffff;">
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Tipo de Contribuyente:</span>
+                <select id="prov-tipo-contribuyente" class="form-control-erp" style="height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; width: 100%; background:#ffffff;">
+                  <option value="Pequeño Contribuyente">Pequeño Contribuyente</option>
+                  <option value="Mediano Contribuyente">Mediano Contribuyente</option>
+                  <option value="Gran Contribuyente">Gran Contribuyente</option>
+                  <option value="Sujeto Excluido">Sujeto Excluido</option>
+                </select>
+              </div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Giro Comercial:</span>
+                <input type="text" id="prov-giro" class="form-control-erp" style="height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; width: 100%; background:#ffffff;">
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Contacto (nombre de la persona):</span>
+              <input type="text" id="prov-contacto" class="form-control-erp" style="height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; width: 100%; background:#ffffff;">
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Teléfono:</span>
+                <input type="text" id="prov-telefono" class="form-control-erp" style="height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; width: 100%; background:#ffffff;">
+              </div>
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">WhatsApp:</span>
+                <input type="text" id="prov-whatsapp" class="form-control-erp" style="height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; width: 100%; background:#ffffff;">
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Correo:</span>
+              <input type="text" id="prov-correo" class="form-control-erp" style="height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; width: 100%; background:#ffffff;">
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Dirección:</span>
+              <input type="text" id="prov-direccion" class="form-control-erp" style="height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; width: 100%; background:#ffffff;">
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 6px; position: relative;">
+              <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Categorías asignadas:</span>
+              <input type="text" id="prov-cat-buscador" placeholder="Escribe para buscar una categoría..." autocomplete="off" style="height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; background:#ffffff; font-size:13px;">
+              <div id="prov-cat-sugerencias" style="display:none; position:absolute; top:62px; left:0; right:0; background:white; border:1px solid var(--border); border-radius:8px; max-height:180px; overflow-y:auto; z-index:50; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15);"></div>
+              <div id="prov-categorias-checks" style="display: flex; flex-wrap: wrap; gap: 6px; min-height: 20px;"></div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Métodos de Pago Aceptados:</span>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px; background:#ffffff; border:1px dashed #cbd5e1; border-radius:6px; padding:10px;">
+                <label style="display:flex; align-items:center; gap:6px; background:#f1f5f9; border:1px solid #e2e8f0; border-radius:20px; padding:6px 12px; cursor:pointer; font-size:11px; color:#334155;">
+                  <input type="checkbox" class="prov-metodo-pago-check" value="Contado" style="accent-color: var(--accent); width:14px; height:14px;"> Contado
+                </label>
+                <label style="display:flex; align-items:center; gap:6px; background:#f1f5f9; border:1px solid #e2e8f0; border-radius:20px; padding:6px 12px; cursor:pointer; font-size:11px; color:#334155;">
+                  <input type="checkbox" class="prov-metodo-pago-check" value="Anticipo" style="accent-color: var(--accent); width:14px; height:14px;"> Anticipo
+                </label>
+                <label style="display:flex; align-items:center; gap:6px; background:#f1f5f9; border:1px solid #e2e8f0; border-radius:20px; padding:6px 12px; cursor:pointer; font-size:11px; color:#334155;">
+                  <input type="checkbox" class="prov-metodo-pago-check" value="Crédito" style="accent-color: var(--accent); width:14px; height:14px;"> Crédito
+                </label>
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Cuentas Bancarias:</span>
+              <div id="prov-cuentas-bancarias-lista" style="display: flex; flex-direction: column; gap: 8px;"></div>
+              <button type="button" id="prov-btn-agregar-cuenta" style="height: 36px; background: #ffffff; color: var(--accent); border: 1px dashed var(--accent); border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;"><i class="fa-solid fa-plus"></i> Agregar Cuenta Bancaria</button>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 4px;">
+              <button type="button" id="prov-btn-guardar" style="flex:1.2; height: 42px; background: var(--accent); color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;"><i class="fa-solid fa-floppy-disk"></i> Guardar Proveedor</button>
+              <button type="button" id="prov-btn-cancelar-edicion" style="display:none; flex:1; height: 42px; background: #ffffff; color: #ef4444; border: 1px solid #ef4444; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;">Cancelar</button>
+            </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: Categorias arriba + Cargos/Impuestos abajo -->
+        <div style="flex: 1 1 0; min-width: 320px; display: flex; flex-direction: column; gap: 20px; box-sizing: border-box;">
+
+          <!-- CATEGORIAS DE PROVEEDOR -->
+          <div style="flex: 1; background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; box-sizing: border-box;">
+            <label style="font-weight: 700; display: block; color: #334155; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">
+              <i class="fa-solid fa-tags" style="color: var(--accent);"></i> Categorías de Proveedor
+            </label>
+            <span style="font-size: 10px; color: #94a3b8;">Crea las categorías que necesites (Ej. Papelería, Eléctricos, Transporte) y asígnalas a cada proveedor en la ficha de la izquierda.</span>
+            <div style="display: flex; gap: 8px; margin-top: 4px;">
+              <input type="text" id="prov-cat-nombre" placeholder="Nombre de categoría (Ej. Papelería)" style="flex:1; height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; background:#ffffff;">
+              <button type="button" id="prov-cat-btn-crear" style="width: 80px; height: 38px; background: var(--accent); color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">Crear</button>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 6px;">
+              <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Categorías existentes:</span>
+              <div id="prov-cat-lista-vivo" style="display: flex; flex-direction: column; gap: 6px; padding: 8px; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 6px; max-height: 180px; overflow-y: auto;"></div>
+            </div>
+          </div>
+
+          <!-- CATALOGOS E IMPUESTOS -->
+          <div style="flex: 1; background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; box-sizing: border-box;">
+            <label style="font-weight: 700; display: block; color: #334155; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">
+              <i class="fa-solid fa-percent" style="color: var(--accent);"></i> Catálogos e Impuestos
+            </label>
+            <span style="font-size: 10px; color: #94a3b8;">Crea los cargos que usarás al armar órdenes de compra (Ej. IVA 13%, Retención Renta 10%). Cada uno puede SUMAR o RESTAR del total, y se aplican como chips sobre cada ítem de la orden, totalizándose al final.</span>
+            <div style="display: flex; flex-direction: column; gap: 8px; width: 100%;">
+              <input type="text" id="cargo-nombre" placeholder="Nombre (Ej. IVA Compras)" style="height: 38px; width: 100%; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; background:#ffffff;">
+              <div style="display: flex; gap: 8px; width: 100%;">
+                <input type="number" id="cargo-porcentaje" placeholder="%" min="0" step="0.01" style="flex:1; height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; background:#ffffff; min-width: 0;">
+                <select id="cargo-tipo" style="flex:1.2; height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 8px; box-sizing: border-box; background:#ffffff; font-size:12px; min-width: 0;">
+                  <option value="Suma">Suma (+)</option>
+                  <option value="Resta">Resta (-)</option>
+                </select>
+              </div>
+              <div style="display: flex; gap: 8px; width: 100%;">
+                <select id="cargo-tipo-compra" style="flex:1; height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 8px; box-sizing: border-box; background:#ffffff; font-size:12px; min-width: 0;">
+                  <option value="Ambos">Bienes y Servicios</option>
+                  <option value="Bienes">Solo Bienes</option>
+                  <option value="Servicios">Solo Servicios</option>
+                </select>
+                <select id="cargo-tipo-proveedor" style="flex:1; height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 8px; box-sizing: border-box; background:#ffffff; font-size:12px; min-width: 0;">
+                  <option value="Ambos">Cualquier Proveedor</option>
+                  <option value="Persona Natural">Solo Persona Natural</option>
+                  <option value="Empresa">Solo Empresa (Jurídica)</option>
+                </select>
+                <button type="button" id="cargo-btn-crear" style="width: 70px; flex-shrink: 0; height: 38px; background: var(--accent); color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">Crear</button>
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Cargos existentes (en orden de aplicación):</span>
+              <div id="cargo-lista-vivo" style="display: flex; flex-direction: column; gap: 6px; padding: 8px; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 6px; max-height: 180px; overflow-y: auto;"></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- LISTA DE PROVEEDORES REGISTRADOS — tarjeta independiente, igual a Productos -->
+  <div id="compras-tarjeta-lista-proveedores" class="erp-main-card">
+    <div class="erp-card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; width: 100%; box-sizing: border-box;">
+      <h4 style="margin: 0; min-width: 200px; font-size: 13px; font-weight: 700; color: #334155; display: flex; align-items: center; gap: 8px;">
+        <i class="fa-solid fa-table-list" style="color: var(--accent);"></i> Proveedores Registrados
+        <span style="display:flex; gap:4px; margin-left:4px;">
+          <button type="button" id="prov-filtro-tipo-natural" onclick="window.compras_ToggleFiltroTipoPersona('Persona Natural')" title="Persona Natural" style="width:28px; height:28px; border-radius:6px; border:1px solid #fde68a; background:#fef3c7; color:#b45309; cursor:pointer; font-size:12px;"><i class="fa-solid fa-user"></i></button>
+          <button type="button" id="prov-filtro-tipo-empresa" onclick="window.compras_ToggleFiltroTipoPersona('Empresa')" title="Empresa (Jurídica)" style="width:28px; height:28px; border-radius:6px; border:1px solid #bae6fd; background:#e0f2fe; color:#0369a1; cursor:pointer; font-size:12px;"><i class="fa-solid fa-building"></i></button>
+        </span>
+      </h4>
+
+      <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap; box-sizing: border-box;">
+        <select id="prov-filtro-categoria" onchange="window.compras_FiltrarProveedores()" style="height: 36px; padding: 0 10px; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; font-size: 12px;">
+          <option value="">Todas las categorías</option>
+        </select>
+
+        <div style="position: relative; width: 240px; box-sizing: border-box;">
+          <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 13px;"></i>
+          <input type="text" id="prov-filtro-texto" oninput="window.compras_FiltrarProveedores()" style="padding-left: 38px; border-radius: 50px; background: #ffffff; border: 1px solid #cbd5e1; height: 36px; font-size: 12px; color: #334155; box-sizing: border-box; width: 100%;" placeholder="Buscar por nombre, NIT/DUI...">
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 8px; background: #f1f5f9; padding: 4px 8px; border-radius: 30px; border: 1px solid #e2e8f0;">
+          <span id="prov-txt-paginacion" style="font-size: 11px; font-weight: 600; color: #64748b; padding: 0 4px;">Pág. 1 de 1</span>
+          <div style="display: flex; gap: 3px;">
+            <button type="button" id="prov-btn-pag-prev" title="Proveedor Anterior" style="width: 28px; height: 28px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #475569; font-size: 10px; transition: all 0.2s;">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button type="button" id="prov-btn-pag-next" title="Siguiente Proveedor" style="width: 28px; height: 28px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #475569; font-size: 10px; transition: all 0.2s;">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="erp-card-body" style="padding-top: 16px; box-sizing: border-box;">
+      <div id="prov-lista-grid" style="display: flex; flex-direction: column; gap: 10px; box-sizing: border-box;"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function() {
+  console.log("Core-Compras-Proveedores: script inicializado correctamente.");
+
+  let PROVEEDORES_GLOBAL = [];
+  let CATEGORIAS_PROVEEDOR_GLOBAL = [];
+  let CARGOS_COMPRA_GLOBAL = [];
+  let ORDENES_GLOBAL_PROV = [];
+  let comprasProveedoresLicenciaPro = false;
+  let paginaActualProveedores = 1;
+  const itemsPorPaginaProveedores = 5;
+  let FILTROS_TIPO_PERSONA_ACTIVOS = [];
+  let contadorCuentaBancaria = 0;
+  let categoriasSeleccionadasProveedorTemp = [];
+
+  setTimeout(() => {
+    inicializarEventosProveedores();
+    sincronizarLicenciaLocalProveedores();
+    window.compras_CargarDatosProveedores();
+  }, 50);
+
+  function inicializarEventosProveedores() {
+    const btnGuardarProv = document.getElementById('prov-btn-guardar');
+    if (btnGuardarProv) btnGuardarProv.addEventListener('click', () => window.compras_GuardarProveedor());
+
+    const btnCancelarProv = document.getElementById('prov-btn-cancelar-edicion');
+    if (btnCancelarProv) btnCancelarProv.addEventListener('click', () => window.compras_LimpiarFormularioProveedor());
+
+    const btnCrearCategoria = document.getElementById('prov-cat-btn-crear');
+    if (btnCrearCategoria) btnCrearCategoria.addEventListener('click', () => window.compras_CrearCategoriaProveedor());
+
+    const btnAgregarCuenta = document.getElementById('prov-btn-agregar-cuenta');
+    if (btnAgregarCuenta) btnAgregarCuenta.addEventListener('click', () => window.compras_AgregarCuentaBancaria());
+
+    const buscadorCatProv = document.getElementById('prov-cat-buscador');
+    if (buscadorCatProv) buscadorCatProv.addEventListener('input', () => window.compras_BuscarCategoriaProveedor(buscadorCatProv.value));
+
+    const btnProvPrev = document.getElementById('prov-btn-pag-prev');
+    if (btnProvPrev) btnProvPrev.addEventListener('click', () => { if (paginaActualProveedores > 1) { paginaActualProveedores--; window.compras_RenderizarProveedores(); } });
+
+    const btnProvNext = document.getElementById('prov-btn-pag-next');
+    if (btnProvNext) btnProvNext.addEventListener('click', () => { paginaActualProveedores++; window.compras_RenderizarProveedores(); });
+
+    const btnCrearCargo = document.getElementById('cargo-btn-crear');
+    if (btnCrearCargo) btnCrearCargo.addEventListener('click', () => window.compras_CrearCargo());
+
+    document.addEventListener('click', function(e) {
+      const contCatProv = document.getElementById('prov-cat-sugerencias');
+      if (contCatProv && e.target.id !== 'prov-cat-buscador') contCatProv.style.display = 'none';
+    });
+  }
+
+  function sincronizarLicenciaLocalProveedores() {
+    comprasProveedoresLicenciaPro = localStorage.getItem('erp_licencia_pro') === 'true';
+
+    const badge = document.getElementById('compras-prov-badge-modo-pro');
+    const infoIcon = document.getElementById('compras-prov-info-modo-estandar');
+    if (comprasProveedoresLicenciaPro) {
+      if (badge) {
+        badge.innerHTML = '<i class="fa-solid fa-star"></i> MODULO PRO ACTIVO';
+        badge.style.background = "#deff9a";
+        badge.style.color = "#000000";
+        badge.style.borderColor = "#b4e63b";
+      }
+      if (infoIcon) infoIcon.style.display = 'none';
+    } else {
+      if (badge) {
+        badge.innerHTML = 'MODULO ESTANDAR';
+        badge.style.background = "#f1f5f9";
+        badge.style.color = "#64748b";
+        badge.style.borderColor = "#cbd5e1";
+      }
+      if (infoIcon) infoIcon.style.display = 'inline-block';
+    }
+  }
+
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'erp_licencia_pro') { sincronizarLicenciaLocalProveedores(); window.compras_RenderizarProveedores(); }
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) { sincronizarLicenciaLocalProveedores(); window.compras_RenderizarProveedores(); }
+  });
+  document.addEventListener('mousemove', () => {
+    const checkActual = localStorage.getItem('erp_licencia_pro') === 'true';
+    if (checkActual !== comprasProveedoresLicenciaPro) { sincronizarLicenciaLocalProveedores(); window.compras_RenderizarProveedores(); }
+  });
+
+  window.compras_CargarDatosProveedores = function() {
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+
+    google.script.run.withSuccessHandler(function(provs) { PROVEEDORES_GLOBAL = provs || []; window.compras_RenderizarProveedores(); }).obtenerProveedoresServidor();
+    google.script.run.withSuccessHandler(function(ords) { ORDENES_GLOBAL_PROV = ords || []; window.compras_RenderizarProveedores(); }).obtenerOrdenesCompraServidor();
+    google.script.run.withSuccessHandler(function(cats) {
+      CATEGORIAS_PROVEEDOR_GLOBAL = cats || [];
+      pintarChipsCategoriasProveedor();
+      poblarFiltroCategoriaProveedor();
+      renderizarListaCategoriasProveedorVivo();
+    }).obtenerCategoriasProveedorServidor();
+    google.script.run.withSuccessHandler(function(cargos) { CARGOS_COMPRA_GLOBAL = cargos || []; renderizarListaCargosVivo(); }).obtenerCargosCompraServidor();
+  };
+
+  function pintarChipsCategoriasProveedor() {
+    const cont = document.getElementById('prov-categorias-checks');
+    if (!cont) return;
+    cont.innerHTML = '';
+    categoriasSeleccionadasProveedorTemp.forEach(cat => {
+      const chip = document.createElement('span');
+      chip.style.cssText = "display:inline-flex; align-items:center; gap:6px; background:#eff6ff; color:#1e40af; border:1px solid #bfdbfe; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;";
+      chip.innerHTML = '<i class="fa-solid fa-tag" style="font-size:9px;"></i>' + cat + ' <i class="fa-solid fa-xmark" style="cursor:pointer; color:#ef4444; font-size:10px;"></i>';
+      chip.querySelector('.fa-xmark').addEventListener('click', () => {
+        categoriasSeleccionadasProveedorTemp = categoriasSeleccionadasProveedorTemp.filter(c => c !== cat);
+        pintarChipsCategoriasProveedor();
+      });
+      cont.appendChild(chip);
+    });
+  }
+
+  window.compras_BuscarCategoriaProveedor = function(texto) {
+    const cont = document.getElementById('prov-cat-sugerencias');
+    if (!cont) return;
+    const filtro = (texto || '').toLowerCase().trim();
+    if (!filtro) { cont.style.display = 'none'; return; }
+
+    const coincidencias = CATEGORIAS_PROVEEDOR_GLOBAL.filter(c =>
+      c.toLowerCase().includes(filtro) && !categoriasSeleccionadasProveedorTemp.includes(c)
+    );
+
+    if (coincidencias.length === 0) {
+      cont.innerHTML = '<div style="padding:12px; color:#94a3b8; font-size:12px; text-align:center;">Sin coincidencias. Puedes crear esta categoría a la derecha.</div>';
+      cont.style.display = 'block';
+      return;
+    }
+
+    cont.innerHTML = '';
+    coincidencias.forEach(cat => {
+      const div = document.createElement('div');
+      div.style.cssText = "padding:10px 14px; cursor:pointer; border-bottom:1px solid #f1f5f9; font-size:13px; color:#1e293b;";
+      div.innerText = cat;
+      div.addEventListener('click', () => {
+        categoriasSeleccionadasProveedorTemp.push(cat);
+        pintarChipsCategoriasProveedor();
+        document.getElementById('prov-cat-buscador').value = '';
+        cont.style.display = 'none';
+      });
+      cont.appendChild(div);
+    });
+    cont.style.display = 'block';
+  };
+
+  function poblarFiltroCategoriaProveedor() {
+    const select = document.getElementById('prov-filtro-categoria');
+    if (!select) return;
+    const valorActual = select.value;
+    select.innerHTML = '<option value="">Todas las categorías</option>';
+    CATEGORIAS_PROVEEDOR_GLOBAL.forEach(cat => {
+      const opt = document.createElement('option');
+      opt.value = cat;
+      opt.innerText = cat;
+      select.appendChild(opt);
+    });
+    if (valorActual) select.value = valorActual;
+  }
+
+  // ==========================================================================
+  // CATEGORIAS DE PROVEEDOR — libres, creadas por el usuario
+  // ==========================================================================
+  window.compras_CrearCategoriaProveedor = function() {
+    const input = document.getElementById('prov-cat-nombre');
+    const nombre = input.value.trim();
+    if (!nombre) { window.erpToast("Escribe el nombre de la categoría.", "error"); return; }
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+
+    google.script.run
+      .withSuccessHandler(function(res) {
+        window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+        if (res.exito) input.value = '';
+        CATEGORIAS_PROVEEDOR_GLOBAL = res.categorias || [];
+        poblarFiltroCategoriaProveedor();
+        renderizarListaCategoriasProveedorVivo();
+      })
+      .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+      .crearCategoriaProveedorServidor(nombre);
+  };
+
+  window.compras_EliminarCategoriaProveedor = async function(nombre) {
+    const confirmar = await window.erpConfirm('¿Eliminar la categoría "' + nombre + '"?');
+    if (!confirmar) return;
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+
+    google.script.run
+      .withSuccessHandler(function(res) {
+        window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+        CATEGORIAS_PROVEEDOR_GLOBAL = res.categorias || [];
+        // Si la categoria eliminada estaba seleccionada en la ficha actual, se quita tambien.
+        categoriasSeleccionadasProveedorTemp = categoriasSeleccionadasProveedorTemp.filter(c => CATEGORIAS_PROVEEDOR_GLOBAL.includes(c));
+        pintarChipsCategoriasProveedor();
+        poblarFiltroCategoriaProveedor();
+        renderizarListaCategoriasProveedorVivo();
+      })
+      .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+      .eliminarCategoriaProveedorServidor(nombre);
+  };
+
+  function renderizarListaCategoriasProveedorVivo() {
+    const cont = document.getElementById('prov-cat-lista-vivo');
+    if (!cont) return;
+    cont.innerHTML = '';
+    if (CATEGORIAS_PROVEEDOR_GLOBAL.length === 0) {
+      cont.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:12px; font-size:11px;">Aún no hay categorías.</div>';
+      return;
+    }
+    CATEGORIAS_PROVEEDOR_GLOBAL.forEach(cat => {
+      const fila = document.createElement('div');
+      fila.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:#f8fafc; border:1px solid #f1f5f9; border-radius:6px; padding:6px 10px;";
+      fila.innerHTML =
+        '<span style="font-size:12px; color:#1e293b;"><i class="fa-solid fa-tag" style="color:var(--accent); margin-right:6px; font-size:10px;"></i>' + cat + '</span>' +
+        '<button type="button" style="background:#fee2e2; color:#b91c1c; border:none; width:22px; height:22px; border-radius:4px; cursor:pointer; font-size:10px;"><i class="fa-solid fa-trash-can"></i></button>';
+      fila.querySelector('button').addEventListener('click', () => window.compras_EliminarCategoriaProveedor(cat));
+      cont.appendChild(fila);
+    });
+  }
+
+  // ==========================================================================
+  // COMPRAR — buscador de producto + items + fiscal
+  // ==========================================================================
+  // ==========================================================================
+  // CARGOS / IMPUESTOS DE COMPRA — catalogo configurable
+  // ==========================================================================
+  window.compras_CrearCargo = function() {
+    const inputNombre = document.getElementById('cargo-nombre');
+    const inputPorcentaje = document.getElementById('cargo-porcentaje');
+    const inputTipo = document.getElementById('cargo-tipo');
+    const inputTipoCompra = document.getElementById('cargo-tipo-compra');
+    const inputTipoProveedor = document.getElementById('cargo-tipo-proveedor');
+    const nombre = inputNombre.value.trim();
+    const porcentaje = parseFloat(inputPorcentaje.value);
+    const tipo = inputTipo.value;
+    const tipoCompra = inputTipoCompra.value;
+    const tipoProveedor = inputTipoProveedor.value;
+
+    if (!nombre) { window.erpToast("Escribe el nombre del cargo.", "error"); return; }
+    if (isNaN(porcentaje) || porcentaje < 0) { window.erpToast("Ingresa un porcentaje válido.", "error"); return; }
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+
+    google.script.run
+      .withSuccessHandler(function(res) {
+        window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+        if (res.exito) {
+          inputNombre.value = ''; inputPorcentaje.value = ''; inputTipo.value = 'Suma';
+          inputTipoCompra.value = 'Ambos'; inputTipoProveedor.value = 'Ambos';
+        }
+        CARGOS_COMPRA_GLOBAL = res.cargos || [];
+        renderizarListaCargosVivo();
+      })
+      .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+      .crearCargoCompraServidor({ nombre: nombre, porcentaje: porcentaje, tipo: tipo, tipoCompra: tipoCompra, tipoProveedor: tipoProveedor });
+  };
+
+  window.compras_EliminarCargo = async function(nombre) {
+    const confirmar = await window.erpConfirm('¿Eliminar el cargo "' + nombre + '"?');
+    if (!confirmar) return;
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+
+    google.script.run
+      .withSuccessHandler(function(res) {
+        window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+        CARGOS_COMPRA_GLOBAL = res.cargos || [];
+        renderizarListaCargosVivo();
+      })
+      .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+      .eliminarCargoCompraServidor(nombre);
+  };
+
+  window.compras_ReordenarCargo = function(nombre, direccion) {
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+    google.script.run
+      .withSuccessHandler(function(res) {
+        if (!res.exito) window.erpToast(res.mensaje, 'info');
+        CARGOS_COMPRA_GLOBAL = res.cargos || [];
+        renderizarListaCargosVivo();
+      })
+      .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+      .reordenarCargoCompraServidor(nombre, direccion);
+  };
+
+  function renderizarListaCargosVivo() {
+    const cont = document.getElementById('cargo-lista-vivo');
+    if (!cont) return;
+    cont.innerHTML = '';
+    if (CARGOS_COMPRA_GLOBAL.length === 0) {
+      cont.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:12px; font-size:11px;">Aún no hay cargos creados.</div>';
+      return;
+    }
+    CARGOS_COMPRA_GLOBAL.forEach((c, idx) => {
+      const esSuma = c.tipo !== 'Resta';
+      const colorTipo = esSuma ? '#16a34a' : '#b91c1c';
+      const bgTipo = esSuma ? '#f0fdf4' : '#fee2e2';
+
+      const etiquetaTipoCompra = { 'Bienes': 'Solo Bienes', 'Servicios': 'Solo Servicios', 'Ambos': 'Bienes y Servicios' }[c.tipoCompra || 'Ambos'];
+      const etiquetaTipoProveedor = { 'Persona Natural': 'Solo Pers. Natural', 'Empresa': 'Solo Empresa', 'Ambos': 'Cualquier Proveedor' }[c.tipoProveedor || 'Ambos'];
+
+      const fila = document.createElement('div');
+      fila.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:#f8fafc; border:1px solid #f1f5f9; border-radius:6px; padding:8px 12px; gap:8px;";
+      fila.innerHTML =
+        '<span style="font-size:12px; color:#1e293b; flex:1;">' +
+          '<i class="fa-solid fa-percent" style="color:var(--accent); margin-right:6px; font-size:10px;"></i>' + c.nombre + ' — ' + c.porcentaje + '% ' +
+          '<span style="background:' + bgTipo + '; color:' + colorTipo + '; font-size:9px; font-weight:700; padding:1px 6px; border-radius:8px; margin-left:4px;">' + (esSuma ? 'SUMA' : 'RESTA') + '</span>' +
+          '<br><span style="font-size:9px; color:#94a3b8;">' + etiquetaTipoCompra + ' · ' + etiquetaTipoProveedor + '</span>' +
+        '</span>' +
+        '<div style="display:flex; gap:3px; flex-shrink:0;">' +
+          '<button type="button" data-action="subir" style="background:#f1f5f9; color:#475569; border:none; width:22px; height:22px; border-radius:4px; cursor:pointer; font-size:9px;" ' + (idx === 0 ? 'disabled' : '') + '><i class="fa-solid fa-chevron-up"></i></button>' +
+          '<button type="button" data-action="bajar" style="background:#f1f5f9; color:#475569; border:none; width:22px; height:22px; border-radius:4px; cursor:pointer; font-size:9px;" ' + (idx === CARGOS_COMPRA_GLOBAL.length - 1 ? 'disabled' : '') + '><i class="fa-solid fa-chevron-down"></i></button>' +
+          '<button type="button" data-action="eliminar" style="background:#fee2e2; color:#b91c1c; border:none; width:22px; height:22px; border-radius:4px; cursor:pointer; font-size:10px;"><i class="fa-solid fa-trash-can"></i></button>' +
+        '</div>';
+      fila.querySelector('[data-action="subir"]').addEventListener('click', () => window.compras_ReordenarCargo(c.nombre, 'arriba'));
+      fila.querySelector('[data-action="bajar"]').addEventListener('click', () => window.compras_ReordenarCargo(c.nombre, 'abajo'));
+      fila.querySelector('[data-action="eliminar"]').addEventListener('click', () => window.compras_EliminarCargo(c.nombre));
+      cont.appendChild(fila);
+    });
+  }
+
+
+  // ==========================================================================
+  // PROVEEDORES — ficha completa, siempre visible (sin modal)
+  // ==========================================================================
+
+  window.compras_AlCambiarTipoPersonaProveedor = function() {
+    const tipoPersona = document.querySelector('input[name="prov-tipo-persona"]:checked').value;
+    const label = document.getElementById('prov-nrc-label');
+    if (!label) return;
+    label.innerText = tipoPersona === 'Empresa' ? 'NRC (obligatorio):' : 'NRC (opcional):';
+  };
+
+  window.compras_AgregarCuentaBancaria = function(valoresExistentes) {
+    contadorCuentaBancaria++;
+    const idFila = 'cuenta-banco-' + contadorCuentaBancaria;
+    const cont = document.getElementById('prov-cuentas-bancarias-lista');
+    const fila = document.createElement('div');
+    fila.id = idFila;
+    fila.style.cssText = "display:flex; gap:8px; align-items:center; background:#ffffff; border:1px solid #e2e8f0; border-radius:6px; padding:8px; flex-wrap:wrap;";
+    fila.innerHTML =
+      '<input type="text" class="cuenta-banco-nombre" placeholder="Banco" style="flex:1; min-width:100px; height:34px; border:1px solid #cbd5e1; border-radius:6px; padding:0 8px; box-sizing:border-box; font-size:12px;">' +
+      '<input type="text" class="cuenta-banco-numero" placeholder="Número de cuenta" style="flex:1.3; min-width:130px; height:34px; border:1px solid #cbd5e1; border-radius:6px; padding:0 8px; box-sizing:border-box; font-size:12px;">' +
+      '<select class="cuenta-banco-tipo" style="height:34px; border:1px solid #cbd5e1; border-radius:6px; padding:0 6px; box-sizing:border-box; font-size:11px; background:#ffffff;">' +
+        '<option value="Corriente">Corriente</option>' +
+        '<option value="Ahorro">Ahorro</option>' +
+      '</select>' +
+      '<button type="button" style="background:#fee2e2; color:#b91c1c; border:none; width:30px; height:30px; border-radius:6px; cursor:pointer; font-size:11px; flex-shrink:0;"><i class="fa-solid fa-xmark"></i></button>';
+
+    if (valoresExistentes) {
+      fila.querySelector('.cuenta-banco-nombre').value = valoresExistentes.banco || '';
+      fila.querySelector('.cuenta-banco-numero').value = valoresExistentes.numero || '';
+      fila.querySelector('.cuenta-banco-tipo').value = valoresExistentes.tipo || 'Corriente';
+    }
+
+    fila.querySelector('button').addEventListener('click', () => fila.remove());
+    cont.appendChild(fila);
+  };
+
+  function obtenerCuentasBancariasDelFormulario() {
+    return Array.from(document.querySelectorAll('#prov-cuentas-bancarias-lista > div')).map(fila => ({
+      banco: fila.querySelector('.cuenta-banco-nombre').value.trim(),
+      numero: fila.querySelector('.cuenta-banco-numero').value.trim(),
+      tipo: fila.querySelector('.cuenta-banco-tipo').value
+    })).filter(c => c.banco || c.numero);
+  }
+
+  window.compras_GuardarProveedor = function() {
+    const nitOriginal = document.getElementById('prov-nit-original').value;
+    const tipoPersona = document.querySelector('input[name="prov-tipo-persona"]:checked').value;
+    const categorias = categoriasSeleccionadasProveedorTemp.slice();
+    const metodosPago = Array.from(document.querySelectorAll('.prov-metodo-pago-check:checked')).map(chk => chk.value);
+    const cuentasBancarias = obtenerCuentasBancariasDelFormulario();
+
+    const datos = {
+      esEdicion: !!nitOriginal,
+      nitDuiOriginal: nitOriginal,
+      tipoPersona: tipoPersona,
+      nombre: document.getElementById('prov-nombre').value.trim(),
+      nitDui: document.getElementById('prov-nit').value.trim(),
+      nrc: document.getElementById('prov-nrc').value.trim(),
+      tipoContribuyente: document.getElementById('prov-tipo-contribuyente').value,
+      contacto: document.getElementById('prov-contacto').value.trim(),
+      giroComercial: document.getElementById('prov-giro').value.trim(),
+      telefono: document.getElementById('prov-telefono').value.trim(),
+      whatsapp: document.getElementById('prov-whatsapp').value.trim(),
+      correo: document.getElementById('prov-correo').value.trim(),
+      direccion: document.getElementById('prov-direccion').value.trim(),
+      categorias: categorias,
+      metodosPago: metodosPago,
+      cuentasBancarias: cuentasBancarias
+    };
+
+    if (!datos.nombre || !datos.nitDui) {
+      window.erpToast("Nombre y NIT/DUI son obligatorios.", "error");
+      return;
+    }
+    if (tipoPersona === 'Empresa' && !datos.nrc) {
+      window.erpToast("El NRC es obligatorio para proveedores tipo Empresa (Jurídica).", "error");
+      return;
+    }
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+          if (res.exito) {
+            window.compras_LimpiarFormularioProveedor();
+            window.compras_CargarDatosProveedores();
+          }
+        })
+        .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+        .registrarProveedorServidor(datos);
+    }
+  };
+
+  window.compras_LimpiarFormularioProveedor = function() {
+    document.getElementById('prov-modal-titulo').innerHTML = '<i class="fa-solid fa-truck-field" style="color: var(--accent);"></i> Ficha de Registro de Proveedor';
+    document.getElementById('prov-nit-original').value = '';
+    document.querySelector('input[name="prov-tipo-persona"][value="Persona Natural"]').checked = true;
+    window.compras_AlCambiarTipoPersonaProveedor();
+    document.getElementById('prov-nombre').value = '';
+    document.getElementById('prov-nit').value = '';
+    document.getElementById('prov-nrc').value = '';
+    document.getElementById('prov-tipo-contribuyente').value = 'Pequeño Contribuyente';
+    document.getElementById('prov-contacto').value = '';
+    document.getElementById('prov-giro').value = '';
+    document.getElementById('prov-telefono').value = '';
+    document.getElementById('prov-whatsapp').value = '';
+    document.getElementById('prov-correo').value = '';
+    document.getElementById('prov-direccion').value = '';
+    categoriasSeleccionadasProveedorTemp = [];
+    pintarChipsCategoriasProveedor();
+    document.getElementById('prov-cat-buscador').value = '';
+    document.querySelectorAll('.prov-metodo-pago-check').forEach(chk => chk.checked = false);
+    document.getElementById('prov-cuentas-bancarias-lista').innerHTML = '';
+    document.getElementById('prov-btn-cancelar-edicion').style.display = 'none';
+  };
+
+  window.compras_EditarProveedor = function(nitDui) {
+    const prov = PROVEEDORES_GLOBAL.find(p => p.nitDui === nitDui);
+    if (!prov) return;
+    document.getElementById('prov-modal-titulo').innerHTML = '<i class="fa-solid fa-pen-to-square" style="color: var(--accent);"></i> Editando: ' + prov.nombre;
+    document.getElementById('prov-nit-original').value = prov.nitDui;
+    document.querySelector('input[name="prov-tipo-persona"][value="' + (prov.tipoPersona || 'Persona Natural') + '"]').checked = true;
+    window.compras_AlCambiarTipoPersonaProveedor();
+    document.getElementById('prov-nombre').value = prov.nombre;
+    document.getElementById('prov-nit').value = prov.nitDui;
+    document.getElementById('prov-nrc').value = prov.nrc;
+    document.getElementById('prov-tipo-contribuyente').value = prov.tipoContribuyente || 'Pequeño Contribuyente';
+    document.getElementById('prov-contacto').value = prov.contacto;
+    document.getElementById('prov-giro').value = prov.giroComercial || '';
+    document.getElementById('prov-telefono').value = prov.telefono;
+    document.getElementById('prov-whatsapp').value = prov.whatsapp || '';
+    document.getElementById('prov-correo').value = prov.correo;
+    document.getElementById('prov-direccion').value = prov.direccion;
+    categoriasSeleccionadasProveedorTemp = (prov.categorias || []).slice();
+    pintarChipsCategoriasProveedor();
+    document.querySelectorAll('.prov-metodo-pago-check').forEach(chk => { chk.checked = (prov.metodosPago || []).includes(chk.value); });
+    document.getElementById('prov-cuentas-bancarias-lista').innerHTML = '';
+    (prov.cuentasBancarias || []).forEach(cuenta => window.compras_AgregarCuentaBancaria(cuenta));
+    document.getElementById('prov-btn-cancelar-edicion').style.display = 'inline-block';
+    document.getElementById('prov-nombre').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
+  window.compras_EliminarProveedor = async function(nitDui, nombre) {
+    const confirmar = await window.erpConfirm('¿Eliminar al proveedor "' + nombre + '"?');
+    if (!confirmar) return;
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) { window.erpToast(res.mensaje, res.exito ? 'exito' : 'error'); if (res.exito) window.compras_CargarDatosProveedores(); })
+        .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+        .eliminarProveedorServidor(nitDui);
+    }
+  };
+
+  window.compras_AlternarAcordeonProveedor = function(idSeguro) {
+    const panel = document.getElementById('acordeon-prov-' + idSeguro);
+    const flecha = document.getElementById('flecha-prov-' + idSeguro);
+    if (!panel) return;
+    const estabaAbierto = panel.style.display === 'block';
+    document.querySelectorAll('[id^="acordeon-prov-"]').forEach(p => p.style.display = 'none');
+    document.querySelectorAll('[id^="flecha-prov-"]').forEach(f => f.style.transform = 'rotate(0deg)');
+    if (!estabaAbierto) {
+      panel.style.display = 'block';
+      if (flecha) flecha.style.transform = 'rotate(180deg)';
+    }
+  };
+
+  window.compras_ToggleFiltroTipoPersona = function(tipo) {
+    const idx = FILTROS_TIPO_PERSONA_ACTIVOS.indexOf(tipo);
+    if (idx === -1) {
+      FILTROS_TIPO_PERSONA_ACTIVOS.push(tipo);
+    } else {
+      FILTROS_TIPO_PERSONA_ACTIVOS.splice(idx, 1);
+    }
+
+    const mapaBotones = {
+      'Persona Natural': { id: 'prov-filtro-tipo-natural', onBg: '#b45309', onColor: '#ffffff', offBg: '#fef3c7', offColor: '#b45309' },
+      'Empresa': { id: 'prov-filtro-tipo-empresa', onBg: '#0369a1', onColor: '#ffffff', offBg: '#e0f2fe', offColor: '#0369a1' }
+    };
+
+    Object.keys(mapaBotones).forEach(t => {
+      const cfg = mapaBotones[t];
+      const btn = document.getElementById(cfg.id);
+      if (!btn) return;
+      const activo = FILTROS_TIPO_PERSONA_ACTIVOS.includes(t);
+      btn.style.background = activo ? cfg.onBg : cfg.offBg;
+      btn.style.color = activo ? cfg.onColor : cfg.offColor;
+    });
+
+    window.compras_FiltrarProveedores();
+  };
+
+  window.compras_FiltrarProveedores = function() {
+    paginaActualProveedores = 1;
+    window.compras_RenderizarProveedores();
+  };
+
+  window.compras_RenderizarProveedores = function() {
+    const cont = document.getElementById('prov-lista-grid');
+    if (!cont) return;
+
+    const filtroTexto = (document.getElementById('prov-filtro-texto').value || '').toLowerCase().trim();
+    const filtroCategoria = document.getElementById('prov-filtro-categoria').value;
+
+    const filtrados = PROVEEDORES_GLOBAL.filter(p => {
+      if (FILTROS_TIPO_PERSONA_ACTIVOS.length > 0 && !FILTROS_TIPO_PERSONA_ACTIVOS.includes(p.tipoPersona || 'Persona Natural')) return false;
+      if (filtroCategoria && !(p.categorias || []).includes(filtroCategoria)) return false;
+      if (filtroTexto) {
+        const texto = (p.nombre + ' ' + p.nitDui + ' ' + (p.giroComercial || '')).toLowerCase();
+        if (!texto.includes(filtroTexto)) return false;
+      }
+      return true;
+    });
+
+    const totalItems = filtrados.length;
+    const totalPaginas = Math.ceil(totalItems / itemsPorPaginaProveedores) || 1;
+    if (paginaActualProveedores > totalPaginas) paginaActualProveedores = totalPaginas;
+    if (paginaActualProveedores < 1) paginaActualProveedores = 1;
+
+    const txtPag = document.getElementById('prov-txt-paginacion');
+    if (txtPag) txtPag.innerText = 'Pág. ' + paginaActualProveedores + ' de ' + totalPaginas;
+
+    const inicio = (paginaActualProveedores - 1) * itemsPorPaginaProveedores;
+    const paginados = filtrados.slice(inicio, inicio + itemsPorPaginaProveedores);
+
+    cont.innerHTML = '';
+    if (paginados.length === 0) {
+      cont.innerHTML = '<div style="text-align:center; padding:30px; color:#94a3b8;">Sin proveedores que coincidan con la búsqueda.</div>';
+      return;
+    }
+
+    paginados.forEach(p => {
+      const idSeguro = p.nitDui.toString().replace(/[^a-zA-Z0-9]/g, '');
+      const categoriasHtml = (p.categorias || []).map(c => '<span style="background:#eff6ff; color:#1e40af; font-size:9px; font-weight:700; padding:2px 8px; border-radius:8px;">' + c + '</span>').join(' ');
+      const iconoTipo = p.tipoPersona === 'Empresa' ? 'fa-building' : 'fa-user';
+
+      const cuentasHtml = (p.cuentasBancarias || []).length > 0
+        ? (p.cuentasBancarias || []).map(c => '<div style="font-size:12px; color:#475569;">• ' + (c.banco || 'Banco') + ' — ' + (c.tipo || '') + ' ' + (c.numero || '') + '</div>').join('')
+        : '<div style="font-size:12px; color:#94a3b8;">Sin cuentas registradas.</div>';
+
+      const metodosPagoHtml = (p.metodosPago || []).length > 0
+        ? (p.metodosPago || []).map(m => '<span style="background:#f0fdf4; color:#15803d; font-size:9px; font-weight:700; padding:2px 8px; border-radius:8px;">' + m + '</span>').join(' ')
+        : '—';
+
+      // Contador PRO de ordenes de compra asignadas a este proveedor: clickeable
+      // para abrir el detalle. En Estandar se oculta por completo.
+      const contadorOrdenesHtml = comprasProveedoresLicenciaPro
+        ? '<span data-action="ver-ordenes" title="Ver órdenes de este proveedor" style="background:#deff9a; color:#000000; border:1px solid #b4e63b; font-size:10px; font-weight:700; padding:3px 10px; border-radius:10px; cursor:pointer; display:inline-flex; align-items:center; gap:5px;"><i class="fa-solid fa-file-invoice"></i> <span class="prov-contador-ordenes">…</span> orden(es)</span>'
+        : '';
+
+      const tarjeta = document.createElement('div');
+      tarjeta.style.cssText = "border:1px solid #e2e8f0; border-radius:8px; overflow:hidden; background:white;";
+
+      tarjeta.innerHTML =
+        '<div onclick="window.compras_AlternarAcordeonProveedor(\'' + idSeguro + '\')" style="padding:14px 18px; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; cursor:pointer;">' +
+          '<div style="flex:1; min-width:200px; display:flex; align-items:center; gap:10px;">' +
+            '<i class="fa-solid ' + iconoTipo + '" style="color:var(--accent); font-size:14px;"></i>' +
+            '<div>' +
+              '<div style="font-weight:600; color:#0f172a; font-size:14px;">' + p.nombre + '</div>' +
+              '<div style="font-size:11px; color:#64748b; margin-top:2px;">' + p.nitDui + (p.giroComercial ? (' · ' + p.giroComercial) : '') + '</div>' +
+            '</div>' +
+          '</div>' +
+          (categoriasHtml ? '<div style="display:flex; flex-wrap:wrap; gap:4px;">' + categoriasHtml + '</div>' : '') +
+          contadorOrdenesHtml +
+          '<div style="display:flex; align-items:center; gap:8px;">' +
+            '<button type="button" data-action="editar" style="background:#e0f2fe; color:#0369a1; border:none; width:28px; height:28px; border-radius:6px; cursor:pointer; font-size:11px;"><i class="fa-solid fa-pen"></i></button>' +
+            '<button type="button" data-action="eliminar" style="background:#fee2e2; color:#b91c1c; border:none; width:28px; height:28px; border-radius:6px; cursor:pointer; font-size:11px;"><i class="fa-solid fa-trash-can"></i></button>' +
+            '<i id="flecha-prov-' + idSeguro + '" class="fa-solid fa-chevron-down" style="color:#94a3b8; transition: transform 0.2s; font-size:12px;"></i>' +
+          '</div>' +
+        '</div>' +
+        '<div id="acordeon-prov-' + idSeguro + '" style="display:none; background:#f8fafc; border-top:1px solid #e2e8f0; padding:14px 18px;">' +
+          '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px; font-size:12px; color:#475569;">' +
+            '<div><strong>Tipo:</strong> ' + (p.tipoPersona || 'Persona Natural') + '</div>' +
+            '<div><strong>NRC:</strong> ' + (p.nrc || '—') + '</div>' +
+            '<div><strong>Contribuyente:</strong> ' + (p.tipoContribuyente || '—') + '</div>' +
+            '<div><strong>Contacto:</strong> ' + (p.contacto || '—') + '</div>' +
+            '<div><strong>Teléfono:</strong> ' + (p.telefono || '—') + '</div>' +
+            '<div><strong>WhatsApp:</strong> ' + (p.whatsapp || '—') + '</div>' +
+            '<div><strong>Correo:</strong> ' + (p.correo || '—') + '</div>' +
+            '<div style="grid-column: 1 / -1;"><strong>Dirección:</strong> ' + (p.direccion || '—') + '</div>' +
+            '<div style="grid-column: 1 / -1;"><strong>Métodos de pago:</strong> ' + metodosPagoHtml + '</div>' +
+          '</div>' +
+          '<div style="margin-top:10px; padding-top:10px; border-top:1px solid #e2e8f0;">' +
+            '<div style="font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; margin-bottom:6px;">Cuentas Bancarias</div>' +
+            cuentasHtml +
+          '</div>' +
+        '</div>';
+
+      tarjeta.querySelector('[data-action="editar"]').addEventListener('click', (e) => { e.stopPropagation(); window.compras_EditarProveedor(p.nitDui); });
+      tarjeta.querySelector('[data-action="eliminar"]').addEventListener('click', (e) => { e.stopPropagation(); window.compras_EliminarProveedor(p.nitDui, p.nombre); });
+
+      if (comprasProveedoresLicenciaPro) {
+        const elBadgeOrdenes = tarjeta.querySelector('[data-action="ver-ordenes"]');
+        if (elBadgeOrdenes) {
+          const cantidadOrdenes = ORDENES_GLOBAL_PROV.filter(o => (o.proveedor || '').trim().toLowerCase() === p.nombre.trim().toLowerCase()).length;
+          elBadgeOrdenes.querySelector('.prov-contador-ordenes').innerText = cantidadOrdenes;
+          elBadgeOrdenes.addEventListener('click', (e) => { e.stopPropagation(); window.compras_VerOrdenesDeProveedor(p.nombre); });
+        }
+      }
+
+      cont.appendChild(tarjeta);
+    });
+  };
+
+  /**
+   * Funcion PRO: muestra en un modal simple todas las ordenes de compra
+   * asignadas a un proveedor especifico, al hacer clic en su contador.
+   */
+  window.compras_VerOrdenesDeProveedor = function(nombreProveedor) {
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+
+    google.script.run
+      .withSuccessHandler(function(ordenes) {
+        const filas = (ordenes || []).map(o => {
+          const total = o.totalAPagar || 0;
+          return '<div style="border:1px solid #e2e8f0; border-radius:6px; padding:10px 12px; margin-bottom:6px;">' +
+            '<div style="font-weight:700; color:#0f172a; font-size:12px;">' + o.id + ' — ' + o.estado + '</div>' +
+            '<div style="font-size:11px; color:#94a3b8;">' + (o.fecha ? new Date(o.fecha).toLocaleDateString() : '') + ' · Total: $' + total.toFixed(2) + '</div>' +
+          '</div>';
+        }).join('') || '<div style="text-align:center; color:#94a3b8; padding:20px; font-size:12px;">Sin órdenes registradas para este proveedor.</div>';
+
+        const contenedor = document.createElement('dialog');
+        contenedor.className = 'modal-dialog-erp';
+        contenedor.style.maxWidth = '420px';
+        contenedor.innerHTML =
+          '<div style="display:flex; justify-content:space-between; align-items:center; background:var(--accent); padding:14px 20px; color:#ffffff;">' +
+            '<h4 style="margin:0; font-size:13px; font-weight:700; text-transform:uppercase;">Órdenes de ' + nombreProveedor + '</h4>' +
+            '<i class="fa-solid fa-xmark" style="cursor:pointer; font-size:16px; color:rgba(255,255,255,0.8);"></i>' +
+          '</div>' +
+          '<div style="padding:20px; max-height:60vh; overflow-y:auto;">' + filas + '</div>';
+        document.body.appendChild(contenedor);
+        contenedor.querySelector('.fa-xmark').addEventListener('click', () => { contenedor.close(); contenedor.remove(); });
+        contenedor.showModal();
+      })
+      .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+      .obtenerOrdenesPorProveedorServidor(nombreProveedor);
+  };
+
+
+})();
+</script>
