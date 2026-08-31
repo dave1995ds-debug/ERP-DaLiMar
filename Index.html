@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ERP Corporativo Memorial v.03</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary: #0f172a;
+      --accent: #2563eb;
+      --accent-light: #eff6ff;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --sidebar-width: 280px;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --radius-card: 12px;
+      --line-thickness: 5px;
+      --bg-gray: #f8fafc;
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; scrollbar-gutter: stable; }
+
+    .sidebar { width: var(--sidebar-width); background: var(--primary); color: white; display: flex; flex-direction: column; padding: 24px; box-shadow: 4px 0 10px rgba(0,0,0,0.05); overflow-y: auto; flex-shrink: 0; }
+    .sidebar .brand { font-size: 20px; font-weight: 700; margin-bottom: 28px; display: flex; align-items: center; gap: 12px; }
+    .sidebar .brand span { color: #60a5fa; }
+    
+    .menu-section-title { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin: 16px 0 8px 8px; }
+    
+    .menu-btn { background: none; border: none; color: #94a3b8; padding: 10px 14px; text-align: left; font-size: 14px; font-weight: 500; cursor: pointer; border-radius: 8px; margin-bottom: 4px; display: flex; align-items: center; gap: 12px; transition: all 0.2s ease; width: 100%; }
+    .menu-btn:hover, .menu-btn.active { background: #1e293b; color: white; }
+    .menu-btn.active { border-left: 4px solid #3b82f6; background: #1e293b; font-weight: 600; }
+
+    .main-content { flex-grow: 1; display: flex; flex-direction: column; overflow-y: scroll; }
+    .header { background: var(--card-bg); padding: 18px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+    .app-viewport { padding: 40px; max-width: 1200px; width: 100%; margin: 0 auto; }
+
+    .view-section { display: none; }
+    .view-section.active { display: block; }
+
+    .card { background: var(--card-bg); border-radius: 12px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.01); border: 1px solid var(--border); margin-bottom: 30px; }
+    .card-title { font-size: 18px; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+
+    .erp-main-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-card);
+      border: 1px solid var(--border);
+      border-top: var(--line-thickness) solid var(--accent);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      margin-bottom: 25px;
+      box-sizing: border-box;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .erp-card-header {
+      padding: 25px 25px 15px 25px;
+      border-bottom: 1px solid var(--border);
+      background: var(--card-bg);
+    }
+
+    .erp-card-header h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .erp-card-body {
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+    }
+
+    .erp-form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 25px;
+      margin-bottom: 25px;
+      box-sizing: border-box;
+    }
+
+    .erp-form-section {
+      background: var(--bg-gray);
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      box-sizing: border-box;
+    }
+
+    .erp-section-label {
+      font-weight: 700;
+      display: block;
+      color: var(--text);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar">
+    <div class="brand" id="erp-titulo-global"><i class="fa-solid fa-circle-notch fa-spin"></i> Bienvenido...</div>
+    
+    <div class="menu-section-title">Core & Monitoreo</div>
+    <button class="menu-btn active" onclick="switchView('home', this)"><i class="fa-solid fa-chart-pie"></i> Dashboard General</button>
+    
+    <div class="menu-section-title">Comercial y Ventas</div>
+    <button class="menu-btn" onclick="switchView('ventas', this)"><i class="fa-solid fa-cart-shopping"></i> Captura de Ventas</button>
+    <button class="menu-btn" onclick="switchView('clientes', this)"><i class="fa-solid fa-address-book"></i> Directorio de Clientes</button>
+    
+    <div class="menu-section-title">Operaciones, Procesos y Distribución</div>
+    <button class="menu-btn" onclick="switchView('produccion', this)"><i class="fa-solid fa-industry"></i> Planta y Producción</button>
+    <button class="menu-btn" onclick="switchView('despacho', this)"><i class="fa-solid fa-truck-ramp-box"></i> Despachos y Control</button>
+    
+    <div class="menu-section-title">Abastecimiento</div>
+    <button class="menu-btn" onclick="switchView('almacen', this)"><i class="fa-solid fa-warehouse"></i> Inventario y Recepción</button>
+    <button class="menu-btn" onclick="switchView('requisiciones', this)"><i class="fa-solid fa-list-check"></i> Requisiciones</button>
+    <button class="menu-btn" onclick="switchView('compras', this)"><i class="fa-solid fa-file-contract"></i> Compras y Proveedores</button>
+    
+    <div class="menu-section-title">Administración</div>
+    <button class="menu-btn" onclick="switchView('finanzas', this)"><i class="fa-solid fa-cash-register"></i> Finanzas y Caja</button>
+    <button class="menu-btn" onclick="switchView('rrhh', this)"><i class="fa-solid fa-user-group"></i> Recursos Humanos</button>
+    
+    <div class="menu-section-title">Sistema</div>
+    <button class="menu-btn" onclick="switchView('config', this)"><i class="fa-solid fa-sliders"></i> Configuración</button>
+  </div>
+
+  <div class="main-content">
+    <div class="header">
+      <h2 id="view-title" style="font-size: 20px; font-weight: 700;">Dashboard General</h2>
+      <div style="font-size: 14px; color: var(--text-muted); font-weight: 500;"><i class="fa-regular fa-clock"></i> Control Unificado ERP</div>
+    </div>
+
+    <div class="app-viewport">
+      
+      <div id="view-home" class="view-section active">
+        <?!= include('ModDashboard'); ?>
+      </div>
+
+      <div id="view-ventas" class="view-section">
+        <?!= include('ModVentas'); ?>
+      </div>
+
+      <div id="view-clientes" class="view-section">
+        <?!= include('ModClientes'); ?>
+      </div>
+
+      <div id="view-produccion" class="view-section">
+        <?!= include('ModProduccion'); ?>
+      </div>
+
+      <div id="view-almacen" class="view-section">
+        <?!= include('ModAlmacen'); ?>
+      </div>
+
+      <div id="view-requisiciones" class="view-section">
+        <?!= include('ModRequisiciones'); ?>
+      </div>
+
+      <div id="view-compras" class="view-section">
+        <?!= include('ModCompras'); ?>
+      </div>
+
+      <div id="view-despacho" class="view-section">
+        <?!= include('ModDespacho'); ?>
+      </div>
+
+      <div id="view-finanzas" class="view-section">
+        <?!= include('ModFinanzas'); ?>
+      </div>
+
+      <div id="view-rrhh" class="view-section">
+        <?!= include('ModRRHH'); ?>
+      </div>
+
+      <div id="view-config" class="view-section">
+        <?!= include('ModConfig'); ?>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    let erpLicenciaProActiva = localStorage.getItem('erp_licencia_pro') === 'true';
+
+    function switchView(viewId, button) {
+      document.querySelectorAll('.view-section').forEach(view => view.classList.remove('active'));
+      document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
+      
+      const targetView = document.getElementById('view-' + viewId);
+      if (targetView) {
+        targetView.classList.add('active');
+      }
+      
+      if(button) { 
+        button.classList.add('active'); 
+      } else {
+        document.querySelectorAll('.menu-btn').forEach(btn => {
+          if(btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(`'${viewId}'`)) {
+            btn.classList.add('active');
+          }
+        });
+      }
+      
+      const titulos = { 
+        home: "Dashboard General", 
+        ventas: "Captura de Ventas", 
+        clientes: "Directorio Maestro de Clientes",
+        produccion: "Planta / Escultura", 
+        almacen: "Inventario y Recepción",
+        requisiciones: "Requisiciones de Compra",
+        despacho: "Despachos / Firma de Conformidad",
+        compras: "Gestión de Compras y Proveedores",
+        finanzas: "Finanzas, Caja y Facturación",
+        rrhh: "Recursos Humanos y Planillas",
+        config: "Configuración del Sistema"
+      };
+      document.getElementById('view-title').innerText = titulos[viewId] || "Sistema ERP";
+
+      const estadoFresco = localStorage.getItem('erp_licencia_pro') === 'true';
+      
+      if (viewId === 'ventas' && typeof window.actualizarModuloVentasPorLicencia === 'function') {
+        window.actualizarModuloVentasPorLicencia(estadoFresco);
+        if (typeof window.ventas_CambiarTab === 'function') window.ventas_CambiarTab('capturar');
+        if (typeof window.ventas_RecargarRepositorioClientes === 'function') window.ventas_RecargarRepositorioClientes();
+      }
+      if (viewId === 'clientes' && typeof window.actualizarModuloClientesPorLicencia === 'function') {
+        window.actualizarModuloClientesPorLicencia(estadoFresco);
+      }
+      // Almacen (Inventario + Recepcion) es un shell con sus propias pestanas
+      // internas -- al entrar a esta vista, se fuerza la pestana Inventario
+      // visualmente activa (igual al patron ya usado en Compras), porque si
+      // el shell ya estaba cargado en memoria de una visita anterior en la
+      // misma sesion, su propio setTimeout inicial no se vuelve a ejecutar
+      // y la pantalla quedaria en blanco hasta tocar algo manualmente.
+      if (viewId === 'almacen' && typeof window.almacen_ForzarPanelInventario === 'function') {
+        window.almacen_ForzarPanelInventario();
+      }
+      // Configuracion es otro shell con pestanas internas (Suscripciones,
+      // Datos de Empresa, Catalogo de Productos, Roles y Permisos) -- mismo
+      // motivo y misma solucion que Almacen: fuerza la pestana inicial
+      // visible cada vez que se entra, sin importar si ya estaba cargado.
+      if (viewId === 'config' && typeof window.config_ForzarPanelSuscripciones === 'function') {
+        window.config_ForzarPanelSuscripciones();
+      }
+      if (viewId === 'requisiciones' && typeof window.req_CargarDatos === 'function') {
+        window.req_CargarDatos();
+      }
+      if (viewId === 'compras' && typeof window.compras_CargarTodo === 'function') {
+        // Ademas de recargar datos, fuerza la pestana "comprar" visualmente
+        // activa -- al regresar a este modulo (sin recargar la pagina), el
+        // script interno no se re-ejecuta, asi que sin esto la pantalla se
+        // ve en blanco hasta que el usuario toca algun boton de pestana.
+        if (typeof window.compras_CambiarTab === 'function') {
+          window.compras_CambiarTab('comprar');
+        }
+        window.compras_CargarTodo();
+
+        // Si el usuario viene desde Requisiciones con items preseleccionados
+        // (boton "Crear Orden de Compra con seleccionados"), el modulo de
+        // Compras puede ya estar cargado en memoria desde antes -- en ese
+        // caso su propio setTimeout inicial NO se vuelve a ejecutar al
+        // simplemente cambiar de pestana, asi que se llama aqui de forma
+        // explicita cada vez que se entra a esta vista.
+        if (typeof window.compras_AplicarPreseleccionDesdeRequisiciones === 'function') {
+          setTimeout(window.compras_AplicarPreseleccionDesdeRequisiciones, 700);
+        }
+      }
+    }
+
+    window.alCambiarSwitchGlobalLicencia = function(esProActivo) {
+      erpLicenciaProActiva = esProActivo;
+      localStorage.setItem('erp_licencia_pro', esProActivo);
+      
+      if (typeof window.actualizarModuloVentasPorLicencia === 'function') {
+        window.actualizarModuloVentasPorLicencia(esProActivo);
+      }
+      if (typeof window.actualizarModuloClientesPorLicencia === 'function') {
+        window.actualizarModuloClientesPorLicencia(esProActivo);
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const estadoRealAlCargar = localStorage.getItem('erp_licencia_pro') === 'true';
+      console.log("[Index] Aplicando estado de licencia real en el arranque:", estadoRealAlCargar ? "PRO" : "ESTANDAR");
+
+      setTimeout(function() {
+        if (typeof window.actualizarModuloClientesPorLicencia === 'function') {
+          window.actualizarModuloClientesPorLicencia(estadoRealAlCargar);
+        }
+
+        if (typeof window.actualizarModuloVentasPorLicencia === 'function') {
+          window.actualizarModuloVentasPorLicencia(estadoRealAlCargar);
+        }
+
+        const checkboxLicencia = document.querySelector('.switch input[type="checkbox"]') || document.getElementById('tu-switch-id');
+        if (checkboxLicencia) {
+          checkboxLicencia.checked = estadoRealAlCargar;
+        }
+      }, 400);
+    });
+</script>
+
+  <?!= include('LogicaScripts'); ?>
+
+  <!-- ==========================================================================
+       UI HELPERS DEL ERP (Toast / Confirm / Prompt propios, sin ventanas del navegador)
+       Se incluye al final para garantizar que sus elementos del DOM existan
+       antes de que cualquier modulo intente usar window.erpToast / erpConfirm / erpPrompt.
+       ========================================================================== -->
+  <?!= include('UIHelpers'); ?>
+
+</body>
+</html>
