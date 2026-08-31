@@ -1,0 +1,963 @@
+<div style="display: flex; flex-direction: column; gap: 25px; width: 100%; box-sizing: border-box;">
+
+  <div class="erp-main-card">
+    <div class="erp-card-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; flex-wrap: wrap; gap: 12px;">
+      <h3 style="margin: 0;">
+        <i class="fa-solid fa-list-check" style="color: var(--accent);"></i> Requisiciones de Compra
+
+      </h3>
+      <div style="display: inline-flex; align-items: center; gap: 8px;">
+        <span id="req-info-modo-estandar" style="display: inline-block; cursor: help; color: #64748b; font-size: 14px;" title="Especificaciones de la Licencia Activa: Seguimiento de estado por ítem (Pendiente de Compra, Comprado, Recibido) con visibilidad de la orden de compra asociada.">
+          <i class="fa-solid fa-circle-info"></i>
+        </span>
+        <div id="req-badge-modo-pro" style="display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; border: 1px solid #cbd5e1; background: #f1f5f9; color: #64748b;">
+          MODULO ESTANDAR
+        </div>
+      </div>
+    </div>
+
+    <div class="erp-card-body" style="padding-top: 16px; box-sizing: border-box;">
+      <div style="display: flex; justify-content: flex-end; margin-bottom: 14px;">
+        <button type="button" onclick="window.req_AbrirModalNueva()" style="height: 40px; padding: 0 16px; background: var(--accent); color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+          <i class="fa-solid fa-plus"></i> Nueva Requisición
+        </button>
+      </div>
+      <span style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 14px;">Aquí solicitas lo que necesitas comprar, sin precios ni proveedor. El departamento de Compras se encarga de cotizar y ordenar.</span>
+
+      <!-- FILTROS -->
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; align-items: center;">
+        <div style="position: relative; flex:1; min-width:200px; box-sizing: border-box;">
+          <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 13px;"></i>
+          <input type="text" id="req-filtro-texto" placeholder="Buscar por N° requisición, ítem, solicitante..." oninput="window.req_AplicarFiltros()" style="padding-left: 38px; border-radius: 50px; background: #ffffff; border: 1px solid #cbd5e1; height: 38px; font-size: 12px; color: #334155; box-sizing: border-box; width: 100%;">
+        </div>
+        <select id="req-filtro-departamento" onchange="window.req_AplicarFiltros()" style="height: 38px; padding: 0 10px; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; font-size: 12px;">
+          <option value="">Todos los departamentos</option>
+        </select>
+        <select id="req-filtro-categoria" onchange="window.req_AplicarFiltros()" style="height: 38px; padding: 0 10px; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; font-size: 12px;">
+          <option value="">Todas las categorías</option>
+        </select>
+        <select id="req-filtro-estado" onchange="window.req_AplicarFiltros()" style="height: 38px; padding: 0 10px; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; font-size: 12px;">
+          <option value="">Todos los estados</option>
+          <option value="Pendiente">Pendiente</option>
+          <option value="Convertida a Orden">Convertida a Orden</option>
+          <option value="Cancelada">Cancelada</option>
+        </select>
+        <input type="date" id="req-filtro-fecha" onchange="window.req_AplicarFiltros()" style="height: 38px; padding: 0 10px; border-radius: 6px; border: 1px solid #cbd5e1; box-sizing: border-box;">
+      </div>
+
+      <!-- BARRA DE ACCION POR SELECCION -->
+      <div id="req-barra-seleccion" style="display:none; align-items:center; justify-content:space-between; gap:10px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:10px 16px; margin-bottom:16px; flex-wrap:wrap;">
+        <span id="req-contador-seleccion" style="font-size:12px; font-weight:600; color:#1e40af;">0 ítems seleccionados</span>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button type="button" id="req-btn-cotizar-seleccion" style="display:none; height:36px; padding:0 16px; background:#ffffff; color:#1e40af; border:1px solid #bfdbfe; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-paper-plane"></i> Cotizar con Proveedores
+          </button>
+          <button type="button" id="req-btn-crear-orden-seleccion" style="height:36px; padding:0 16px; background:var(--accent); color:white; border:none; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-file-invoice"></i> Crear Orden de Compra con seleccionados
+          </button>
+        </div>
+      </div>
+
+      <div id="req-lista" style="display: flex; flex-direction: column; gap: 10px;"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL: NUEVA REQUISICION -->
+<dialog id="req-modal-nueva" class="modal-dialog-erp" style="max-width: 520px !important;">
+  <div style="display: flex; justify-content: space-between; align-items: center; background: var(--accent); padding: 14px 20px; color: #ffffff;">
+    <h4 style="margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 8px;">
+      <i class="fa-solid fa-list-check"></i> Nueva Requisición
+    </h4>
+    <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px; color: rgba(255,255,255,0.8);" onclick="this.closest('dialog').close()"></i>
+  </div>
+  <div style="padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px;">
+    <div style="display: flex; flex-direction: column; gap: 6px; position: relative;">
+      <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Departamento que solicita:</span>
+      <input type="text" id="req-buscador-departamento" placeholder="Escribe para buscar..." autocomplete="off" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; box-sizing: border-box; font-size: 13px;">
+      <input type="hidden" id="req-departamento">
+      <div id="req-sugerencias-departamento" style="display:none; position:absolute; top:64px; left:0; right:0; background:white; border:1px solid var(--border); border-radius:8px; max-height:180px; overflow-y:auto; z-index:50; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15);"></div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px; position: relative;">
+      <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Buscar producto / ítem:</span>
+      <input type="text" id="req-buscador-producto" placeholder="Escribe el nombre del producto..." autocomplete="off" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; box-sizing: border-box; font-size: 13px;">
+      <div id="req-sugerencias-producto" style="display:none; position:absolute; top:64px; left:0; right:0; background:white; border:1px solid var(--border); border-radius:8px; max-height:220px; overflow-y:auto; z-index:50; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15);"></div>
+    </div>
+
+    <div id="req-item-pendiente" style="display:none; align-items:center; gap:8px; flex-wrap:wrap; background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:10px 12px;">
+      <span id="req-item-pendiente-nombre" style="font-size:12px; font-weight:600; color:#1e293b; flex:1; min-width:140px;"></span>
+      <input type="number" id="req-cantidad" min="1" value="1" placeholder="Cant." style="width: 64px; height: 36px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 8px; box-sizing: border-box; font-size:12px;">
+      <input type="text" id="req-comentario-item" placeholder="Comentario (opcional)" style="flex:1; min-width:140px; height: 36px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; font-size: 12px;">
+      <button type="button" id="req-btn-agregar-item" style="width: 40px; height: 36px; min-width: 40px; flex-shrink: 0; background: var(--accent); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-plus"></i></button>
+    </div>
+
+    <div id="req-items-agregados" style="display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto;">
+      <div style="text-align:center; color:#94a3b8; padding:14px; font-size:12px;">Agrega los ítems que necesitas solicitar.</div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Notas (opcional):</span>
+      <input type="text" id="req-notas" class="form-control-erp" style="height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; width: 100%;">
+    </div>
+    <button type="button" id="req-btn-guardar" style="height: 42px; background: var(--accent); color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;"><i class="fa-solid fa-floppy-disk"></i> Crear Requisición</button>
+  </div>
+</dialog>
+
+<!-- MODAL: COTIZAR CON PROVEEDORES -->
+<dialog id="req-modal-cotizar" class="modal-dialog-erp" style="max-width: 460px !important;">
+  <div style="display: flex; justify-content: space-between; align-items: center; background: var(--accent); padding: 14px 20px; color: #ffffff;">
+    <h4 style="margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 8px;">
+      <i class="fa-solid fa-paper-plane"></i> Cotizar con Proveedores
+    </h4>
+    <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px; color: rgba(255,255,255,0.8);" onclick="this.closest('dialog').close()"></i>
+  </div>
+  <div style="padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px;">
+    <span style="font-size: 11px; color: #94a3b8;">Se enviará un solo correo a todos los proveedores seleccionados, cada uno en copia oculta (no se ven entre sí). El correo solo lleva texto, sin precios ni adjuntos.</span>
+    <div id="cotizar-items-resumen" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:10px 12px; font-size:12px; color:#475569; max-height:120px; overflow-y:auto;"></div>
+    <div style="display: flex; flex-direction: column; gap: 6px; position: relative;">
+      <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Buscar proveedores por nombre o categoría:</span>
+      <input type="text" id="cotizar-buscador-proveedor" placeholder="Escribe para buscar..." autocomplete="off" style="height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; box-sizing: border-box; font-size:13px;">
+      <div id="cotizar-sugerencias-proveedor" style="display:none; position:absolute; top:62px; left:0; right:0; background:white; border:1px solid var(--border); border-radius:8px; max-height:200px; overflow-y:auto; z-index:50; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15);"></div>
+      <div id="cotizar-proveedores-lista" style="display: flex; flex-wrap: wrap; gap: 6px; min-height: 20px;"></div>
+    </div>
+    <button type="button" id="cotizar-btn-enviar" style="height: 42px; background: var(--accent); color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;"><i class="fa-solid fa-paper-plane"></i> Enviar Cotización</button>
+
+    <div id="cotizar-whatsapp-seccion" style="display:none; border-top: 1px solid #f1f5f9; padding-top: 14px; flex-direction: column; gap: 10px;">
+      <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; display:flex; align-items:center; gap:6px;">
+        <i class="fa-brands fa-whatsapp" style="color:#16a34a;"></i> Enviar por WhatsApp
+        <span style="background:#deff9a; color:#000000; border:1px solid #b4e63b; font-size:9px; font-weight:700; padding:1px 6px; border-radius:8px;">PRO</span>
+      </span>
+      <span style="font-size: 10px; color: #94a3b8;">WhatsApp abre un chat por proveedor a la vez. Da clic en cada uno para abrir su conversación con el mensaje ya escrito.</span>
+      <div id="cotizar-whatsapp-lista" style="display: flex; flex-direction: column; gap: 6px; max-height: 180px; overflow-y: auto;"></div>
+    </div>
+  </div>
+</dialog>
+
+<!-- MODAL: ELIMINAR -->
+<dialog id="req-modal-eliminar" class="modal-dialog-erp" style="max-width: 420px !important;">
+  <div style="display: flex; justify-content: space-between; align-items: center; background: #b91c1c; padding: 14px 20px; color: #ffffff;">
+    <h4 style="margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 8px;">
+      <i class="fa-solid fa-trash-can"></i> Eliminar Requisición
+    </h4>
+    <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px; color: rgba(255,255,255,0.8);" onclick="this.closest('dialog').close()"></i>
+  </div>
+  <div style="padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px;">
+    <input type="hidden" id="elim-id-requisicion">
+    <span style="font-size: 12px; color: #475569;">¿Qué deseas eliminar?</span>
+    <button type="button" id="elim-btn-completa" style="height: 44px; background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; text-align:left; padding:0 14px;">
+      <i class="fa-solid fa-folder-minus"></i> Eliminar la requisición completa
+    </button>
+    <button type="button" id="elim-btn-solo-cancelados" style="height: 44px; background: #ffffff; color: #475569; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; text-align:left; padding:0 14px;">
+      <i class="fa-solid fa-broom"></i> Eliminar solo los ítems cancelados
+    </button>
+  </div>
+</dialog>
+
+<!-- MODAL: CANCELAR ITEMS -->
+<dialog id="req-modal-cancelar" class="modal-dialog-erp" style="max-width: 460px !important;">
+  <div style="display: flex; justify-content: space-between; align-items: center; background: #ef4444; padding: 14px 20px; color: #ffffff;">
+    <h4 style="margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 8px;">
+      <i class="fa-solid fa-ban"></i> Cancelar Ítems
+    </h4>
+    <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px; color: rgba(255,255,255,0.8);" onclick="this.closest('dialog').close()"></i>
+  </div>
+  <div style="padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px;">
+    <input type="hidden" id="cancel-id-requisicion">
+    <span style="font-size: 11px; color: #94a3b8;">Selecciona los ítems que deseas cancelar de esta requisición:</span>
+    <div id="cancel-items-lista" style="display: flex; flex-direction: column; gap: 6px; max-height: 220px; overflow-y: auto;"></div>
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Motivo de cancelación:</span>
+      <input type="text" id="cancel-motivo" placeholder="Ej. Ya no se necesita, error en la solicitud..." class="form-control-erp" style="height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; width: 100%;">
+    </div>
+    <button type="button" id="cancel-btn-confirmar" style="height: 42px; background: #ef4444; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;"><i class="fa-solid fa-ban"></i> Confirmar Cancelación</button>
+  </div>
+</dialog>
+
+<style>
+  .modal-dialog-erp {
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 460px !important;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25) !important;
+    background: #f8fafc !important;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    margin: 0 !important;
+  }
+  .modal-dialog-erp::backdrop {
+    background: rgba(15, 23, 42, 0.45) !important;
+    backdrop-filter: blur(2px) !important;
+  }
+</style>
+
+<script>
+(function() {
+  // Guardia global: si este script se ejecuta mas de una vez en la misma
+  // pagina (por cualquier causa -- cache de Apps Script, render duplicado,
+  // etc.), la segunda ejecucion se detiene aqui mismo. Esto evita que se
+  // registren listeners de clic duplicados, que era la causa real de que
+  // un solo clic disparara la accion dos veces.
+  if (window.__erp_req_inicializado) {
+    console.log("Core-Requisiciones: ejecucion duplicada detectada y bloqueada.");
+    return;
+  }
+  window.__erp_req_inicializado = true;
+
+  console.log("Core-Requisiciones: script inicializado correctamente.");
+
+  let REQUISICIONES_LOCAL = [];
+  let TODAS_LAS_VARIANTES_REQ = []; // { sku, descripcion, categoria }
+  let DEPARTAMENTOS_REQ = [];
+  let PROVEEDORES_REQ = [];
+  let PERFIL_ACTUAL_REQ = { permisos: {} };
+  let itemsRequisicionTemp = [];
+  let requisicionesLicenciaPro = false;
+  let itemsSeleccionados = {}; // { "idRequisicion|sku": {idRequisicion, sku, descripcion, cantidad} }
+
+  setTimeout(() => {
+    inicializarEventosReq();
+    sincronizarLicenciaLocal();
+    window.req_CargarDatos();
+  }, 50);
+
+  function inicializarEventosReq() {
+    const btnAgregar = document.getElementById('req-btn-agregar-item');
+    if (btnAgregar) btnAgregar.addEventListener('click', () => window.req_AgregarItem());
+
+    const btnGuardar = document.getElementById('req-btn-guardar');
+    if (btnGuardar) btnGuardar.addEventListener('click', () => window.req_Guardar());
+
+    const buscadorDepto = document.getElementById('req-buscador-departamento');
+    if (buscadorDepto) buscadorDepto.addEventListener('input', () => window.req_BuscarDepartamento(buscadorDepto.value));
+
+    const buscadorProd = document.getElementById('req-buscador-producto');
+    if (buscadorProd) buscadorProd.addEventListener('input', () => window.req_BuscarProducto(buscadorProd.value));
+
+    const buscadorProvCotizar = document.getElementById('cotizar-buscador-proveedor');
+    if (buscadorProvCotizar) buscadorProvCotizar.addEventListener('input', () => window.req_BuscarProveedorCotizar(buscadorProvCotizar.value));
+
+    document.addEventListener('click', function(e) {
+      if (e.target.id !== 'req-buscador-departamento') {
+        const contDepto = document.getElementById('req-sugerencias-departamento');
+        if (contDepto) contDepto.style.display = 'none';
+      }
+      if (e.target.id !== 'req-buscador-producto') {
+        const contProd = document.getElementById('req-sugerencias-producto');
+        if (contProd) contProd.style.display = 'none';
+      }
+      if (e.target.id !== 'cotizar-buscador-proveedor') {
+        const contProv = document.getElementById('cotizar-sugerencias-proveedor');
+        if (contProv) contProv.style.display = 'none';
+      }
+    });
+
+    const btnCrearOrdenSeleccion = document.getElementById('req-btn-crear-orden-seleccion');
+    if (btnCrearOrdenSeleccion) btnCrearOrdenSeleccion.addEventListener('click', () => window.req_CrearOrdenConSeleccionados());
+
+    const btnConfirmarCancelacion = document.getElementById('cancel-btn-confirmar');
+    if (btnConfirmarCancelacion) btnConfirmarCancelacion.addEventListener('click', () => window.req_ConfirmarCancelacion());
+
+    const btnCotizarSeleccion = document.getElementById('req-btn-cotizar-seleccion');
+    if (btnCotizarSeleccion) btnCotizarSeleccion.addEventListener('click', () => window.req_AbrirModalCotizar());
+
+    const btnEnviarCotizacion = document.getElementById('cotizar-btn-enviar');
+    if (btnEnviarCotizacion) btnEnviarCotizacion.addEventListener('click', () => window.req_EnviarCotizacion());
+
+    const btnElimCompleta = document.getElementById('elim-btn-completa');
+    if (btnElimCompleta) btnElimCompleta.addEventListener('click', () => window.req_ConfirmarEliminacion('completa'));
+
+    const btnElimSoloCancelados = document.getElementById('elim-btn-solo-cancelados');
+    if (btnElimSoloCancelados) btnElimSoloCancelados.addEventListener('click', () => window.req_ConfirmarEliminacion('items_cancelados'));
+  }
+
+  function sincronizarLicenciaLocal() {
+    const estadoFresco = localStorage.getItem('erp_licencia_pro') === 'true';
+    window.actualizarModuloRequisicionesPorLicencia(estadoFresco);
+  }
+
+  window.actualizarModuloRequisicionesPorLicencia = function(esPro) {
+    try {
+      requisicionesLicenciaPro = (esPro === true || esPro === "true");
+      const badge = document.getElementById('req-badge-modo-pro');
+      const infoIcon = document.getElementById('req-info-modo-estandar');
+      const btnCotizar = document.getElementById('req-btn-cotizar-seleccion');
+
+      if (requisicionesLicenciaPro) {
+        if (badge) {
+          badge.style.display = 'inline-block';
+          badge.innerHTML = '<i class="fa-solid fa-star"></i> MODULO PRO ACTIVO';
+          badge.style.background = "#deff9a";
+          badge.style.color = "#000000";
+          badge.style.borderColor = "#b4e63b";
+        }
+        if (infoIcon) infoIcon.style.display = 'none';
+        if (btnCotizar) btnCotizar.style.display = 'inline-flex';
+      } else {
+        if (badge) {
+          badge.style.display = 'inline-block';
+          badge.innerHTML = 'MODULO ESTANDAR';
+          badge.style.background = "#f1f5f9";
+          badge.style.color = "#64748b";
+          badge.style.borderColor = "#cbd5e1";
+        }
+        if (infoIcon) infoIcon.style.display = 'inline-block';
+        if (btnCotizar) btnCotizar.style.display = 'none';
+      }
+      renderizarListaReq();
+    } catch (e) {
+      console.error("Error en actualizacion de licencia (Requisiciones):", e.message);
+    }
+  };
+
+  window.req_CargarDatos = function() {
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+
+    google.script.run
+      .withSuccessHandler(function(reqs) {
+        REQUISICIONES_LOCAL = reqs || [];
+        poblarFiltroDepartamentoLista();
+        renderizarListaReq();
+      })
+      .obtenerRequisicionesServidor();
+
+    google.script.run
+      .withSuccessHandler(function(deptos) {
+        DEPARTAMENTOS_REQ = deptos || [];
+      })
+      .obtenerDepartamentosServidor();
+
+    // Catalogo COMPLETO: Producto, Insumo, Servicio y Produccion -- no solo lo
+    // que controla stock en bodega, ya que un solicitante puede pedir cualquiera.
+    google.script.run
+      .withSuccessHandler(function(catalogo) {
+        TODAS_LAS_VARIANTES_REQ = [];
+        (catalogo || []).forEach(p => (p.variantes || []).forEach(v => {
+          TODAS_LAS_VARIANTES_REQ.push({ sku: v.sku, descripcion: p.nombre + ' - ' + (v.etiqueta || 'Estandar'), categoria: p.categoria || 'General', tipoFiscal: (p.tipo === 'Servicio') ? 'Servicios' : 'Bienes' });
+        }));
+        poblarFiltroCategoria();
+      })
+      .obtenerCatalogoParaRequisicionesServidor();
+
+    google.script.run
+      .withSuccessHandler(function(provs) { PROVEEDORES_REQ = provs || []; })
+      .obtenerProveedoresServidor();
+
+    google.script.run
+      .withSuccessHandler(function(perfil) { PERFIL_ACTUAL_REQ = perfil || { permisos: {} }; renderizarListaReq(); })
+      .obtenerPerfilActualServidor();
+  };
+
+  function poblarFiltroDepartamentoLista() {
+    const select = document.getElementById('req-filtro-departamento');
+    if (!select) return;
+    const valorActual = select.value;
+    const departamentosUsados = [...new Set(REQUISICIONES_LOCAL.map(r => r.departamento).filter(Boolean))].sort();
+    select.innerHTML = '<option value="">Todos los departamentos</option>';
+    departamentosUsados.forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d;
+      opt.innerText = d;
+      select.appendChild(opt);
+    });
+    if (valorActual) select.value = valorActual;
+  }
+
+  function poblarFiltroCategoria() {
+    const select = document.getElementById('req-filtro-categoria');
+    if (!select) return;
+    const categorias = [...new Set(TODAS_LAS_VARIANTES_REQ.map(v => v.categoria))].sort();
+    const valorActual = select.value;
+    select.innerHTML = '<option value="">Todas las categorías</option>';
+    categorias.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.innerText = c;
+      select.appendChild(opt);
+    });
+    if (valorActual) select.value = valorActual;
+  }
+
+  // ==========================================================================
+  // CREAR REQUISICION — buscadores tipo autocompletar
+  // ==========================================================================
+  let itemSeleccionadoTemp = null; // { sku, descripcion } del producto elegido en el buscador, en espera de cantidad/comentario
+  let proveedoresSeleccionadosCotizar = []; // [{ nombre, correo, whatsapp }] elegidos en el buscador del modal de Cotizar
+
+  window.req_AbrirModalNueva = function() {
+    itemsRequisicionTemp = [];
+    itemSeleccionadoTemp = null;
+    document.getElementById('req-departamento').value = '';
+    document.getElementById('req-buscador-departamento').value = '';
+    document.getElementById('req-buscador-producto').value = '';
+    document.getElementById('req-cantidad').value = '1';
+    document.getElementById('req-comentario-item').value = '';
+    document.getElementById('req-notas').value = '';
+    document.getElementById('req-item-pendiente').style.display = 'none';
+    pintarItemsTemp();
+    document.getElementById('req-modal-nueva').showModal();
+  };
+
+  window.req_BuscarDepartamento = function(texto) {
+    const cont = document.getElementById('req-sugerencias-departamento');
+    if (!cont) return;
+    const filtro = (texto || '').toLowerCase().trim();
+    if (!filtro) { cont.style.display = 'none'; return; }
+
+    const coincidencias = DEPARTAMENTOS_REQ.filter(d => d.toLowerCase().includes(filtro));
+    if (coincidencias.length === 0) {
+      cont.innerHTML = '<div style="padding:12px; color:#94a3b8; font-size:12px; text-align:center;">Sin coincidencias.</div>';
+      cont.style.display = 'block';
+      return;
+    }
+
+    cont.innerHTML = '';
+    coincidencias.forEach(d => {
+      const div = document.createElement('div');
+      div.style.cssText = "padding:10px 14px; cursor:pointer; border-bottom:1px solid #f1f5f9; font-size:13px; color:#1e293b;";
+      div.innerText = d;
+      div.addEventListener('click', () => {
+        document.getElementById('req-departamento').value = d;
+        document.getElementById('req-buscador-departamento').value = d;
+        cont.style.display = 'none';
+      });
+      cont.appendChild(div);
+    });
+    cont.style.display = 'block';
+  };
+
+  window.req_BuscarProducto = function(texto) {
+    const cont = document.getElementById('req-sugerencias-producto');
+    if (!cont) return;
+    const filtro = (texto || '').toLowerCase().trim();
+    if (!filtro) { cont.style.display = 'none'; return; }
+
+    const coincidencias = TODAS_LAS_VARIANTES_REQ.filter(v => v.descripcion.toLowerCase().includes(filtro));
+    if (coincidencias.length === 0) {
+      cont.innerHTML = '<div style="padding:12px; color:#94a3b8; font-size:12px; text-align:center;">Sin resultados.</div>';
+      cont.style.display = 'block';
+      return;
+    }
+
+    cont.innerHTML = '';
+    coincidencias.slice(0, 8).forEach(v => {
+      const div = document.createElement('div');
+      div.style.cssText = "padding:10px 14px; cursor:pointer; border-bottom:1px solid #f1f5f9; font-size:13px; color:#1e293b;";
+      div.innerText = v.descripcion;
+      div.addEventListener('click', () => {
+        itemSeleccionadoTemp = { sku: v.sku, descripcion: v.descripcion };
+        document.getElementById('req-item-pendiente-nombre').innerText = v.descripcion;
+        document.getElementById('req-item-pendiente').style.display = 'flex';
+        document.getElementById('req-cantidad').value = '1';
+        document.getElementById('req-comentario-item').value = '';
+        document.getElementById('req-buscador-producto').value = '';
+        cont.style.display = 'none';
+      });
+      cont.appendChild(div);
+    });
+    cont.style.display = 'block';
+  };
+
+  window.req_AgregarItem = function() {
+    if (!itemSeleccionadoTemp) { window.erpToast("Busca y selecciona un producto primero.", "error"); return; }
+    const cantidad = parseFloat(document.getElementById('req-cantidad').value) || 0;
+    const comentario = document.getElementById('req-comentario-item').value.trim();
+    if (cantidad <= 0) { window.erpToast("Ingresa una cantidad mayor a cero.", "error"); return; }
+
+    itemsRequisicionTemp.push({ sku: itemSeleccionadoTemp.sku, descripcion: itemSeleccionadoTemp.descripcion, cantidad: cantidad, comentario: comentario });
+
+    itemSeleccionadoTemp = null;
+    document.getElementById('req-item-pendiente').style.display = 'none';
+    pintarItemsTemp();
+  };
+
+  function pintarItemsTemp() {
+    const cont = document.getElementById('req-items-agregados');
+    cont.innerHTML = '';
+    if (itemsRequisicionTemp.length === 0) {
+      cont.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:14px; font-size:12px;">Agrega los ítems que necesitas solicitar.</div>';
+      return;
+    }
+    itemsRequisicionTemp.forEach((it, idx) => {
+      const comentarioHtml = it.comentario ? ('<br><span style="font-size:10px; color:#94a3b8; font-style:italic;">"' + it.comentario + '"</span>') : '';
+      const fila = document.createElement('div');
+      fila.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:#ffffff; border:1px solid #e2e8f0; border-radius:6px; padding:8px 12px;";
+      fila.innerHTML = '<span style="font-size:12px; color:#1e293b;">' + it.descripcion + ' <strong>x' + it.cantidad + '</strong>' + comentarioHtml + '</span><button type="button" style="background:#fee2e2; color:#b91c1c; border:none; width:24px; height:24px; border-radius:4px; cursor:pointer; font-size:10px; flex-shrink:0;"><i class="fa-solid fa-xmark"></i></button>';
+      fila.querySelector('button').addEventListener('click', () => { itemsRequisicionTemp.splice(idx, 1); pintarItemsTemp(); });
+      cont.appendChild(fila);
+    });
+  }
+
+  window.req_Guardar = function() {
+    const departamento = document.getElementById('req-departamento').value;
+    if (!departamento) { window.erpToast("Selecciona el departamento que solicita (de la lista que aparece al escribir).", "error"); return; }
+    if (itemsRequisicionTemp.length === 0) { window.erpToast("Agrega al menos un ítem.", "error"); return; }
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+
+    google.script.run
+      .withSuccessHandler(function(res) {
+        window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+        if (res.exito) { document.getElementById('req-modal-nueva').close(); window.req_CargarDatos(); }
+      })
+      .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+      .crearRequisicionServidor({ items: itemsRequisicionTemp, departamento: departamento, notas: document.getElementById('req-notas').value.trim() });
+  };
+
+  window.req_AbrirModalCancelar = function(idRequisicion) {
+    const req = REQUISICIONES_LOCAL.find(r => r.id === idRequisicion);
+    if (!req) return;
+
+    document.getElementById('cancel-id-requisicion').value = idRequisicion;
+    document.getElementById('cancel-motivo').value = '';
+
+    const cont = document.getElementById('cancel-items-lista');
+    cont.innerHTML = '';
+
+    const itemsCancelables = (req.items || []).filter(it => it.estadoItem !== 'Comprado' && it.estadoItem !== 'Recibido' && it.estadoItem !== 'Cancelado');
+
+    if (itemsCancelables.length === 0) {
+      cont.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:14px; font-size:12px;">No hay ítems pendientes para cancelar.</div>';
+    } else {
+      itemsCancelables.forEach(it => {
+        const fila = document.createElement('div');
+        fila.style.cssText = "display:flex; align-items:center; gap:8px; background:#ffffff; border:1px solid #e2e8f0; border-radius:6px; padding:8px 12px;";
+        fila.innerHTML =
+          '<input type="checkbox" class="cancel-chk-item" data-sku="' + it.sku + '" checked style="accent-color:#ef4444; width:16px; height:16px; cursor:pointer;">' +
+          '<span style="font-size:12px; color:#1e293b;">' + it.descripcion + ' <strong>x' + it.cantidad + '</strong></span>';
+        cont.appendChild(fila);
+      });
+    }
+
+    document.getElementById('req-modal-cancelar').showModal();
+  };
+
+  window.req_ConfirmarCancelacion = function() {
+    const idRequisicion = document.getElementById('cancel-id-requisicion').value;
+    const motivo = document.getElementById('cancel-motivo').value.trim();
+    const skus = Array.from(document.querySelectorAll('.cancel-chk-item:checked')).map(chk => chk.dataset.sku);
+
+    if (skus.length === 0) { window.erpToast("Selecciona al menos un ítem.", "error"); return; }
+    if (!motivo) { window.erpToast("Indica el motivo de la cancelación.", "error"); return; }
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+          if (res.exito) { document.getElementById('req-modal-cancelar').close(); window.req_CargarDatos(); }
+        })
+        .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+        .cancelarRequisicionServidor({ idRequisicion: idRequisicion, skus: skus, motivo: motivo });
+    }
+  };
+
+  // ==========================================================================
+  // ELIMINAR
+  // ==========================================================================
+  window.req_AbrirModalEliminar = function(idRequisicion) {
+    document.getElementById('elim-id-requisicion').value = idRequisicion;
+    document.getElementById('req-modal-eliminar').showModal();
+  };
+
+  window.req_ConfirmarEliminacion = async function(modo) {
+    const idRequisicion = document.getElementById('elim-id-requisicion').value;
+
+    const mensajeConfirmacion = modo === 'completa'
+      ? '¿Eliminar la requisición ' + idRequisicion + ' por completo? Esta acción no se puede deshacer.'
+      : '¿Eliminar solo los ítems cancelados de ' + idRequisicion + '? Esta acción no se puede deshacer.';
+
+    const confirmar = await window.erpConfirm(mensajeConfirmacion);
+    if (!confirmar) return;
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+          if (res.exito) { document.getElementById('req-modal-eliminar').close(); window.req_CargarDatos(); }
+        })
+        .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+        .eliminarRequisicionServidor({ idRequisicion: idRequisicion, modo: modo });
+    }
+  };
+
+  // ==========================================================================
+  // FILTROS
+  // ==========================================================================
+  window.req_AplicarFiltros = function() {
+    renderizarListaReq();
+  };
+
+  function obtenerCategoriaDeSku(sku) {
+    const v = TODAS_LAS_VARIANTES_REQ.find(v => v.sku === sku);
+    return v ? v.categoria : '';
+  }
+
+  // ==========================================================================
+  // SELECCION DE ITEMS PARA ORDEN MASIVA
+  // ==========================================================================
+  window.req_ToggleSeleccionItem = function(idRequisicion, sku, descripcion, cantidad, checked, bodegaOrigen) {
+    const clave = idRequisicion + '|' + sku;
+    if (checked) {
+      const variante = TODAS_LAS_VARIANTES_REQ.find(v => v.sku === sku);
+      itemsSeleccionados[clave] = {
+        idRequisicionOrigen: idRequisicion,
+        sku: sku,
+        skuOrigen: sku,
+        descripcion: descripcion,
+        cantidadOrdenada: cantidad,
+        tipoFiscal: variante ? variante.tipoFiscal : 'Bienes',
+        bodegaOrigen: bodegaOrigen || ''
+      };
+    } else {
+      delete itemsSeleccionados[clave];
+    }
+    actualizarBarraSeleccion();
+  };
+
+  function actualizarBarraSeleccion() {
+    const cantidad = Object.keys(itemsSeleccionados).length;
+    const barra = document.getElementById('req-barra-seleccion');
+    const contador = document.getElementById('req-contador-seleccion');
+    if (!barra || !contador) return;
+    barra.style.display = cantidad > 0 ? 'flex' : 'none';
+    contador.innerText = cantidad + ' ítem' + (cantidad === 1 ? '' : 's') + ' seleccionado' + (cantidad === 1 ? '' : 's');
+  }
+
+  window.req_CrearOrdenConSeleccionados = function() {
+    const items = Object.values(itemsSeleccionados);
+    if (items.length === 0) { window.erpToast("Selecciona al menos un ítem.", "error"); return; }
+
+    // Guarda la preseleccion para que el modulo de Compras la recoja al
+    // cargar -- se lee una sola vez y se limpia de inmediato para no
+    // reaplicarse en cargas futuras del modulo.
+    try {
+      sessionStorage.setItem('erp_orden_prellenada', JSON.stringify(items));
+    } catch(e) {}
+
+    itemsSeleccionados = {};
+    actualizarBarraSeleccion();
+    renderizarListaReq();
+
+    // Navega directamente al modulo de Compras (misma pestana del menu
+    // lateral, sin abrir nada nuevo) -- switchView vive en el Index.html
+    // que envuelve a todos los modulos.
+    if (typeof window.switchView === 'function') {
+      const botonCompras = document.querySelector('.menu-btn[onclick*="\'compras\'"]');
+      window.switchView('compras', botonCompras);
+    } else {
+      window.erpToast("Selección lista. Ve al módulo de Compras para continuar.", "info");
+    }
+  };
+
+  window.req_AbrirModalCotizar = function() {
+    const items = Object.values(itemsSeleccionados);
+    if (items.length === 0) { window.erpToast("Selecciona al menos un ítem.", "error"); return; }
+
+    const resumen = document.getElementById('cotizar-items-resumen');
+    resumen.innerHTML = items.map(it => '• ' + it.descripcion + ' <strong>x' + it.cantidadOrdenada + '</strong>').join('<br>');
+
+    proveedoresSeleccionadosCotizar = [];
+    document.getElementById('cotizar-buscador-proveedor').value = '';
+    pintarChipsProveedoresCotizar();
+
+    document.getElementById('req-modal-cotizar').showModal();
+  };
+
+  window.req_BuscarProveedorCotizar = function(texto) {
+    const cont = document.getElementById('cotizar-sugerencias-proveedor');
+    if (!cont) return;
+    const filtro = (texto || '').toLowerCase().trim();
+    if (!filtro) { cont.style.display = 'none'; return; }
+
+    const correosYaElegidos = proveedoresSeleccionadosCotizar.map(p => p.correo || '');
+    const coincidencias = PROVEEDORES_REQ.filter(p => {
+      if (correosYaElegidos.includes(p.correo || '') && p.correo) return false;
+      const coincideNombre = (p.nombre || '').toLowerCase().includes(filtro);
+      const coincideCategoria = (p.categorias || []).some(c => c.toLowerCase().includes(filtro));
+      return coincideNombre || coincideCategoria;
+    });
+
+    if (coincidencias.length === 0) {
+      cont.innerHTML = '<div style="padding:12px; color:#94a3b8; font-size:12px; text-align:center;">Sin coincidencias.</div>';
+      cont.style.display = 'block';
+      return;
+    }
+
+    cont.innerHTML = '';
+    coincidencias.slice(0, 8).forEach(p => {
+      const categoriasTxt = (p.categorias || []).join(', ');
+      const div = document.createElement('div');
+      div.style.cssText = "padding:10px 14px; cursor:pointer; border-bottom:1px solid #f1f5f9; font-size:13px; color:#1e293b;";
+      div.innerHTML = p.nombre + (categoriasTxt ? ' <span style="font-size:10px; color:#94a3b8;">(' + categoriasTxt + ')</span>' : '');
+      div.addEventListener('click', () => {
+        proveedoresSeleccionadosCotizar.push({ nombre: p.nombre, correo: p.correo || '', whatsapp: p.whatsapp || '' });
+        pintarChipsProveedoresCotizar();
+        document.getElementById('cotizar-buscador-proveedor').value = '';
+        cont.style.display = 'none';
+      });
+      cont.appendChild(div);
+    });
+    cont.style.display = 'block';
+  };
+
+  function pintarChipsProveedoresCotizar() {
+    const cont = document.getElementById('cotizar-proveedores-lista');
+    if (!cont) return;
+    cont.innerHTML = '';
+
+    if (proveedoresSeleccionadosCotizar.length === 0) {
+      cont.innerHTML = '<span style="font-size:11px; color:#94a3b8;">Aún no has seleccionado proveedores.</span>';
+    } else {
+      proveedoresSeleccionadosCotizar.forEach(p => {
+        const chip = document.createElement('span');
+        chip.style.cssText = "display:inline-flex; align-items:center; gap:6px; background:#eff6ff; color:#1e40af; border:1px solid #bfdbfe; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;";
+        chip.innerHTML = p.nombre + ' <i class="fa-solid fa-xmark" style="cursor:pointer; color:#ef4444; font-size:10px;"></i>';
+        chip.querySelector('.fa-xmark').addEventListener('click', () => {
+          proveedoresSeleccionadosCotizar = proveedoresSeleccionadosCotizar.filter(sel => sel.nombre !== p.nombre);
+          pintarChipsProveedoresCotizar();
+        });
+        cont.appendChild(chip);
+      });
+    }
+
+    actualizarSeccionWhatsappCotizar();
+  }
+
+  /**
+   * Seccion WhatsApp: solo disponible con licencia PRO, y solo muestra a los
+   * proveedores que YA fueron seleccionados arriba en el buscador (no a
+   * todos los que tengan whatsapp registrado). Cada uno obtiene su propio
+   * link wa.me porque WhatsApp no permite enviar a varios a la vez como el
+   * correo en BCC.
+   */
+  function actualizarSeccionWhatsappCotizar() {
+    const seccionWhatsapp = document.getElementById('cotizar-whatsapp-seccion');
+    const listaWhatsapp = document.getElementById('cotizar-whatsapp-lista');
+    if (!seccionWhatsapp || !listaWhatsapp) return;
+
+    if (!requisicionesLicenciaPro) {
+      seccionWhatsapp.style.display = 'none';
+      return;
+    }
+    seccionWhatsapp.style.display = 'flex';
+
+    const items = Object.values(itemsSeleccionados);
+    const mensaje = construirMensajeCotizacionTexto(items);
+    const seleccionadosConWhatsapp = proveedoresSeleccionadosCotizar.filter(p => p.whatsapp && p.whatsapp.trim() !== '');
+
+    listaWhatsapp.innerHTML = '';
+    if (proveedoresSeleccionadosCotizar.length === 0) {
+      listaWhatsapp.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:10px; font-size:11px;">Selecciona proveedores arriba para ver sus opciones de WhatsApp.</div>';
+      return;
+    }
+    if (seleccionadosConWhatsapp.length === 0) {
+      listaWhatsapp.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:10px; font-size:11px;">Ninguno de los proveedores seleccionados tiene WhatsApp registrado.</div>';
+      return;
+    }
+
+    seleccionadosConWhatsapp.forEach(p => {
+      const numeroLimpio = p.whatsapp.toString().replace(/[^0-9]/g, '');
+      const urlWhatsapp = 'https://wa.me/' + numeroLimpio + '?text=' + encodeURIComponent(mensaje);
+      const fila = document.createElement('div');
+      fila.style.cssText = "display:flex; justify-content:space-between; align-items:center; gap:8px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:6px; padding:8px 12px;";
+      fila.innerHTML =
+        '<span style="font-size:12px; color:#1e293b;">' + p.nombre + ' <span style="color:#94a3b8;">(' + p.whatsapp + ')</span></span>' +
+        '<a href="' + urlWhatsapp + '" target="_blank" style="background:#16a34a; color:#ffffff; border:none; border-radius:6px; padding:6px 12px; font-size:11px; font-weight:600; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center; gap:6px;"><i class="fa-brands fa-whatsapp"></i> Abrir chat</a>';
+      listaWhatsapp.appendChild(fila);
+    });
+  }
+
+  /**
+   * Construye el texto plano del mensaje de cotizacion, reutilizable tanto
+   * para el preview visual como para el link de WhatsApp (que va URL-encoded).
+   */
+  function construirMensajeCotizacionTexto(items) {
+    const listaItems = items.map(it => '- ' + it.descripcion + ' (Cantidad: ' + it.cantidadOrdenada + ')').join('\n');
+    return 'Hola, solicitamos su cotización para los siguientes artículos:\n\n' + listaItems +
+      '\n\nAgradecemos nos indique precio unitario, tiempo de entrega y condiciones de pago.';
+  }
+
+  window.req_EnviarCotizacion = function() {
+    const correos = proveedoresSeleccionadosCotizar.map(p => p.correo).filter(c => c && c.trim() !== '');
+    if (correos.length === 0) { window.erpToast("Selecciona al menos un proveedor con correo registrado.", "error"); return; }
+
+    const items = Object.values(itemsSeleccionados).map(it => ({ descripcion: it.descripcion, cantidad: it.cantidadOrdenada }));
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+          if (res.exito) {
+            document.getElementById('req-modal-cotizar').close();
+            itemsSeleccionados = {};
+            actualizarBarraSeleccion();
+            renderizarListaReq();
+          }
+        })
+        .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+        .enviarCotizacionProveedoresServidor({ correosProveedores: correos, items: items });
+    }
+  };
+
+  // ==========================================================================
+  // RENDER PRINCIPAL
+  // ==========================================================================
+  function renderizarListaReq() {
+    const cont = document.getElementById('req-lista');
+    if (!cont) return;
+
+    const filtroTexto = (document.getElementById('req-filtro-texto').value || '').toLowerCase().trim();
+    const filtroDepto = document.getElementById('req-filtro-departamento').value;
+    const filtroCategoria = document.getElementById('req-filtro-categoria').value;
+    const filtroEstado = document.getElementById('req-filtro-estado').value;
+    const filtroFecha = document.getElementById('req-filtro-fecha').value;
+
+    const filtradas = REQUISICIONES_LOCAL.filter(r => {
+      if (filtroDepto && r.departamento !== filtroDepto) return false;
+      if (filtroEstado && r.estado !== filtroEstado) return false;
+      if (filtroFecha) {
+        const fechaReq = r.fecha ? new Date(r.fecha).toISOString().slice(0, 10) : '';
+        if (fechaReq !== filtroFecha) return false;
+      }
+      if (filtroCategoria) {
+        const tieneCategoria = (r.items || []).some(it => obtenerCategoriaDeSku(it.sku) === filtroCategoria);
+        if (!tieneCategoria) return false;
+      }
+      if (filtroTexto) {
+        // El texto puede coincidir con el solicitante/departamento de toda la
+        // requisicion, O con la descripcion de AL MENOS UN item (que es lo que
+        // luego se filtra item por item al pintar, mas abajo).
+        const coincideCabecera = (r.id + ' ' + r.solicitante + ' ' + (r.solicitanteNombre || '') + ' ' + r.departamento).toLowerCase().includes(filtroTexto);
+        const coincideAlgunItem = (r.items || []).some(it => it.descripcion.toLowerCase().includes(filtroTexto));
+        if (!coincideCabecera && !coincideAlgunItem) return false;
+      }
+      return true;
+    });
+
+    cont.innerHTML = '';
+    if (filtradas.length === 0) {
+      cont.innerHTML = '<div style="text-align:center; padding:30px; color:#94a3b8;">No hay requisiciones que coincidan con la búsqueda.</div>';
+      return;
+    }
+
+    const coloresEstado = {
+      'Pendiente': { bg: '#fef3c7', color: '#b45309' },
+      'Convertida a Orden': { bg: '#dcfce7', color: '#16a34a' },
+      'Cancelada': { bg: '#f1f5f9', color: '#94a3b8' }
+    };
+
+    const coloresEstadoItem = {
+      'Pendiente de Compra': { bg: '#fef3c7', color: '#b45309' },
+      'Pendiente': { bg: '#fef3c7', color: '#b45309' },
+      'Comprado Parcial': { bg: '#fef9c3', color: '#854d0e' },
+      'Comprado': { bg: '#dbeafe', color: '#1e40af' },
+      'Recibido': { bg: '#dcfce7', color: '#16a34a' },
+      'Cancelado': { bg: '#f1f5f9', color: '#94a3b8' }
+    };
+
+    filtradas.forEach(r => {
+      const estiloEstado = coloresEstado[r.estado] || coloresEstado['Pendiente'];
+
+      // Si hay texto de busqueda, dentro de esta tarjeta solo se muestran los
+      // items que coinciden (los demas se ocultan, sin perder la tarjeta entera
+      // si coincide el solicitante/departamento u otro item).
+      const itemsAMostrar = filtroTexto
+        ? (r.items || []).filter(it => it.descripcion.toLowerCase().includes(filtroTexto))
+        : (r.items || []);
+      const itemsParaMostrarFinal = itemsAMostrar.length > 0 ? itemsAMostrar : (r.items || []);
+
+      const itemsHtml = itemsParaMostrarFinal.map(it => {
+        const estadoActual = it.estadoItem || 'Pendiente de Compra';
+        const itemDisponible = estadoActual === 'Pendiente de Compra' || estadoActual === 'Pendiente';
+        const puedeSeleccionar = itemDisponible &&
+          (requisicionesLicenciaPro ? true : (r.estado === 'Pendiente' || r.estado === 'En Proceso' || r.estado === 'Convertida a Orden'));
+        const clave = r.id + '|' + it.sku;
+        const yaSeleccionado = !!itemsSeleccionados[clave];
+
+        const checkboxHtml = puedeSeleccionar
+          ? '<input type="checkbox" class="req-chk-item" data-id-req="' + r.id + '" data-sku="' + it.sku + '" data-desc="' + it.descripcion.replace(/"/g, '&quot;') + '" data-cant="' + it.cantidad + '" data-bodegaorigen="' + (it.bodegaOrigen || '') + '" ' + (yaSeleccionado ? 'checked' : '') + ' style="accent-color: var(--accent); width:16px; height:16px; cursor:pointer;">'
+          : '<span style="display:inline-block; width:16px;"></span>';
+
+        const comentarioHtml = it.comentario ? (' <span style="color:#94a3b8; font-style:italic;">"' + it.comentario + '"</span>') : '';
+
+        let estadoItemHtml = '';
+        if (requisicionesLicenciaPro || estadoActual === 'Cancelado') {
+          const estiloItem = coloresEstadoItem[estadoActual] || coloresEstadoItem['Pendiente de Compra'];
+          // Muestra TODAS las ordenes de compra que han tomado parte de esta
+          // linea (compatible con datos antiguos que solo tenian
+          // idOrdenAsociada, ya que el backend siempre conserva ese campo
+          // ademas del arreglo nuevo ordenesAsociadas).
+          const listaOrdenes = (Array.isArray(it.ordenesAsociadas) && it.ordenesAsociadas.length > 0)
+            ? it.ordenesAsociadas
+            : (it.idOrdenAsociada ? [it.idOrdenAsociada] : []);
+          const ordenRefHtml = listaOrdenes.length > 0 ? (' <span style="color:#94a3b8;">(' + listaOrdenes.join(', ') + ')</span>') : '';
+          estadoItemHtml = '<span style="background:' + estiloItem.bg + '; color:' + estiloItem.color + '; font-size:9px; font-weight:700; padding:2px 6px; border-radius:8px; margin-left:8px; flex-shrink:0;">' + estadoActual + '</span>' + ordenRefHtml;
+        }
+
+        const textoTachado = estadoActual === 'Cancelado' ? 'text-decoration:line-through; color:#94a3b8;' : '';
+        return '<div style="display:flex; align-items:center; gap:8px; font-size:12px; color:#475569; padding:3px 0; flex-wrap:wrap;">' + checkboxHtml + '<span style="' + textoTachado + ' flex:1;">• ' + it.descripcion + ' <strong>x' + it.cantidad + '</strong>' + comentarioHtml + '</span>' + estadoItemHtml + '</div>';
+      }).join('');
+
+      const tarjeta = document.createElement('div');
+      tarjeta.style.cssText = "border:1px solid #e2e8f0; border-radius:8px; background:white; padding:14px 18px;";
+
+      const hayItemsCancelables = (r.items || []).some(it => {
+        const e = it.estadoItem || 'Pendiente de Compra';
+        return e !== 'Comprado' && e !== 'Recibido' && e !== 'Cancelado';
+      });
+
+      const puedeEliminarSinRestriccion = PERFIL_ACTUAL_REQ.permisos && PERFIL_ACTUAL_REQ.permisos['Requisiciones'] && PERFIL_ACTUAL_REQ.permisos['Requisiciones'].eliminar;
+      const hayItemsCancelados = (r.items || []).some(it => it.estadoItem === 'Cancelado');
+      const mostrarIconoEliminar = puedeEliminarSinRestriccion || r.estado === 'Cancelada' || hayItemsCancelados;
+
+      let accionesHtml = '';
+      if (r.estado !== 'Cancelada' && hayItemsCancelables) {
+        accionesHtml += '<button type="button" data-action="cancelar" style="height:32px; padding:0 12px; background:#ffffff; color:#ef4444; border:1px solid #ef4444; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer;">Cancelar Ítems</button>';
+      }
+      if (mostrarIconoEliminar) {
+        accionesHtml += '<button type="button" data-action="eliminar" title="Eliminar" style="width:32px; height:32px; background:#fee2e2; color:#b91c1c; border:none; border-radius:6px; font-size:11px; cursor:pointer;"><i class="fa-solid fa-trash-can"></i></button>';
+      }
+
+      tarjeta.innerHTML =
+        '<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;">' +
+          '<div>' +
+            '<div style="font-weight:700; color:#0f172a; font-size:13px;">' + r.id + ' <span style="background:' + estiloEstado.bg + '; color:' + estiloEstado.color + '; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px; margin-left:6px;">' + r.estado + '</span></div>' +
+            '<div style="font-size:11px; color:#94a3b8; margin-top:2px;">' + (r.fecha ? new Date(r.fecha).toLocaleString() : '') + ' · Solicitó: ' + (r.solicitanteNombre || r.solicitante) + (r.departamento ? (' · ' + r.departamento) : '') + '</div>' +
+          '</div>' +
+          '<div style="display:flex; gap:6px;">' + accionesHtml + '</div>' +
+        '</div>' +
+        '<div style="margin-top:10px; padding-top:10px; border-top:1px solid #f1f5f9;">' + itemsHtml + '</div>' +
+        (r.notas ? '<div style="font-size:11px; color:#94a3b8; margin-top:6px; font-style:italic;">' + r.notas + '</div>' : '');
+
+      const btnCancelar = tarjeta.querySelector('[data-action="cancelar"]');
+      if (btnCancelar) btnCancelar.addEventListener('click', () => window.req_AbrirModalCancelar(r.id));
+
+      const btnEliminar = tarjeta.querySelector('[data-action="eliminar"]');
+      if (btnEliminar) btnEliminar.addEventListener('click', () => window.req_AbrirModalEliminar(r.id));
+
+      tarjeta.querySelectorAll('.req-chk-item').forEach(chk => {
+        chk.addEventListener('change', () => {
+          window.req_ToggleSeleccionItem(chk.dataset.idReq, chk.dataset.sku, chk.dataset.desc, parseFloat(chk.dataset.cant), chk.checked, chk.dataset.bodegaorigen);
+        });
+      });
+
+      cont.appendChild(tarjeta);
+    });
+  }
+
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'erp_licencia_pro') sincronizarLicenciaLocal();
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) sincronizarLicenciaLocal();
+  });
+  document.addEventListener('mousemove', () => {
+    const checkActual = localStorage.getItem('erp_licencia_pro') === 'true';
+    if (checkActual !== requisicionesLicenciaPro) sincronizarLicenciaLocal();
+  });
+
+})();
+</script>
