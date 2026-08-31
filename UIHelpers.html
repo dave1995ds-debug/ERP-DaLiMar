@@ -1,0 +1,179 @@
+<!-- ==========================================================================
+     UI HELPERS DEL ERP — Toast + Confirm + Prompt propios (sin ventanas del navegador)
+     Se incluye UNA SOLA VEZ en Index.html. Expone funciones globales:
+       window.erpToast(mensaje, tipo)         -> sustituye a alert() para mensajes simples
+       window.erpConfirm(mensaje, opciones)    -> sustituye a confirm(), devuelve Promise<boolean>
+       window.erpPrompt(mensaje, valorInicial) -> sustituye a prompt(), devuelve Promise<string|null>
+   ========================================================================== -->
+
+<div id="erp-toast-contenedor" style="position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none;"></div>
+
+<dialog id="erp-modal-confirm" style="border: none; border-radius: 10px; padding: 0; width: 100%; max-width: 380px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25); background: #ffffff; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); margin: 0; box-sizing: border-box;">
+  <div style="padding: 22px 24px 18px 24px; display: flex; flex-direction: column; gap: 14px; box-sizing: border-box;">
+    <div style="display: flex; align-items: flex-start; gap: 12px;">
+      <div id="erp-confirm-icono" style="width: 36px; height: 36px; border-radius: 50%; background: #fee2e2; color: #b91c1c; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px;">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <div style="flex: 1; padding-top: 4px;">
+        <p id="erp-confirm-mensaje" style="margin: 0; font-size: 13.5px; color: #1e293b; line-height: 1.5; white-space: pre-line;"></p>
+      </div>
+    </div>
+    <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 4px;">
+      <button type="button" id="erp-confirm-btn-cancelar" style="padding: 9px 18px; font-size: 12.5px; font-weight: 600; background: #ffffff; color: #475569; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer;">Cancelar</button>
+      <button type="button" id="erp-confirm-btn-aceptar" style="padding: 9px 18px; font-size: 12.5px; font-weight: 600; background: #ef4444; color: #ffffff; border: none; border-radius: 6px; cursor: pointer;">Eliminar</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="erp-modal-prompt" style="border: none; border-radius: 10px; padding: 0; width: 100%; max-width: 380px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25); background: #ffffff; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); margin: 0; box-sizing: border-box;">
+  <div style="padding: 22px 24px; display: flex; flex-direction: column; gap: 14px; box-sizing: border-box;">
+    <p id="erp-prompt-mensaje" style="margin: 0; font-size: 13.5px; color: #1e293b; font-weight: 600;"></p>
+    <input type="text" id="erp-prompt-input" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; font-size: 13px; color: #334155; box-sizing: border-box; width: 100%;">
+    <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 4px;">
+      <button type="button" id="erp-prompt-btn-cancelar" style="padding: 9px 18px; font-size: 12.5px; font-weight: 600; background: #ffffff; color: #475569; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer;">Cancelar</button>
+      <button type="button" id="erp-prompt-btn-aceptar" style="padding: 9px 18px; font-size: 12.5px; font-weight: 600; background: var(--accent, #2563eb); color: #ffffff; border: none; border-radius: 6px; cursor: pointer;">Guardar</button>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  #erp-modal-confirm::backdrop, #erp-modal-prompt::backdrop {
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(2px);
+  }
+  .erp-toast-item {
+    pointer-events: auto;
+    min-width: 280px;
+    max-width: 360px;
+    padding: 14px 16px;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15), 0 4px 6px -2px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    line-height: 1.45;
+    animation: erpToastIn 0.15s ease;
+    box-sizing: border-box;
+  }
+  @keyframes erpToastIn {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes erpToastOut {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(30px); }
+  }
+</style>
+
+<script>
+(function() {
+
+  // ==========================================================================
+  // TOAST — sustituye alert() para mensajes informativos breves
+  // ==========================================================================
+  window.erpToast = function(mensaje, tipo) {
+    tipo = tipo || 'info'; // 'exito' | 'error' | 'info'
+
+    const estilos = {
+      exito: { bg: '#f0fdf4', borde: '#bbf7d0', color: '#15803d', icono: 'fa-circle-check' },
+      error: { bg: '#fef2f2', borde: '#fecaca', color: '#b91c1c', icono: 'fa-circle-exclamation' },
+      info:  { bg: '#eff6ff', borde: '#bfdbfe', color: '#1e40af', icono: 'fa-circle-info' }
+    };
+    const cfg = estilos[tipo] || estilos.info;
+
+    const cont = document.getElementById('erp-toast-contenedor');
+    if (!cont) { console.log(mensaje); return; }
+
+    const toast = document.createElement('div');
+    toast.className = 'erp-toast-item';
+    toast.style.background = cfg.bg;
+    toast.style.border = '1px solid ' + cfg.borde;
+    toast.style.color = cfg.color;
+
+    toast.innerHTML =
+      '<i class="fa-solid ' + cfg.icono + '" style="font-size: 16px; margin-top: 1px; flex-shrink:0;"></i>' +
+      '<span style="flex:1; font-weight: 500;">' + mensaje + '</span>' +
+      '<i class="fa-solid fa-xmark" style="cursor:pointer; opacity:0.6; font-size: 12px; margin-top:2px;"></i>';
+
+    const cerrar = () => {
+      toast.style.animation = 'erpToastOut 0.15s ease forwards';
+      setTimeout(() => toast.remove(), 150);
+    };
+
+    toast.querySelector('.fa-xmark').addEventListener('click', cerrar);
+    cont.appendChild(toast);
+
+    setTimeout(cerrar, 2500);
+  };
+
+  // ==========================================================================
+  // CONFIRM — sustituye confirm() para acciones destructivas (eliminar, etc.)
+  // Uso: const ok = await window.erpConfirm("¿Eliminar X?");
+  // ==========================================================================
+  window.erpConfirm = function(mensaje, opciones) {
+    opciones = opciones || {};
+    const dlg = document.getElementById('erp-modal-confirm');
+    const txtMensaje = document.getElementById('erp-confirm-mensaje');
+    const btnAceptar = document.getElementById('erp-confirm-btn-aceptar');
+    const btnCancelar = document.getElementById('erp-confirm-btn-cancelar');
+
+    txtMensaje.innerText = mensaje;
+    btnAceptar.innerText = opciones.textoAceptar || 'Eliminar';
+    btnAceptar.style.background = opciones.colorAceptar || '#ef4444';
+
+    return new Promise((resolve) => {
+      function limpiarYResolver(valor) {
+        btnAceptar.removeEventListener('click', onAceptar);
+        btnCancelar.removeEventListener('click', onCancelar);
+        dlg.close();
+        resolve(valor);
+      }
+      function onAceptar() { limpiarYResolver(true); }
+      function onCancelar() { limpiarYResolver(false); }
+
+      btnAceptar.addEventListener('click', onAceptar);
+      btnCancelar.addEventListener('click', onCancelar);
+      dlg.showModal();
+    });
+  };
+
+  // ==========================================================================
+  // PROMPT — sustituye prompt() para pedir un texto corto (ej. renombrar)
+  // Uso: const nuevo = await window.erpPrompt("Editar nombre:", "valor actual");
+  // ==========================================================================
+  window.erpPrompt = function(mensaje, valorInicial) {
+    const dlg = document.getElementById('erp-modal-prompt');
+    const txtMensaje = document.getElementById('erp-prompt-mensaje');
+    const input = document.getElementById('erp-prompt-input');
+    const btnAceptar = document.getElementById('erp-prompt-btn-aceptar');
+    const btnCancelar = document.getElementById('erp-prompt-btn-cancelar');
+
+    txtMensaje.innerText = mensaje;
+    input.value = valorInicial || '';
+
+    return new Promise((resolve) => {
+      function limpiarYResolver(valor) {
+        btnAceptar.removeEventListener('click', onAceptar);
+        btnCancelar.removeEventListener('click', onCancelar);
+        input.removeEventListener('keydown', onKeydown);
+        dlg.close();
+        resolve(valor);
+      }
+      function onAceptar() { limpiarYResolver(input.value.trim()); }
+      function onCancelar() { limpiarYResolver(null); }
+      function onKeydown(e) {
+        if (e.key === 'Enter') { e.preventDefault(); onAceptar(); }
+        if (e.key === 'Escape') { onCancelar(); }
+      }
+
+      btnAceptar.addEventListener('click', onAceptar);
+      btnCancelar.addEventListener('click', onCancelar);
+      input.addEventListener('keydown', onKeydown);
+      dlg.showModal();
+      setTimeout(() => { input.focus(); input.select(); }, 50);
+    });
+  };
+
+})();
+</script>
