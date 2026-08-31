@@ -1,0 +1,20 @@
+<div style="padding: 40px; font-family: sans-serif;">
+  <h2>Diagnostico de duplicacion de clics</h2>
+  <p>Contador de clics reales detectados: <strong id="contador">0</strong></p>
+  <button type="button" id="btn-prueba" style="height: 50px; padding: 0 20px; font-size: 16px; cursor: pointer;">Dar clic aqui UNA vez</button>
+  <div id="log" style="margin-top: 20px; font-family: monospace; font-size: 12px; white-space: pre-line; background: #f0f0f0; padding: 10px;"></div>
+</div>
+
+<script>
+(function() {
+  let contador = 0;
+  const btn = document.getElementById('btn-prueba');
+  const logDiv = document.getElementById('log');
+
+  btn.addEventListener('click', function() {
+    contador++;
+    document.getElementById('contador').innerText = contador;
+    logDiv.innerText += 'Clic #' + contador + ' detectado a las ' + new Date().toLocaleTimeString() + '.' + new Date().getMilliseconds() + '\n';
+  });
+})();
+</script>
