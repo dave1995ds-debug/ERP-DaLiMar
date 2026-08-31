@@ -1,272 +1,295 @@
-<script>
-    let configEmpresaGlobal = null;
+<div class="erp-main-card">
+    
+    <div class="erp-card-header">
+        <h3>
+            <i class="fa-solid fa-rectangle-list" style="color: var(--accent);"></i> Configuración de Suscripciones Recurrentes
+        </h3>
+    </div>
+    
+    <div class="erp-card-body" style="padding-top: 10px;">
 
-    setTimeout(function() {
-        ventas_CargarConfiguracionInicial();
-        // La sincronización visual de la tarjeta PRO/Estándar la maneja
-        // exclusivamente ModConfig_Subscriptions.html (seleccionarModoSistema),
-        // que ya se auto-inicializa solo. Aquí no la duplicamos.
+        <div id="wrapper-estado-adquirido" style="background: #ffffff; border: 1px solid var(--border); border-left: 4px solid var(--primary); padding: 12px 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); transition: all 0.3s ease;">
+            <div>
+                <span style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; display: block; margin-bottom: 2px;">Licencia del Sistema Detectada</span>
+                <h4 style="margin: 0; font-size: 14px; font-weight: 700; color: #1e293b;" id="lbl-plan-actual">Módulo Estándar Base</h4>
+            </div>
+            <div id="badge-estado-actual" style="background: #f1f5f9; color: var(--primary); padding: 4px 12px; border-radius: 20px; font-weight: 700; font-size: 11px; border: 1px solid var(--border); letter-spacing: 0.5px;">
+                ACTIVO
+            </div>
+        </div>
 
-        // Pinta el boton activo del NAV de Configuracion especificamente --
-        // no el primer .menu-btn.active de la pagina (que podria ser de otro modulo).
-        const botonTabSuscripciones = document.getElementById('config-tab-suscripciones');
-        if (botonTabSuscripciones) {
-            botonTabSuscripciones.style.background = 'var(--accent)';
-            botonTabSuscripciones.style.color = 'white';
-            botonTabSuscripciones.style.fontWeight = '600';
-        }
-    }, 400);
+        <div style="display: flex; justify-content: center; margin-bottom: 35px;">
+            <div style="display: inline-flex; background: #f8fafc; padding: 4px; border-radius: 8px; gap: 4px; border: 1px solid #e2e8f0; align-items: center;">
+                <button type="button" id="btn-freq-mensual" onclick="cambiarFrecuenciaTarjetas('mensual')" style="border: none; background: var(--primary); color: white; padding: 8px 24px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;">
+                    Plan Mensual
+                </button>
+                <button type="button" id="btn-freq-anual" onclick="cambiarFrecuenciaTarjetas('anual')" style="border: none; background: transparent; color: #64748b; padding: 8px 24px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 8px;">
+                    Plan Anual 
+                    <span style="background: #334155; color: #ffffff; font-size: 9px; padding: 1px 6px; border-radius: 4px; font-weight: 700; letter-spacing: 0px;">Ahorra 15%</span>
+                </button>
+            </div>
+        </div>
 
-    function showPanel_Config(panelId, btn) {
-        // Solo oculta los paneles de Configuracion -- no todos los
-        // .content-area de la pagina (que incluirian paneles de otros modulos).
-        ['panel-suscripciones', 'panel-empresa', 'panel-productos', 'panel-usuarios'].forEach(id => {
-            const p = document.getElementById(id);
-            if (p) p.style.display = 'none';
-        });
-
-        // Solo resetea los botones del nav de Configuracion -- no todos los
-        // .menu-btn de la pagina (que incluirian los de ModAlmacen, etc.).
-        document.querySelectorAll('.nav-buttons .menu-btn').forEach(b => {
-            if (b.closest('nav') === btn.closest('nav')) {
-                b.style.background = '#e2e8f0';
-                b.style.color = 'var(--text)';
-                b.style.fontWeight = '500';
-            }
-        });
-        
-        const target = document.getElementById(panelId);
-        if(panelId === 'panel-productos') {
-            target.style.display = 'flex';
-        } else {
-            if (target) target.style.display = 'block';
-        }
-        
-        btn.style.background = 'var(--accent)';
-        btn.style.color = 'white';
-        btn.style.fontWeight = '600';
-    }
-
-    /**
-     * Fuerza la pestana "Suscripciones" visualmente activa, sin necesitar un
-     * boton DOM real -- se llama desde Index.html cada vez que se entra a
-     * esta vista, para que nunca quede en blanco si el shell ya estaba
-     * cargado en memoria de una visita anterior en la misma sesion (mismo
-     * patron ya usado en Compras y en el shell de Almacen).
-     */
-    window.config_ForzarPanelSuscripciones = function() {
-        const botonSuscripciones = document.getElementById('config-tab-suscripciones');
-        if (botonSuscripciones) showPanel_Config('panel-suscripciones', botonSuscripciones);
-    };
-
-    function toggleProduccion() {
-        const tipo = document.getElementById('config-tipo').value;
-        const seccion = document.getElementById('seccion-produccion');
-        seccion.style.display = (tipo === 'Produccion') ? 'block' : 'none';
-        
-        const lista = document.getElementById('lista-etapas');
-        if (tipo === 'Produccion' && lista.children.length === 0) addEtapa();
-    }
-
-    let stepCount = 0;
-    function addEtapa() {
-        stepCount++;
-        const lista = document.getElementById('lista-etapas');
-        const div = document.createElement('div');
-        div.style.display = 'flex';
-        div.style.gap = '8px';
-        div.style.marginBottom = '8px';
-        div.style.alignItems = 'center';
-        div.style.boxSizing = 'border-box';
-        div.innerHTML = `
-            <span style="background: var(--accent); color: white; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 10px; font-weight: 700; flex-shrink: 0;">${stepCount}</span>
-            <input type="text" class="form-control-erp" style="height:34px; padding: 6px 10px; font-size: 13px;" placeholder="Ej: Fase de pulido">
-            <i class="fa-solid fa-trash-can" onclick="this.parentElement.remove();" style="color:#ef4444; cursor:pointer; font-size: 13px; margin-left: 5px; transition: color 0.2s;"></i>
-        `;
-        lista.appendChild(div);
-    }
-
-    function guardarSimulado() {
-        alert("Configuración y estructura guardadas con éxito en la interfaz.");
-    }
-
-    // ========================================================
-    //   DETECCIÓN Y CONVERSIÓN DE IMAGEN (Logo de Plataforma)
-    // ========================================================
-    function config_ProcesarYPrevisualizarLogo(input) {
-        const file = input.files[0];
-        const lblName = document.getElementById('config-txt-file-name');
-        const inputOculto = document.getElementById('config-empresa-logo');
-        const wrapperPreview = document.getElementById('config-wrapper-preview');
-        const imgPreview = document.getElementById('config-img-preview');
-
-        if (!file) return;
-
-        if (file.size > 2 * 1024 * 1024) {
-            alert("El archivo supera los 2MB. Selecciona una imagen más pequeña para garantizar la velocidad del sistema.");
-            input.value = "";
-            return;
-        }
-
-        if (lblName) lblName.innerText = file.name;
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const base64String = e.target.result;
-            if (inputOculto) inputOculto.value = base64String;
-            if (imgPreview) imgPreview.src = base64String;
-            if (wrapperPreview) wrapperPreview.style.display = "block";
-        };
-        reader.readAsDataURL(file);
-    }
-
-    function config_RemoverLogoCargado() {
-        const inputFileInput = document.getElementById('config-empresa-file');
-        const lblName = document.getElementById('config-txt-file-name');
-        const inputOculto = document.getElementById('config-empresa-logo');
-        const wrapperPreview = document.getElementById('config-wrapper-preview');
-        const imgPreview = document.getElementById('config-img-preview');
-
-        if (inputFileInput) inputFileInput.value = "";
-        if (lblName) lblName.innerText = "Ningún archivo seleccionado";
-        if (inputOculto) inputOculto.value = "";
-        if (imgPreview) imgPreview.src = "";
-        if (wrapperPreview) wrapperPreview.style.display = "none";
-    }
-
-    // ========================================================
-    //   CARGA DE CONFIGURACIÓN EMPRESA AL INICIAR
-    // ========================================================
-    function ventas_CargarConfiguracionInicial() {
-        if (typeof google !== 'undefined' && google.script && google.script.run) {
-            google.script.run.withSuccessHandler(function(datos) {
-                if (datos) {
-                    configEmpresaGlobal = datos;
-                    if(document.getElementById('config-empresa-nombre')) document.getElementById('config-empresa-nombre').value = datos.nombreEmpresa || '';
-                    if(document.getElementById('config-empresa-nit')) document.getElementById('config-empresa-nit').value = datos.nit || '';
-                    if(document.getElementById('config-empresa-nrc')) document.getElementById('config-empresa-nrc').value = datos.nrc || '';
-                    
-                    if(document.getElementById('config-empresa-logo')) {
-                        const valorLogo = datos.logoUrl || '';
-                        document.getElementById('config-empresa-logo').value = valorLogo;
+        <div style="margin-bottom: 25px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+                
+                <div id="tarjeta-modo-estandar" class="card-modo-selector erp-btn-animate" onclick="seleccionarModoSistema(false)" style="border: 2px solid var(--primary); border-radius: 12px; padding: 24px; cursor: pointer; transition: all 0.3s ease; background: #ffffff; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; min-height: 310px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.01);">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <span style="font-size: 10px; font-weight: 800; color: var(--primary); letter-spacing: 0.6px; text-transform: uppercase;">MODO BÁSICO</span>
+                            <i id="icono-check-estandar" class="fa-solid fa-circle-check" style="color: var(--primary); font-size: 16px;"></i>
+                        </div>
+                        <h4 style="margin: 0 0 6px 0; font-size: 18px; font-weight: 700; color: #1e293b;">MÓDULO ESTÁNDAR</h4>
                         
-                        if (valorLogo && valorLogo.startsWith('data:image')) {
-                            if(document.getElementById('config-img-preview')) document.getElementById('config-img-preview').src = valorLogo;
-                            if(document.getElementById('config-wrapper-preview')) document.getElementById('config-wrapper-preview').style.display = "block";
-                            if(document.getElementById('config-txt-file-name')) document.getElementById('config-txt-file-name').innerText = "Imagen Corporativa Activa";
-                        }
-                    }
-
-                    if(document.getElementById('config-empresa-giro')) document.getElementById('config-empresa-giro').value = datos.giroComercial || '';
-                    if(document.getElementById('config-sistema-nombre-erp')) document.getElementById('config-sistema-nombre-erp').value = datos.nombreErp || '';
-                    if(document.getElementById('config-empresa-direccion')) document.getElementById('config-empresa-direccion').value = datos.direccion || '';
-                    if(document.getElementById('config-empresa-telefono')) document.getElementById('config-empresa-telefono').value = datos.telefono || '';
-                    if(document.getElementById('config-empresa-correo')) document.getElementById('config-empresa-correo').value = datos.correo || '';
-
-                    // Campos extendidos (régimen / ubicación DTE / etc.)
-                    if(document.getElementById('config-empresa-regimen') && datos.regimen) document.getElementById('config-empresa-regimen').value = datos.regimen;
-                    if(document.getElementById('config-empresa-clasificacion') && datos.clasificacion) document.getElementById('config-empresa-clasificacion').value = datos.clasificacion;
-                    if(document.getElementById('config-empresa-ciiu') && datos.ciiu) document.getElementById('config-empresa-ciiu').value = datos.ciiu;
-                    if(document.getElementById('config-finanzas-monedasec') && datos.monedaSecundaria) document.getElementById('config-finanzas-monedasec').value = datos.monedaSecundaria;
-                    if(document.getElementById('config-finanzas-iva') && datos.tasaIva) document.getElementById('config-finanzas-iva').value = datos.tasaIva;
-                    if(document.getElementById('config-hacienda-ambiente') && datos.ambienteHacienda) document.getElementById('config-hacienda-ambiente').value = datos.ambienteHacienda;
-
-                    if (typeof toggleSeccionesHacienda === 'function') toggleSeccionesHacienda();
-
-                    ventas_AplicarIdentidadVisual(datos);
-                }
-            }).obtenerConfiguracionEmpresaServidor();
-        }
-    }
-
-    function guardarConfiguracionEmpresaReal() {
-        const datosPayload = {
-            nombreEmpresa: document.getElementById('config-empresa-nombre') ? document.getElementById('config-empresa-nombre').value.trim() : '',
-            nit: document.getElementById('config-empresa-nit') ? document.getElementById('config-empresa-nit').value.trim() : '',
-            nrc: document.getElementById('config-empresa-nrc') ? document.getElementById('config-empresa-nrc').value.trim() : '',
-            logoUrl: document.getElementById('config-empresa-logo') ? document.getElementById('config-empresa-logo').value.trim() : '',
-            giroComercial: document.getElementById('config-empresa-giro') ? document.getElementById('config-empresa-giro').value.trim() : '',
-            nombreErp: document.getElementById('config-sistema-nombre-erp') ? document.getElementById('config-sistema-nombre-erp').value.trim() : 'Mi ERP',
-            direccion: document.getElementById('config-empresa-direccion') ? document.getElementById('config-empresa-direccion').value.trim() : '',
-            telefono: document.getElementById('config-empresa-telefono') ? document.getElementById('config-empresa-telefono').value.trim() : '',
-            correo: document.getElementById('config-empresa-correo') ? document.getElementById('config-empresa-correo').value.trim() : '',
-
-            // Campos extendidos del formulario de ModConfig_Empresa
-            regimen: document.getElementById('config-empresa-regimen') ? document.getElementById('config-empresa-regimen').value : 'INFORMAL',
-            clasificacion: document.getElementById('config-empresa-clasificacion') ? document.getElementById('config-empresa-clasificacion').value : 'Otros',
-            ciiu: document.getElementById('config-empresa-ciiu') ? document.getElementById('config-empresa-ciiu').value : '',
-            depto: document.getElementById('config-ubicacion-depto') ? document.getElementById('config-ubicacion-depto').value : '',
-            municipio: document.getElementById('config-ubicacion-muni') ? document.getElementById('config-ubicacion-muni').value : '',
-            distrito: document.getElementById('config-ubicacion-distrito') ? document.getElementById('config-ubicacion-distrito').value : '',
-            ambienteHacienda: document.getElementById('config-hacienda-ambiente') ? document.getElementById('config-hacienda-ambiente').value : '00',
-            logoDte: document.getElementById('config-empresa-logo-dte') ? document.getElementById('config-empresa-logo-dte').value.trim() : '',
-            monedaSecundaria: document.getElementById('config-finanzas-monedasec') ? document.getElementById('config-finanzas-monedasec').value : 'NINGUNA',
-            tasaIva: document.getElementById('config-finanzas-iva') ? document.getElementById('config-finanzas-iva').value : 13
-        };
-
-        if (!datosPayload.nombreEmpresa || !datosPayload.nombreErp) {
-            alert("Por favor, introduce al menos la Razón Social y el Nombre del ERP.");
-            return;
-        }
-
-        if (typeof google !== 'undefined' && google.script && google.script.run) {
-            const btnSubmit = document.querySelector("#form-config-empresa .btn-submit");
-            let txtOriginal = "";
-            if (btnSubmit) {
-                txtOriginal = btnSubmit.innerHTML;
-                btnSubmit.disabled = true;
-                btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sincronizando...';
-            }
-
-            google.script.run
-                .withSuccessHandler(function(res) {
-                    if(btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = txtOriginal; }
-                    if (res.exito) {
-                        alert("¡Perfil Corporativo guardado y sincronizado con éxito!");
-                        ventas_AplicarIdentidadVisual(datosPayload);
-                    } else {
-                        alert("Error interno: " + res.error);
-                    }
-                })
-                .withFailureHandler(function(err) {
-                    if(btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = txtOriginal; }
-                    alert("Error en la conexión con la base de datos: " + err);
-                })
-                .guardarConfiguracionEmpresaServidor(datosPayload);
-        } else {
-            alert("Simulación Local: Datos listos para la nube (" + datosPayload.nombreErp + ")");
-            ventas_AplicarIdentidadVisual(datosPayload);
-        }
-    }
-
-    function ventas_AplicarIdentidadVisual(datos) {
-        if (!datos) return;
-        document.title = datos.nombreErp;
-        const tituloGlobal = document.getElementById('erp-titulo-global');
-        if (tituloGlobal) {
-            if (datos.logoUrl && datos.logoUrl.startsWith('data:image')) {
-                tituloGlobal.innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <img src="${datos.logoUrl}" alt="Logo" style="max-height: 28px; max-width: 35px; object-fit: contain; border-radius: 4px; flex-shrink: 0;">
-                        <div style="display: flex; flex-direction: column;">
-                            <span style="font-weight: 700; color: white; line-height: 1.2;">${datos.nombreErp}</span>
-                            ${datos.giroComercial ? `<span style="font-size: 10px; color: #94a3b8; font-weight: 500; line-height: 1.2; margin-top: 2px;">${datos.giroComercial}</span>` : ''}
+                        <div style="font-size: 26px; font-weight: 800; color: var(--primary); margin-bottom: 12px;">
+                            <span id="txt-precio-estandar">$49.99</span> <span style="font-size: 12px; color: var(--text-muted); font-weight: 400;" id="txt-ciclo-estandar">/ mes</span>
                         </div>
+                        <p style="margin: 0 0 15px 0; font-size: 12.5px; color: var(--text-muted); line-height: 1.5;">Estructura operativa idónea para control administrativo esencial y registros locales de la empresa.</p>
                     </div>
-                `;
-                tituloGlobal.style.display = "block";
-            } else {
-                tituloGlobal.innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <i class="fa-solid fa-monument" style="color: #60a5fa;"></i>
-                        <div style="display: flex; flex-direction: column;">
-                            <span style="font-weight: 700; color: white; line-height: 1.2;">${datos.nombreErp}</span>
-                            ${datos.giroComercial ? `<span style="font-size: 10px; color: #94a3b8; font-weight: 500; line-height: 1.2; margin-top: 2px;">${datos.giroComercial}</span>` : ''}
+                    
+                    <div>
+                        <ul style="list-style: none; padding: 0; margin: 0 0 20px 0; border-top: 1px solid var(--border); padding-top: 12px; display: flex; flex-direction: column; gap: 8px;">
+                            <li style="font-size: 12px; display: flex; align-items: center; gap: 8px; color: #334155;"><i class="fa-solid fa-check" style="color: var(--primary);"></i> Ficha de registro de planes</li>
+                            <li style="font-size: 12px; display: flex; align-items: center; gap: 8px; color: #334155;"><i class="fa-solid fa-check" style="color: var(--primary);"></i> Almacén de ciclos de cobro</li>
+                        </ul>
+                        
+                        <button type="button" id="btn-switch-estandar" onclick="event.stopPropagation(); seleccionarModoSistema(false);" style="display: none; width: 100%; border: none; background: #2563eb; color: white; font-weight: 700; padding: 10px; border-radius: 8px; font-size: 11px; cursor: pointer; text-transform: uppercase; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 10px rgba(37,99,235,0.2); transition: all 0.2s;">
+                            <i class="fa-solid fa-toggle-off" style="font-size: 14px; color: var(--accent);"></i> Degradar a este Módulo
+                        </button>
+                    </div>
+                </div>
+
+                <div id="tarjeta-modo-pro" class="card-modo-selector erp-btn-animate" onclick="seleccionarModoSistema(true)" style="border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; cursor: pointer; transition: all 0.3s ease; background: #ffffff; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; min-height: 310px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.01);">
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <span id="tag-pro-title" style="font-size: 10px; font-weight: 800; color: #64748b; letter-spacing: 0.6px; text-transform: uppercase;">Suscripción Premium</span>
+                            <i id="estrella-pro" class="fa-solid fa-star" style="color: #cbd5e1; font-size: 15px;"></i>
                         </div>
+                        <h4 id="text-pro-title" style="margin: 0 0 6px 0; font-size: 18px; font-weight: 700; color: #1e293b;">MÓDULO PRO ACTIVABLE</h4>
+                        
+                        <div id="price-pro-title" style="font-size: 26px; font-weight: 800; color: var(--primary); margin-bottom: 12px;">
+                            <span id="txt-precio-pro">$149.99</span> <span style="font-size: 12px; color: var(--text-muted); font-weight: 400;" id="txt-ciclo-pro">/ mes</span>
+                        </div>
+                        <p style="margin: 0 0 15px 0; font-size: 12.5px; color: var(--text-muted); line-height: 1.5;">Desbloquea automatizaciones completas, indicadores en tiempo real y flujos avanzados de control corporativo.</p>
                     </div>
-                `;
-                tituloGlobal.style.display = "block";
-            }
-        }
+                    
+                    <div>
+                        <ul style="list-style: none; padding: 0; margin: 0 0 20px 0; border-top: 1px solid #e2e8f0; padding-top: 12px; display: flex; flex-direction: column; gap: 8px;">
+                            <li style="font-size: 12px; display: flex; align-items: center; gap: 8px; color: #334155; font-weight: 600;"><i class="fa-solid fa-envelope-circle-check" style="color: #22c55e;"></i> Envío automático a proveedores</li>
+                            <li style="font-size: 12px; display: flex; align-items: center; gap: 8px; color: #334155; font-weight: 600;"><i class="fa-solid fa-chart-pie" style="color: #3b82f6;"></i> Dashboard de Control Central</li>
+                        </ul>
+
+                        <button type="button" id="btn-switch-pro" onclick="event.stopPropagation(); seleccionarModoSistema(true);" style="display: inline-flex; width: 100%; border: none; background: #2563eb; color: white; font-weight: 700; padding: 10px; border-radius: 8px; font-size: 11px; cursor: pointer; text-transform: uppercase; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 10px rgba(37,99,235,0.2); transition: all 0.2s;">
+                            <i class="fa-solid fa-toggle-on" style="font-size: 14px; color: var(--accent);"></i> Activar Beneficios PRO
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
+            <div onclick="toggleAcordeon('acordeon-admin', 'flecha-admin')" style="background: #f1f5f9; padding: 14px 18px; font-weight: 700; font-size: 12.5px; color: var(--primary); display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-sliders" style="color: var(--accent);"></i> 
+                    <span>[PANEL SIMULADOR] Control y Modificación del Entorno de Licencias</span>
+                </div>
+                <i id="flecha-admin" class="fa-solid fa-chevron-down" style="transition: transform 0.3s ease; color: #64748b;"></i>
+            </div>
+            
+            <div id="acordeon-admin" style="display: none; border-top: 1px solid var(--border); padding: 20px; background: #fafafa;">
+                <p style="margin: 0 0 15px 0; font-size: 12px; color: var(--text-muted);">Usa los controles rápidos de abajo para simular las respuestas automáticas que procesaría el Webhook de la pasarela de pagos:</p>
+                
+                <div style="display: flex; gap: 15px; align-items: center; background: white; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <span style="font-size: 12px; font-weight: 700; color: #334155;">Estado de la Suscripción Global del ERP:</span>
+                    
+                    <div style="display: flex; background: #e2e8f0; padding: 3px; border-radius: 8px; gap: 2px;">
+                        <button type="button" id="sim-btn-estandar" onclick="seleccionarModoSistema(false)" style="border: none; background: #fff; color: #000; padding: 6px 16px; font-size: 11px; font-weight: 700; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+                            Forzar Estándar
+                        </button>
+                        <button type="button" id="sim-btn-pro" onclick="seleccionarModoSistema(true)" style="border: none; background: transparent; color: #64748b; padding: 6px 16px; font-size: 11px; font-weight: 700; border-radius: 6px; cursor: pointer; transition: all 0.2s;">
+                            Forzar Modo PRO
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+.erp-btn-animate {
+    transition: transform 0.1s ease, box-shadow 0.2s ease;
+}
+.erp-btn-animate:active {
+    transform: scale(0.98);
+}
+.card-modo-selector:hover { 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+}
+@keyframes popStar {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3) rotate(15deg); }
+    100% { transform: scale(1); }
+}
+</style>
+
+<script>
+let frecuenciaActualSubs = 'mensual';
+
+function animarBoton(elemento) {
+    elemento.style.transform = "scale(0.96)";
+    setTimeout(() => { elemento.style.transform = "none"; }, 100);
+}
+
+function toggleAcordeon(idContenedor, idFlecha) {
+    const contenedor = document.getElementById(idContenedor);
+    const flecha = document.getElementById(idFlecha);
+    if (contenedor.style.display === "none" || contenedor.style.display === "") {
+        contenedor.style.display = "block";
+        flecha.style.transform = "rotate(180deg)";
+    } else {
+        contenedor.style.display = "none";
+        flecha.style.transform = "rotate(0deg)";
     }
+}
+
+function cambiarFrecuenciaTarjetas(frecuencia) {
+    frecuenciaActualSubs = frecuencia;
+    const btnMensual = document.getElementById('btn-freq-mensual');
+    const btnAnual = document.getElementById('btn-freq-anual');
+    
+    const txtPrecioEst = document.getElementById('txt-precio-estandar');
+    const txtCicloEst = document.getElementById('txt-ciclo-estandar');
+    const txtPrecioPro = document.getElementById('txt-precio-pro');
+    const txtCicloPro = document.getElementById('txt-ciclo-pro');
+
+    if (frecuencia === 'anual') {
+        btnAnual.style.background = "var(--primary)";
+        btnAnual.style.color = "white";
+        btnMensual.style.background = "transparent";
+        btnMensual.style.color = "#64748b";
+
+        txtPrecioEst.innerText = "$509.90";
+        txtCicloEst.innerText = "/ año";
+        txtPrecioPro.innerText = "$1,529.90";
+        txtCicloPro.innerText = "/ año";
+    } else {
+        btnMensual.style.background = "var(--primary)";
+        btnMensual.style.color = "white";
+        btnAnual.style.background = "transparent";
+        btnAnual.style.color = "#64748b";
+
+        txtPrecioEst.innerText = "$49.99";
+        txtCicloEst.innerText = "/ mes";
+        txtPrecioPro.innerText = "$149.99";
+        txtCicloPro.innerText = "/ mes";
+    }
+}
+
+function seleccionarModoSistema(esPro) {
+    const tarjetaEstandar = document.getElementById('tarjeta-modo-estandar');
+    const tarjetaPro = document.getElementById('tarjeta-modo-pro');
+    const estrella = document.getElementById('estrella-pro');
+    const iconoCheckEst = document.getElementById('icono-check-estandar');
+    
+    const textoProTitle = document.getElementById('text-pro-title');
+    const tagProTitle = document.getElementById('tag-pro-title');
+    const priceProTitle = document.getElementById('price-pro-title');
+    
+    const lblPlan = document.getElementById('lbl-plan-actual');
+    const badgeEstado = document.getElementById('badge-estado-actual');
+    const wrapperWidget = document.getElementById('wrapper-estado-adquirido');
+
+    const btnSwitchEstandar = document.getElementById('btn-switch-estandar');
+    const btnSwitchPro = document.getElementById('btn-switch-pro');
+
+    const simBtnEstandar = document.getElementById('sim-btn-estandar');
+    const simBtnPro = document.getElementById('sim-btn-pro');
+
+    if (!tarjetaEstandar || !tarjetaPro) return; // Salvaguarda visual
+
+    if (esPro) {
+        lblPlan.innerText = "Módulo PREMIUM PRO Activo";
+        badgeEstado.innerText = "PREMIUM PRO";
+        badgeEstado.style.background = "#deff9a";
+        badgeEstado.style.borderColor = "#b4e63b";
+        wrapperWidget.style.borderLeftColor = "#b4e63b";
+
+        tarjetaPro.style.background = '#deff9a'; 
+        tarjetaPro.style.borderColor = '#b4e63b';
+        textoProTitle.innerText = "MÓDULO PRO ACTIVO";
+        textoProTitle.style.color = '#000000';
+        tagProTitle.style.color = '#000000';
+        priceProTitle.style.color = '#000000';
+        estrella.style.color = "#000000";
+        if(estrella) estrella.style.animation = "popStar 0.4s ease";
+
+        tarjetaEstandar.style.borderColor = '#e2e8f0';
+        tarjetaEstandar.style.background = '#ffffff';
+        iconoCheckEst.style.color = '#cbd5e1';
+
+        btnSwitchPro.style.display = "none";
+        btnSwitchEstandar.style.display = "inline-flex";
+
+        simBtnPro.style.background = "#fff";
+        simBtnPro.style.color = "#000";
+        simBtnEstandar.style.background = "transparent";
+        simBtnEstandar.style.color = "#64748b";
+
+    } else {
+        lblPlan.innerText = "Módulo Estándar Base";
+        badgeEstado.innerText = "ACTIVO";
+        badgeEstado.style.background = "#f1f5f9";
+        badgeEstado.style.borderColor = "var(--border)";
+        wrapperWidget.style.borderLeftColor = "var(--primary)";
+
+        tarjetaEstandar.style.borderColor = 'var(--primary)';
+        iconoCheckEst.style.color = 'var(--primary)';
+
+        tarjetaPro.style.background = '#ffffff';
+        tarjetaPro.style.borderColor = '#e2e8f0';
+        textoProTitle.innerText = "MÓDULO PRO ACTIVABLE";
+        textoProTitle.style.color = '#1e293b';
+        tagProTitle.style.color = '#64748b';
+        priceProTitle.style.color = 'var(--primary)';
+        estrella.style.color = "#cbd5e1";
+
+        btnSwitchPro.style.display = "inline-flex";
+        btnSwitchEstandar.style.display = "none";
+
+        simBtnEstandar.style.background = "#fff";
+        simBtnEstandar.style.color = "#000";
+        simBtnPro.style.background = "transparent";
+        simBtnPro.style.color = "#64748b";
+    }
+
+    // 1. Sincronización absoluta de persistencia local y global (Conectando con variables de Index.html)
+    localStorage.setItem('erp_licencia_pro', esPro);
+    window.erpLicenciaProActiva = esPro; // Idioma Index.html
+    window.licenciaSistemaEsPro = esPro; // Idioma de respaldo
+
+    // 2. Ejecutar la alerta centralizada del Index para propagar a Ventas y Clientes inmediatamente
+    if (typeof window.alCambiarSwitchGlobalLicencia === 'function') {
+        window.alCambiarSwitchGlobalLicencia(esPro);
+    }
+}
+
+// =======================================================
+// 🚀 AUTO-ARRANQUE REACTIVO (Evita que el botón se quede pegado al iniciar)
+// =======================================================
+function inicializarModuloSuscripcion() {
+    // Leemos el estado real guardado en el navegador antes de pintar nada
+    const estadoGuardado = localStorage.getItem('erp_licencia_pro') === 'true';
+    
+    // Forzamos un micro-retraso para asegurar que los elementos del DOM estén listos en el ERP
+    setTimeout(() => {
+        console.log("Sincronizando interfaz de Suscripción. Estado actual:", estadoGuardado ? "PRO" : "STANDARD");
+        seleccionarModoSistema(estadoGuardado);
+    }, 100);
+}
+
+// Disparar la inicialización en cuanto este script se monte en pantalla
+inicializarModuloSuscripcion();
 </script>
