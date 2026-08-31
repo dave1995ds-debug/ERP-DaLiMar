@@ -1,0 +1,1059 @@
+<div style="animation: fadeIn 0.3s ease;">
+
+  <nav class="nav-buttons" style="display: flex; gap: 12px; margin-bottom: 20px; box-sizing: border-box; flex-wrap: wrap;">
+    <button class="menu-btn active" id="recep-tab-pendientes" onclick="window.recep_CambiarTab('pendientes')" style="width: auto; background: var(--accent); color: white; font-weight: 600; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;">
+      <i class="fa-solid fa-truck-ramp-box"></i> Pendientes de Recepción
+    </button>
+    <button class="menu-btn" id="recep-tab-recibos" onclick="window.recep_CambiarTab('recibos')" style="width: auto; background: #e2e8f0; color: var(--text); font-weight: 500; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;">
+      <i class="fa-solid fa-receipt"></i> Recepciones y Salidas
+    </button>
+  </nav>
+
+  <!-- ========================== PANEL: PENDIENTES ========================== -->
+  <div id="recep-panel-pendientes" class="content-area active" style="box-sizing: border-box;">
+    <div class="erp-main-card">
+      <div class="erp-card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; width: 100%; box-sizing: border-box;">
+        <h3 style="margin: 0; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-truck-ramp-box" style="color: var(--accent);"></i> Órdenes Pendientes de Recepción
+        </h3>
+        <div style="display: inline-flex; align-items: center; gap: 8px;">
+          <span id="recep-info-modo-estandar" style="display: inline-block; cursor: help; color: #64748b; font-size: 14px;" title="Especificaciones de la Licencia Activa: firma digital de recepcion desde el celular.">
+            <i class="fa-solid fa-circle-info"></i>
+          </span>
+          <div id="recep-badge-modo-pro" style="display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; border: 1px solid #cbd5e1; background: #f1f5f9; color: #64748b;">
+            MODULO ESTANDAR
+          </div>
+        </div>
+      </div>
+
+      <div class="erp-card-body" style="padding-top: 16px; box-sizing: border-box;">
+
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px;">
+          <select id="recep-filtro-tipo" onchange="window.recep_Filtrar()" style="height: 36px; padding: 0 10px; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; font-size: 12px;">
+            <option value="">Todos los destinos</option>
+            <option value="Bodega">Solo Bodega</option>
+            <option value="Entrega Directa">Solo Entrega Directa</option>
+          </select>
+
+          <div style="position: relative; flex: 1; min-width: 220px;">
+            <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 13px;"></i>
+            <input type="text" id="recep-filtro-texto" oninput="window.recep_Filtrar()" style="padding-left: 38px; border-radius: 50px; background: #ffffff; border: 1px solid #cbd5e1; height: 36px; font-size: 12px; color: #334155; box-sizing: border-box; width: 100%;" placeholder="Buscar por proveedor, ítem o N° de orden...">
+          </div>
+
+          <button type="button" onclick="window.recep_AbrirModalSalida()" style="height: 36px; padding: 0 16px; background: #ef4444; color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;">
+            <i class="fa-solid fa-arrow-up-from-bracket"></i> Registrar Salida
+          </button>
+        </div>
+
+        <span style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 14px;">Selecciona una Orden de Compra pendiente para registrar lo que llegó. Puede recibirse parcialmente, ya sea en Bodega o como Entrega Directa.</span>
+        <div id="recep-lista-ordenes" style="display: flex; flex-direction: column; gap: 10px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================== PANEL: RECIBOS (HISTORIAL) ========================== -->
+  <div id="recep-panel-recibos" class="content-area" style="display: none; box-sizing: border-box;">
+    <div class="erp-main-card">
+      <div class="erp-card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; width: 100%; box-sizing: border-box;">
+        <h3 style="margin: 0; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-receipt" style="color: var(--accent);"></i> Recepciones y Salidas
+        </h3>
+      </div>
+
+      <div class="erp-card-body" style="padding-top: 16px; box-sizing: border-box;">
+        <div style="position: relative; margin-bottom: 14px;">
+          <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 13px;"></i>
+          <input type="text" id="recep-historial-filtro-texto" oninput="window.recep_RenderizarHistorial()" style="padding-left: 38px; border-radius: 50px; background: #ffffff; border: 1px solid #cbd5e1; height: 36px; font-size: 12px; color: #334155; box-sizing: border-box; width: 100%;" placeholder="Buscar por N° de recibo, orden, o quién recibió...">
+        </div>
+        <div id="recep-lista-historial" style="display: flex; flex-direction: column; gap: 10px;"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL: RECEPCION -->
+<dialog id="recep-modal" class="modal-dialog-erp" style="max-width: 540px !important;">
+  <div id="recep-modal-header" style="display: flex; justify-content: space-between; align-items: center; background: #16a34a; padding: 14px 20px; color: #ffffff;">
+    <h4 style="margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 8px;">
+      <i id="recep-modal-icono" class="fa-solid fa-warehouse"></i> <span id="recep-modal-titulo">Recepción en Bodega</span>
+    </h4>
+    <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px; color: rgba(255,255,255,0.8);" onclick="this.closest('dialog').close()"></i>
+  </div>
+  <div style="padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px;">
+    <input type="hidden" id="recep-id-orden">
+    <input type="hidden" id="recep-tipo-destino-actual">
+
+    <div style="font-size: 12px; color: #64748b; background: #f8fafc; padding: 8px 10px; border-radius: 6px; border: 1px solid #e2e8f0;">
+      Orden: <strong id="recep-orden-ref" style="color: #1e293b;"></strong>
+    </div>
+
+    <!-- BLOQUE BODEGA: bodega fija, no editable -->
+    <div id="recep-bloque-bodega" style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Bodega de destino (definida en la orden):</span>
+      <div id="recep-bodega-fija" style="height: 40px; display: flex; align-items: center; padding: 0 12px; border: 1px solid #e2e8f0; border-radius: 6px; background: #f1f5f9; color: #334155; font-weight: 600; font-size: 13px; box-sizing: border-box;">
+        <i class="fa-solid fa-warehouse" style="color: var(--accent); margin-right: 8px;"></i> <span id="recep-bodega-fija-texto"></span>
+      </div>
+    </div>
+
+    <!-- BLOQUE ENTREGA DIRECTA: muestra a quien y pide quien recibe -->
+    <div id="recep-bloque-entrega-directa" style="display: none; flex-direction: column; gap: 10px;">
+      <div style="font-size: 12px; background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; padding: 8px 10px; border-radius: 6px; display: flex; align-items: center; gap: 8px;">
+        <i class="fa-solid fa-hand-holding"></i> Entrega directa a: <strong id="recep-entrega-directa-texto"></strong>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">¿Quién recibe la entrega?</span>
+        <input type="text" id="recep-recibido-por" placeholder="Nombre de quien firma/recibe" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; box-sizing: border-box;">
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button type="button" id="recep-btn-firma-pro" title="Disponible en la versión PRO móvil" style="height: 38px; padding: 0 14px; background: #f1f5f9; color: #94a3b8; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: not-allowed; display: inline-flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-signature"></i> Firmar Recepción
+          <span style="background: #deff9a; color: #000000; border: 1px solid #b4e63b; font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 8px;">PRO</span>
+        </button>
+        <span id="recep-firma-confirmada-texto" style="display: none; font-size: 11px; color: #16a34a; font-weight: 600;"><i class="fa-solid fa-circle-check"></i> Firma de recepción capturada</span>
+      </div>
+      <span style="font-size: 10px; color: #94a3b8;">Próximamente: captura real de firma desde el celular en la app móvil. Por ahora, este botón solo confirma simbólicamente la recepción.</span>
+    </div>
+
+    <div id="recep-items-pendientes" style="display: flex; flex-direction: column; gap: 10px; max-height: 280px; overflow-y: auto;"></div>
+    <button type="button" id="recep-btn-guardar" style="height: 42px; background: #16a34a; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;"><i class="fa-solid fa-floppy-disk"></i> Confirmar Recepción</button>
+  </div>
+</dialog>
+
+<!-- MODAL: REGISTRAR SALIDA -->
+<dialog id="recep-modal-salida" class="modal-dialog-erp" style="max-width: 460px !important;">
+  <div style="display: flex; justify-content: space-between; align-items: center; background: #ef4444; padding: 14px 20px; color: #ffffff;">
+    <h4 style="margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 8px;">
+      <i class="fa-solid fa-arrow-up-from-bracket"></i> Registrar Salida de Bodega
+    </h4>
+    <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px; color: rgba(255,255,255,0.8);" onclick="this.closest('dialog').close()"></i>
+  </div>
+  <div style="padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px;">
+
+    <div style="display: flex; gap: 8px;">
+      <button type="button" id="recep-salida-tab-averia" onclick="window.recep_CambiarTipoSalida('Avería')" style="flex:1; height: 38px; border-radius: 6px; border: 2px solid #ef4444; background: #ef4444; color: white; font-size: 12px; font-weight: 600; cursor: pointer;">Avería / Ajuste</button>
+      <button type="button" id="recep-salida-tab-produccion" onclick="window.recep_CambiarTipoSalida('Entrega a Producción')" style="flex:1; height: 38px; border-radius: 6px; border: 2px solid #cbd5e1; background: #ffffff; color: #475569; font-size: 12px; font-weight: 600; cursor: pointer;">Entrega a Producción</button>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Variante (SKU):</span>
+      <select id="recep-salida-sku" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; width: 100%; background:#ffffff;">
+        <option value="">-- Selecciona una variante --</option>
+      </select>
+      <span id="recep-salida-stock-disponible" style="font-size: 10px; color: #94a3b8;"></span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Bodega de Origen:</span>
+      <select id="recep-salida-bodega" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; width: 100%; background:#ffffff;">
+        <option value="Sin Bodega">Sin Bodega</option>
+      </select>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Cantidad:</span>
+      <input type="number" id="recep-salida-cantidad" min="1" step="1" placeholder="0" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; box-sizing: border-box; width: 100%;">
+    </div>
+
+    <!-- BLOQUE AVERIA -->
+    <div id="recep-salida-bloque-averia" style="display: flex; flex-direction: column; gap: 14px;">
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Motivo:</span>
+        <input type="text" id="recep-salida-motivo" placeholder="Ej. Producto dañado, vencido, perdido" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; box-sizing: border-box; width: 100%;">
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Responsable:</span>
+        <input type="text" id="recep-salida-responsable" placeholder="Opcional" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; box-sizing: border-box; width: 100%;">
+      </div>
+    </div>
+
+    <!-- BLOQUE ENTREGA A PRODUCCION -->
+    <div id="recep-salida-bloque-produccion" style="display: none; flex-direction: column; gap: 14px;">
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Área / Departamento que Recibe:</span>
+        <input type="text" id="recep-salida-area" placeholder="Ej. Producción" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; box-sizing: border-box; width: 100%;">
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Nota (opcional):</span>
+        <input type="text" id="recep-salida-nota" placeholder="Ej. Para orden de producción #..." style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; box-sizing: border-box; width: 100%;">
+      </div>
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <button type="button" id="recep-salida-btn-firma-pro" title="Disponible en la versión PRO móvil" style="height: 38px; padding: 0 14px; background: #f1f5f9; color: #94a3b8; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: not-allowed; display: inline-flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-signature"></i> Firmar Entrega
+          <span style="background: #deff9a; color: #000000; border: 1px solid #b4e63b; font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 8px;">PRO</span>
+        </button>
+        <span id="recep-salida-firma-confirmada-texto" style="display: none; font-size: 11px; color: #16a34a; font-weight: 600;"><i class="fa-solid fa-circle-check"></i> Firma capturada</span>
+      </div>
+    </div>
+
+    <button type="button" id="recep-btn-guardar-salida" style="height: 42px; background: #ef4444; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+      <i class="fa-solid fa-floppy-disk"></i> Registrar Salida
+    </button>
+  </div>
+</dialog>
+
+<!-- MODAL: VER RECIBO (tipo WH-IN / WH-OUT) -->
+<dialog id="recep-modal-recibo" class="modal-dialog-erp" style="max-width: 600px !important;">
+  <div style="display: flex; justify-content: space-between; align-items: center; background: var(--accent); padding: 14px 20px; color: #ffffff;">
+    <h4 style="margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 8px;">
+      <i class="fa-solid fa-receipt"></i> Recibo de Recepción — <span id="recibo-id-texto"></span>
+    </h4>
+    <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px; color: rgba(255,255,255,0.8);" onclick="this.closest('dialog').close()"></i>
+  </div>
+  <div style="padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 16px; max-height: 75vh; overflow-y: auto;">
+
+    <div id="recibo-cadena-trazabilidad" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 11px; color: #64748b;"></div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px;">
+        <div style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 6px;">Requisición de Origen</div>
+        <div id="recibo-info-requisicion" style="font-size: 12px; color: #1e293b;"></div>
+      </div>
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px;">
+        <div style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 6px;">Orden de Compra</div>
+        <div id="recibo-info-orden" style="font-size: 12px; color: #1e293b;"></div>
+      </div>
+    </div>
+
+    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px;">
+      <div style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 6px;">Recepción</div>
+      <div id="recibo-info-recepcion" style="font-size: 12px; color: #1e293b;"></div>
+    </div>
+
+    <div>
+      <div style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 8px;">Ítems Recibidos en este Recibo</div>
+      <div id="recibo-lista-items" style="display: flex; flex-direction: column; gap: 8px;"></div>
+    </div>
+
+    <button type="button" id="recibo-btn-descargar-pdf" style="height: 42px; background: var(--accent); color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+      <i class="fa-solid fa-file-pdf"></i> Descargar Recibo en PDF
+    </button>
+  </div>
+</dialog>
+
+<style>
+  .modal-dialog-erp {
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 460px !important;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25) !important;
+    background: #f8fafc !important;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    margin: 0 !important;
+  }
+  .modal-dialog-erp::backdrop {
+    background: rgba(15, 23, 42, 0.45) !important;
+    backdrop-filter: blur(2px) !important;
+  }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+<script>
+(function() {
+  console.log("Core-Recepcion: script inicializado correctamente.");
+
+  let ORDENES_RECEPCION = [];
+  let TODAS_LAS_VARIANTES_RECEP = [];
+  let BODEGAS_GLOBAL_RECEP = [];
+  let tipoSalidaActual = 'Avería';
+  let firmaSalidaCapturada = false;
+  let RECEPCIONES_HISTORIAL = [];
+  let recepLicenciaPro = false;
+  let firmaDigitalCapturada = false;
+  let reciboActualParaPdf = null;
+
+  setTimeout(() => {
+    inicializarEventosRecepcion();
+    sincronizarLicenciaLocal();
+    window.recep_CambiarTab('pendientes');
+    window.recep_CargarDatos();
+  }, 50);
+
+  function inicializarEventosRecepcion() {
+    const btn = document.getElementById('recep-btn-guardar');
+    if (btn) btn.addEventListener('click', () => window.recep_Guardar());
+
+    const btnFirma = document.getElementById('recep-btn-firma-pro');
+    if (btnFirma) btnFirma.addEventListener('click', () => window.recep_SimularFirmaPro());
+
+    const btnDescargarRecibo = document.getElementById('recibo-btn-descargar-pdf');
+    if (btnDescargarRecibo) btnDescargarRecibo.addEventListener('click', () => window.recep_DescargarReciboPdf());
+
+    const btnGuardarSalida = document.getElementById('recep-btn-guardar-salida');
+    if (btnGuardarSalida) btnGuardarSalida.addEventListener('click', () => window.recep_GuardarSalida());
+
+    const btnFirmaSalida = document.getElementById('recep-salida-btn-firma-pro');
+    if (btnFirmaSalida) btnFirmaSalida.addEventListener('click', () => window.recep_SimularFirmaSalidaPro());
+
+    const selectSalidaSku = document.getElementById('recep-salida-sku');
+    if (selectSalidaSku) selectSalidaSku.addEventListener('change', () => {
+      const variante = TODAS_LAS_VARIANTES_RECEP.find(v => v.sku === selectSalidaSku.value);
+      const span = document.getElementById('recep-salida-stock-disponible');
+      if (span) span.innerText = '';
+    });
+  }
+
+  window.recep_CambiarTab = function(tab) {
+    const tabs = { pendientes: 'recep-tab-pendientes', recibos: 'recep-tab-recibos' };
+    const paneles = { pendientes: 'recep-panel-pendientes', recibos: 'recep-panel-recibos' };
+
+    Object.keys(tabs).forEach(key => {
+      const btn = document.getElementById(tabs[key]);
+      const activo = key === tab;
+      btn.style.background = activo ? 'var(--accent)' : '#e2e8f0';
+      btn.style.color = activo ? 'white' : 'var(--text)';
+      btn.style.fontWeight = activo ? '600' : '500';
+      document.getElementById(paneles[key]).style.display = activo ? 'block' : 'none';
+    });
+
+    if (tab === 'recibos') window.recep_CargarHistorial();
+  };
+
+  function sincronizarLicenciaLocal() {
+    const estadoFresco = localStorage.getItem('erp_licencia_pro') === 'true';
+    window.actualizarModuloRecepcionPorLicencia(estadoFresco);
+  }
+
+  window.actualizarModuloRecepcionPorLicencia = function(esPro) {
+    try {
+      recepLicenciaPro = (esPro === true || esPro === "true");
+      const badge = document.getElementById('recep-badge-modo-pro');
+      const infoIcon = document.getElementById('recep-info-modo-estandar');
+      const btnFirma = document.getElementById('recep-btn-firma-pro');
+      const btnFirmaSalida = document.getElementById('recep-salida-btn-firma-pro');
+
+      if (recepLicenciaPro) {
+        if (badge) {
+          badge.innerHTML = '<i class="fa-solid fa-star"></i> MODULO PRO ACTIVO';
+          badge.style.background = "#deff9a";
+          badge.style.color = "#000000";
+          badge.style.borderColor = "#b4e63b";
+        }
+        if (infoIcon) infoIcon.style.display = 'none';
+        [btnFirma, btnFirmaSalida].forEach(btn => {
+          if (!btn) return;
+          btn.style.background = "#deff9a";
+          btn.style.color = "#000000";
+          btn.style.borderColor = "#b4e63b";
+          btn.style.cursor = "pointer";
+          btn.title = "Capturar firma";
+        });
+      } else {
+        if (badge) {
+          badge.innerHTML = 'MODULO ESTANDAR';
+          badge.style.background = "#f1f5f9";
+          badge.style.color = "#64748b";
+          badge.style.borderColor = "#cbd5e1";
+        }
+        if (infoIcon) infoIcon.style.display = 'inline-block';
+        [btnFirma, btnFirmaSalida].forEach(btn => {
+          if (!btn) return;
+          btn.style.background = "#f1f5f9";
+          btn.style.color = "#94a3b8";
+          btn.style.borderColor = "#e2e8f0";
+          btn.style.cursor = "not-allowed";
+          btn.title = "Disponible en la versión PRO móvil";
+        });
+      }
+    } catch (e) {
+      console.error("Error en actualizacion de licencia (Recepcion):", e.message);
+    }
+  };
+
+  /**
+   * Placeholder funcional: simula que la recepcion quedo firmada. La
+   * captura REAL de firma (dibujada con el dedo en el celular) se
+   * construira en una sesion dedicada a la version movil del ERP.
+   */
+  window.recep_SimularFirmaPro = function() {
+    if (!recepLicenciaPro) {
+      window.erpToast("La firma digital de recepción es una función PRO.", "info");
+      return;
+    }
+    firmaDigitalCapturada = true;
+    const texto = document.getElementById('recep-firma-confirmada-texto');
+    if (texto) texto.style.display = 'inline-block';
+    window.erpToast("Firma de recepción confirmada (simulada). La captura real llegará en la app móvil.", "exito");
+  };
+
+  window.recep_CargarDatos = function() {
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+    google.script.run
+      .withSuccessHandler(function(ords) { ORDENES_RECEPCION = ords || []; renderizarListaOrdenes(); })
+      .obtenerOrdenesCompraServidor();
+
+    google.script.run
+      .withSuccessHandler(function(catalogo) {
+        TODAS_LAS_VARIANTES_RECEP = [];
+        (catalogo || []).forEach(p => (p.variantes || []).forEach(v => {
+          TODAS_LAS_VARIANTES_RECEP.push({ sku: v.sku, descripcion: p.nombre + ' - ' + (v.etiqueta || 'Estandar') });
+        }));
+        poblarSelectorVariantesSalida();
+      })
+      .obtenerCatalogoParaRequisicionesServidor();
+
+    google.script.run
+      .withSuccessHandler(function(bodegas) { BODEGAS_GLOBAL_RECEP = bodegas || []; poblarSelectorBodegasSalida(); })
+      .obtenerBodegasServidor();
+  };
+
+  window.recep_Filtrar = function() {
+    renderizarListaOrdenes();
+  };
+
+  function renderizarListaOrdenes() {
+    const cont = document.getElementById('recep-lista-ordenes');
+    if (!cont) return;
+    cont.innerHTML = '';
+
+    const filtroTipo = document.getElementById('recep-filtro-tipo').value;
+    const filtroTexto = (document.getElementById('recep-filtro-texto').value || '').toLowerCase().trim();
+
+    const ordenesPendientes = ORDENES_RECEPCION.filter(o => {
+      if (o.estado !== 'Pendiente de Recepción' && o.estado !== 'Recibida Parcial') return false;
+      const tipoDestino = o.tipoDestino || 'Bodega';
+      if (filtroTipo && tipoDestino !== filtroTipo) return false;
+      if (filtroTexto) {
+        const texto = (o.id + ' ' + o.proveedor + ' ' + (o.items || []).map(it => it.descripcion).join(' ')).toLowerCase();
+        if (!texto.includes(filtroTexto)) return false;
+      }
+      return true;
+    });
+
+    if (ordenesPendientes.length === 0) {
+      cont.innerHTML = '<div style="text-align:center; padding:30px; color:#94a3b8;">No hay órdenes pendientes de recepción.</div>';
+      return;
+    }
+
+    ordenesPendientes.forEach(o => {
+      const tipoDestino = o.tipoDestino || 'Bodega';
+      const esEntregaDirecta = tipoDestino === 'Entrega Directa';
+      const pendientes = (o.items || []).filter(it => (it.cantidadRecibida || 0) < (it.cantidadOrdenada || 0));
+
+      const badgeDestino = esEntregaDirecta
+        ? '<span style="background:#eff6ff; color:#1e40af; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px;"><i class="fa-solid fa-hand-holding"></i> ENTREGA DIRECTA</span>'
+        : '<span style="background:#f0fdf4; color:#16a34a; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px;"><i class="fa-solid fa-warehouse"></i> ' + (o.bodegaDestino || 'Bodega') + '</span>';
+
+      const subtitulo = esEntregaDirecta
+        ? ('Para: ' + (o.entregaDirectaA || '—'))
+        : ('Bodega: ' + (o.bodegaDestino || '—'));
+
+      const tarjeta = document.createElement('div');
+      tarjeta.style.cssText = "border:1px solid #e2e8f0; border-radius:8px; background:white; padding:14px 18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;";
+      tarjeta.innerHTML =
+        '<div>' +
+          '<div style="font-weight:700; color:#0f172a; font-size:13px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' + o.id + ' — ' + o.proveedor + badgeDestino + '</div>' +
+          '<div style="font-size:11px; color:#94a3b8; margin-top:2px;">' + subtitulo + ' · ' + pendientes.length + ' ítem(s) pendiente(s) de recibir</div>' +
+        '</div>' +
+        '<button type="button" style="height:36px; padding:0 14px; background:#16a34a; color:white; border:none; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer;">Registrar Recepción</button>';
+      tarjeta.querySelector('button').addEventListener('click', () => window.recep_AbrirModal(o.id));
+      cont.appendChild(tarjeta);
+    });
+  }
+
+  window.recep_AbrirModal = function(idOrden) {
+    const orden = ORDENES_RECEPCION.find(o => o.id === idOrden);
+    if (!orden) return;
+
+    const tipoDestino = orden.tipoDestino || 'Bodega';
+    const esEntregaDirecta = tipoDestino === 'Entrega Directa';
+
+    document.getElementById('recep-id-orden').value = idOrden;
+    document.getElementById('recep-tipo-destino-actual').value = tipoDestino;
+    document.getElementById('recep-orden-ref').innerText = idOrden + ' — ' + orden.proveedor;
+
+    const header = document.getElementById('recep-modal-header');
+    const icono = document.getElementById('recep-modal-icono');
+    const titulo = document.getElementById('recep-modal-titulo');
+    const bloqueBodega = document.getElementById('recep-bloque-bodega');
+    const bloqueEntrega = document.getElementById('recep-bloque-entrega-directa');
+
+    firmaDigitalCapturada = false;
+    document.getElementById('recep-recibido-por').value = '';
+    document.getElementById('recep-firma-confirmada-texto').style.display = 'none';
+
+    if (esEntregaDirecta) {
+      header.style.background = '#1e40af';
+      icono.className = 'fa-solid fa-hand-holding';
+      titulo.innerText = 'Confirmar Entrega Directa';
+      bloqueBodega.style.display = 'none';
+      bloqueEntrega.style.display = 'flex';
+      document.getElementById('recep-entrega-directa-texto').innerText = orden.entregaDirectaA || '—';
+    } else {
+      header.style.background = '#16a34a';
+      icono.className = 'fa-solid fa-warehouse';
+      titulo.innerText = 'Recepción en Bodega';
+      bloqueBodega.style.display = 'flex';
+      bloqueEntrega.style.display = 'none';
+      // La bodega viene FIJA desde la orden -- el receptor solo confirma
+      // cantidades, no puede elegir ni cambiar la bodega de destino.
+      document.getElementById('recep-bodega-fija-texto').innerText = orden.bodegaDestino || 'Sin bodega definida';
+    }
+
+    const cont = document.getElementById('recep-items-pendientes');
+    cont.innerHTML = '';
+
+    (orden.items || []).forEach(it => {
+      const pendiente = (it.cantidadOrdenada || 0) - (it.cantidadRecibida || 0);
+      if (pendiente <= 0) return;
+
+      const fila = document.createElement('div');
+      fila.style.cssText = "background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:10px 12px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;";
+      fila.innerHTML =
+        '<div style="flex:1; min-width:160px;"><span style="font-size:12px; font-weight:600; color:#1e293b;">' + it.descripcion + '</span><br>' +
+        '<span style="font-size:10px; color:#94a3b8;">Pendiente: ' + pendiente + ' de ' + it.cantidadOrdenada + ' · Costo: $' + parseFloat(it.costoUnitario || 0).toFixed(2) + '</span></div>' +
+        '<input type="number" class="recep-input-cantidad" data-sku="' + it.sku + '" data-pendiente="' + pendiente + '" min="0" max="' + pendiente + '" placeholder="0" style="width:80px; height:36px; border:1px solid #cbd5e1; border-radius:6px; padding:0 8px; box-sizing:border-box;">';
+      cont.appendChild(fila);
+    });
+
+    document.getElementById('recep-modal').showModal();
+  };
+
+  window.recep_Guardar = function() {
+    const idOrden = document.getElementById('recep-id-orden').value;
+    const tipoDestino = document.getElementById('recep-tipo-destino-actual').value;
+    const esEntregaDirecta = tipoDestino === 'Entrega Directa';
+    const recibidoPor = document.getElementById('recep-recibido-por').value.trim();
+    const inputs = document.querySelectorAll('.recep-input-cantidad');
+
+    if (esEntregaDirecta && !recibidoPor) {
+      window.erpToast("Indica el nombre de quién recibe la entrega.", "error");
+      return;
+    }
+
+    const items = [];
+    let huboError = false;
+    inputs.forEach(input => {
+      const cantidad = parseFloat(input.value) || 0;
+      const pendiente = parseFloat(input.dataset.pendiente) || 0;
+      if (cantidad > pendiente) huboError = true;
+      if (cantidad > 0) items.push({ sku: input.dataset.sku, cantidadRecibida: cantidad });
+    });
+
+    if (huboError) { window.erpToast("No puedes recibir más de lo pendiente en algún ítem.", "error"); return; }
+    if (items.length === 0) { window.erpToast("Indica al menos una cantidad recibida.", "error"); return; }
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+          if (res.exito) { document.getElementById('recep-modal').close(); window.recep_CargarDatos(); }
+        })
+        .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+        .registrarRecepcionCompraServidor({
+          idOrden: idOrden,
+          items: items,
+          recibidoPor: recibidoPor,
+          firmaDigital: firmaDigitalCapturada ? 'CONFIRMADA' : ''
+        });
+    }
+  };
+
+  // ==========================================================================
+  // RECIBOS DE RECEPCION (historial) — tipo WH-IN / WH-OUT
+  // ==========================================================================
+  window.recep_CargarHistorial = function() {
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+    google.script.run
+      .withSuccessHandler(function(recs) { RECEPCIONES_HISTORIAL = recs || []; window.recep_RenderizarHistorial(); })
+      .obtenerRecepcionesServidor();
+  };
+
+  window.recep_RenderizarHistorial = function() {
+    const cont = document.getElementById('recep-lista-historial');
+    if (!cont) return;
+
+    const filtroTexto = (document.getElementById('recep-historial-filtro-texto').value || '').toLowerCase().trim();
+    const filtradas = RECEPCIONES_HISTORIAL.filter(r => {
+      if (!filtroTexto) return true;
+      const texto = (r.id + ' ' + r.idOrden + ' ' + r.recibidoPor + ' ' + r.usuario).toLowerCase();
+      return texto.includes(filtroTexto);
+    });
+
+    cont.innerHTML = '';
+    if (filtradas.length === 0) {
+      cont.innerHTML = '<div style="text-align:center; padding:30px; color:#94a3b8;">Aún no hay recibos de recepción registrados.</div>';
+      return;
+    }
+
+    filtradas.forEach(r => {
+      const esSalida = r.tipoMovimiento === 'Salida';
+      let badgeMovimiento, badgeDestino, subtitulo;
+
+      if (esSalida) {
+        badgeMovimiento = '<span style="background:#fee2e2; color:#b91c1c; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px;"><i class="fa-solid fa-arrow-up-from-bracket"></i> SALIDA</span>';
+        const esAveria = r.tipoDestino === 'Avería';
+        const esVenta = r.entregaDirectaA && (r.entregaDirectaA.startsWith('Venta') || r.entregaDirectaA.startsWith('VD-'));
+        badgeDestino = esAveria
+          ? '<span style="background:#fef3c7; color:#b45309; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px;">AVERÍA</span>'
+          : esVenta
+            ? '<span style="background:#f0fdf4; color:#16a34a; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px;"><i class="fa-solid fa-cash-register"></i> VENTA</span>'
+            : '<span style="background:#eff6ff; color:#1e40af; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px;">ENTREGA A PRODUCCIÓN</span>';
+        subtitulo = (r.bodega && r.bodega !== 'Sin Bodega' ? ('Bodega: ' + r.bodega) : '') +
+          (r.idOrden ? ' · Ref: ' + r.idOrden : '') +
+          (r.entregaDirectaA && !esVenta ? ' · Área: ' + r.entregaDirectaA : '');
+      } else {
+        badgeMovimiento = '<span style="background:#dcfce7; color:#16a34a; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px;"><i class="fa-solid fa-truck-ramp-box"></i> ENTRADA</span>';
+        const esEntregaDirecta = r.tipoDestino === 'Entrega Directa';
+        badgeDestino = esEntregaDirecta
+          ? '<span style="background:#eff6ff; color:#1e40af; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px;">ENTREGA DIRECTA</span>'
+          : '<span style="background:#f0fdf4; color:#16a34a; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px;">BODEGA' + (r.bodega ? (': ' + r.bodega) : '') + '</span>';
+        subtitulo = esEntregaDirecta ? ('Recibió: ' + (r.recibidoPor || '—')) : ('Orden: ' + r.idOrden);
+      }
+
+      const totalItems = (r.items || []).reduce((acc, it) => acc + (parseFloat(it.cantidadRecibida) || 0), 0);
+
+      const tarjeta = document.createElement('div');
+      tarjeta.style.cssText = "border:1px solid #e2e8f0; border-radius:8px; background:white; padding:14px 18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;";
+      tarjeta.innerHTML =
+        '<div>' +
+          '<div style="font-weight:700; color:#0f172a; font-size:13px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' + r.id + badgeMovimiento + badgeDestino + '</div>' +
+          '<div style="font-size:11px; color:#94a3b8; margin-top:2px;">' + (r.fecha ? new Date(r.fecha).toLocaleString() : '') + ' · ' + subtitulo + ' · ' + totalItems + ' unidad(es)</div>' +
+        '</div>' +
+        '<button type="button" style="height:36px; padding:0 14px; background:var(--accent); color:white; border:none; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:6px;"><i class="fa-solid fa-receipt"></i> Ver Recibo</button>';
+      tarjeta.querySelector('button').addEventListener('click', () => window.recep_VerRecibo(r.id));
+      cont.appendChild(tarjeta);
+    });
+  };
+
+  /**
+   * Abre el modal de detalle (tipo WH-IN/WH-OUT): pide al backend el cruce
+   * completo Requisicion -> Orden de Compra -> Recepcion para ESE recibo
+   * especifico, y lo pinta.
+   */
+  window.recep_VerRecibo = function(idRecepcion) {
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+    google.script.run
+      .withSuccessHandler(function(res) {
+        if (!res.exito) { window.erpToast(res.mensaje, 'error'); return; }
+        reciboActualParaPdf = res;
+        pintarModalRecibo(res);
+        document.getElementById('recep-modal-recibo').showModal();
+      })
+      .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+      .obtenerDetalleRecepcionServidor(idRecepcion);
+  };
+
+  function pintarModalRecibo(res) {
+    const recepcion = res.recepcion;
+    const orden = res.orden;
+    const requisiciones = res.requisiciones || [];
+    const esSalida = recepcion.tipoMovimiento === 'Salida';
+    const esEntregaDirecta = !esSalida && recepcion.tipoDestino === 'Entrega Directa';
+
+    document.getElementById('recibo-id-texto').innerText = recepcion.id;
+
+    // Cadena de trazabilidad visual: Requisicion(es) -> Orden -> Recibo
+    // (las salidas no tienen requisicion ni orden de origen, solo su propio id)
+    const cadena = document.getElementById('recibo-cadena-trazabilidad');
+    const partes = [];
+    if (requisiciones.length > 0) partes.push(requisiciones.map(r => r.id).join(', '));
+    if (orden) partes.push(orden.id);
+    partes.push(recepcion.id);
+    cadena.innerHTML = partes.map((p, idx) => {
+      const esUltimo = idx === partes.length - 1;
+      return '<span style="background:' + (esUltimo ? '#eff6ff' : '#f1f5f9') + '; color:' + (esUltimo ? '#1e40af' : '#475569') + '; font-weight:700; padding:3px 10px; border-radius:10px;">' + p + '</span>' + (idx < partes.length - 1 ? ' <i class="fa-solid fa-arrow-right" style="color:#cbd5e1;"></i> ' : '');
+    }).join('');
+
+    const infoReq = document.getElementById('recibo-info-requisicion');
+    if (esSalida) {
+      infoReq.innerHTML = '<span style="color:#94a3b8;">No aplica para salidas de bodega.</span>';
+    } else if (requisiciones.length > 0) {
+      infoReq.innerHTML = requisiciones.map(r => '<div style="margin-bottom:4px;"><strong>' + r.id + '</strong> — ' + (r.departamento || 'Sin departamento') + ' · ' + (r.fecha ? new Date(r.fecha).toLocaleDateString() : '') + '</div>').join('');
+    } else {
+      infoReq.innerHTML = '<span style="color:#94a3b8;">Compra directa, sin requisición de origen.</span>';
+    }
+
+    const infoOrden = document.getElementById('recibo-info-orden');
+    if (esSalida) {
+      const esAveria = recepcion.tipoDestino === 'Avería';
+      const esVenta = recepcion.entregaDirectaA && (recepcion.entregaDirectaA.startsWith('Venta') || recepcion.entregaDirectaA.startsWith('VD-'));
+      if (esAveria) {
+        infoOrden.innerHTML = '<strong>Avería / Ajuste</strong><br>Bodega: ' + (recepcion.bodega || '—');
+      } else if (esVenta) {
+        infoOrden.innerHTML = '<strong>Salida por Venta</strong><br>Referencia: <span style="color:var(--accent);">' + (recepcion.idOrden || recepcion.entregaDirectaA || '—') + '</span>' +
+          (recepcion.bodega && recepcion.bodega !== 'Sin Bodega' ? '<br>Bodega: ' + recepcion.bodega : '');
+      } else {
+        infoOrden.innerHTML = '<strong>Entrega a Producción</strong><br>Área: ' + (recepcion.entregaDirectaA || '—');
+      }
+    } else if (orden) {
+      infoOrden.innerHTML =
+        '<strong>' + orden.id + '</strong><br>' +
+        'Proveedor: ' + orden.proveedor + '<br>' +
+        'Total: $' + (orden.totalAPagar || 0).toFixed(2);
+    } else {
+      infoOrden.innerHTML = '<span style="color:#94a3b8;">No disponible.</span>';
+    }
+
+    const infoRecepcion = document.getElementById('recibo-info-recepcion');
+    let lineaDestino;
+    if (esSalida) {
+      const esAveria = recepcion.tipoDestino === 'Avería';
+      lineaDestino = esAveria
+        ? ('Tipo: Avería / Ajuste<br>Bodega de origen: ' + (recepcion.bodega || '—') + (recepcion.recibidoPor ? ('<br>Responsable: ' + recepcion.recibidoPor) : ''))
+        : ('Tipo: Entrega a Producción<br>Bodega de origen: ' + (recepcion.bodega || '—') + '<br>Área que recibió: ' + (recepcion.entregaDirectaA || '—') + (recepcion.firmaDigital ? ' <i class="fa-solid fa-circle-check" style="color:#16a34a;" title="Firma confirmada"></i>' : ''));
+    } else {
+      lineaDestino = esEntregaDirecta
+        ? ('Destino: Entrega Directa<br>Recibió: ' + (recepcion.recibidoPor || '—') + (recepcion.firmaDigital ? ' <i class="fa-solid fa-circle-check" style="color:#16a34a;" title="Firma confirmada"></i>' : ''))
+        : ('Destino: Bodega' + (recepcion.bodega ? (' — ' + recepcion.bodega) : ''));
+    }
+    infoRecepcion.innerHTML =
+      'Fecha: ' + (recepcion.fecha ? new Date(recepcion.fecha).toLocaleString() : '') + '<br>' +
+      'Registrado por: ' + (recepcion.usuario || '—') + '<br>' +
+      lineaDestino;
+
+    const listaItems = document.getElementById('recibo-lista-items');
+    listaItems.innerHTML = '';
+    (recepcion.items || []).forEach(it => {
+      const fila = document.createElement('div');
+      fila.style.cssText = "background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:10px 12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;";
+      fila.innerHTML =
+        '<div><span style="font-size:12px; font-weight:600; color:#1e293b;">' + it.descripcion + '</span>' +
+        (it.idRequisicionOrigen ? ('<br><span style="font-size:10px; color:#1e40af;"><i class="fa-solid fa-arrow-turn-up fa-rotate-90" style="font-size:9px;"></i> Desde ' + it.idRequisicionOrigen + '</span>') : '') + '</div>' +
+        '<div style="font-size:12px; color:#475569;">Cant: <strong>' + it.cantidadRecibida + '</strong>' + (esSalida ? '' : (' · Costo: $' + parseFloat(it.costoUnitario || 0).toFixed(2))) + '</div>';
+      listaItems.appendChild(fila);
+    });
+  }
+
+  window.recep_DescargarReciboPdf = function() {
+    if (!reciboActualParaPdf) return;
+
+    // Primero obtiene los datos de empresa (logo + nombre + nombre ERP) para
+    // el encabezado corporativo del PDF, luego genera el documento.
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(empresa) { generarPdfConEmpresa(empresa || {}); })
+        .withFailureHandler(function() { generarPdfConEmpresa({}); })
+        .obtenerConfiguracionEmpresaServidor();
+    } else {
+      generarPdfConEmpresa({});
+    }
+  };
+
+  function generarPdfConEmpresa(empresa) {
+    try {
+      const recepcion = reciboActualParaPdf.recepcion;
+      const orden = reciboActualParaPdf.orden;
+      const requisiciones = reciboActualParaPdf.requisiciones || [];
+      const esSalida = recepcion.tipoMovimiento === 'Salida';
+      const esEntregaDirecta = !esSalida && recepcion.tipoDestino === 'Entrega Directa';
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      const W = doc.internal.pageSize.getWidth();
+      const H = doc.internal.pageSize.getHeight();
+
+      // ── ENCABEZADO CORPORATIVO ──────────────────────────────────────────
+      const logoBase64 = empresa.logoUrl || '';
+      const nombreEmpresa = empresa.nombreEmpresa || '';
+      const nombreErp = empresa.nombreErp || 'ERP Corporativo';
+
+      // Franja de color superior
+      const colorFranja = esSalida ? [239, 68, 68] : [37, 99, 235];
+      doc.setFillColor(...colorFranja);
+      doc.rect(0, 0, W, 28, 'F');
+
+      // Logo a la izquierda (si existe y es base64)
+      let xTextoEmpresa = 14;
+      if (logoBase64 && logoBase64.startsWith('data:image')) {
+        try {
+          const formato = logoBase64.includes('data:image/png') ? 'PNG' : 'JPEG';
+          doc.addImage(logoBase64, formato, 8, 4, 20, 20);
+          xTextoEmpresa = 32;
+        } catch(eImg) { /* si el logo falla, continua sin el */ }
+      }
+
+      // Nombre de empresa en blanco sobre la franja
+      doc.setFontSize(13);
+      doc.setFont(undefined, 'bold');
+      doc.setTextColor(255, 255, 255);
+      doc.text(nombreEmpresa || nombreErp, xTextoEmpresa, 13);
+
+      // Tipo de recibo (WH-IN / WH-OUT) alineado a la derecha
+      doc.setFontSize(9);
+      doc.setFont(undefined, 'normal');
+      doc.text(esSalida ? 'RECIBO DE SALIDA' : 'RECIBO DE RECEPCIÓN', W - 14, 10, { align: 'right' });
+      doc.setFontSize(11);
+      doc.setFont(undefined, 'bold');
+      doc.text(recepcion.id, W - 14, 18, { align: 'right' });
+
+      // ── CUERPO ──────────────────────────────────────────────────────────
+      doc.setTextColor(30, 41, 59); // color texto normal (#1e293b)
+      let y = 36;
+
+      // Fecha y registrado por
+      doc.setFontSize(9);
+      doc.setFont(undefined, 'normal');
+      doc.text('Fecha: ' + (recepcion.fecha ? new Date(recepcion.fecha).toLocaleString() : '—'), 14, y);
+      doc.text('Registrado por: ' + (recepcion.usuario || '—'), W - 14, y, { align: 'right' });
+      y += 7;
+
+      // Linea separadora
+      doc.setDrawColor(226, 232, 240);
+      doc.line(14, y, W - 14, y);
+      y += 7;
+
+      // ── CADENA DE TRAZABILIDAD (solo entradas) ──────────────────────────
+      if (!esSalida) {
+        const partesTrazabilidad = [
+          requisiciones.length > 0 ? requisiciones.map(r => r.id).join(', ') : null,
+          orden ? orden.id : null,
+          recepcion.id
+        ].filter(Boolean);
+
+        if (partesTrazabilidad.length > 1) {
+          doc.setFontSize(8);
+          doc.setFont(undefined, 'bold');
+          doc.setTextColor(100, 116, 139);
+          doc.text('TRAZABILIDAD', 14, y);
+          y += 5;
+          doc.setFont(undefined, 'normal');
+          doc.setTextColor(30, 41, 59);
+          doc.text(partesTrazabilidad.join('  >>  '), 14, y);
+          y += 8;
+        }
+      }
+
+      // ── DOS COLUMNAS: Requisicion / Orden de Compra (o Tipo de Salida) ──
+      const xCol2 = W / 2 + 2;
+      const yInicioColumnas = y;
+
+      // Columna izquierda: Requisicion de origen (o "No aplica" si es salida)
+      doc.setFontSize(8);
+      doc.setFont(undefined, 'bold');
+      doc.setTextColor(100, 116, 139);
+      doc.text(esSalida ? 'TIPO DE SALIDA' : 'REQUISICIÓN DE ORIGEN', 14, y);
+      y += 5;
+      doc.setFont(undefined, 'normal');
+      doc.setTextColor(30, 41, 59);
+      if (esSalida) {
+        const esAveria = recepcion.tipoDestino === 'Avería';
+        doc.text(esAveria ? 'Avería / Ajuste' : 'Entrega a Producción', 14, y);
+        y += 4;
+        doc.setFontSize(8);
+        doc.setTextColor(100, 116, 139);
+        doc.text('Bodega: ' + (recepcion.bodega || '—'), 14, y);
+        y += 4;
+        if (!esAveria) doc.text('Área: ' + (recepcion.entregaDirectaA || '—'), 14, y);
+        else if (recepcion.recibidoPor) doc.text('Responsable: ' + recepcion.recibidoPor, 14, y);
+      } else if (requisiciones.length > 0) {
+        requisiciones.forEach((r, idx) => {
+          doc.setFontSize(9);
+          doc.setTextColor(30, 41, 59);
+          doc.text(r.id, 14, y);
+          y += 4;
+          doc.setFontSize(8);
+          doc.setTextColor(100, 116, 139);
+          doc.text((r.departamento || 'Sin departamento'), 14, y);
+          if (idx < requisiciones.length - 1) y += 4;
+        });
+      } else {
+        doc.setTextColor(148, 163, 184);
+        doc.text('Compra directa', 14, y);
+      }
+
+      // Columna derecha: Orden de Compra (o detalles de la recepcion si es salida)
+      let yCol2 = yInicioColumnas;
+      doc.setFontSize(8);
+      doc.setFont(undefined, 'bold');
+      doc.setTextColor(100, 116, 139);
+      doc.text(esSalida ? 'DETALLES DE RECEPCIÓN' : 'ORDEN DE COMPRA', xCol2, yCol2);
+      yCol2 += 5;
+      doc.setFont(undefined, 'normal');
+      doc.setTextColor(30, 41, 59);
+      if (!esSalida && orden) {
+        doc.setFontSize(9);
+        doc.text(orden.id, xCol2, yCol2);
+        yCol2 += 4;
+        doc.setFontSize(8);
+        doc.setTextColor(100, 116, 139);
+        doc.text('Proveedor: ' + orden.proveedor, xCol2, yCol2);
+        yCol2 += 4;
+        doc.text('Total: $' + parseFloat(orden.totalAPagar || 0).toFixed(2), xCol2, yCol2);
+      } else if (!esSalida) {
+        doc.setTextColor(148, 163, 184);
+        doc.text('No disponible', xCol2, yCol2);
+      } else {
+        doc.setFontSize(9);
+        const esEntregaDirectaRecibo = recepcion.tipoDestino === 'Entrega Directa';
+        doc.text(esEntregaDirecta ? 'ENTREGA DIRECTA' : (recepcion.bodega || '—'), xCol2, yCol2);
+        if (esEntregaDirecta && recepcion.recibidoPor) {
+          yCol2 += 4;
+          doc.setFontSize(8);
+          doc.setTextColor(100, 116, 139);
+          doc.text('Recibió: ' + recepcion.recibidoPor, xCol2, yCol2);
+        }
+      }
+
+      y = Math.max(y, yCol2) + 8;
+
+      // Linea separadora
+      doc.setDrawColor(226, 232, 240);
+      doc.line(14, y, W - 14, y);
+      y += 4;
+
+      // ── TABLA DE ITEMS ──────────────────────────────────────────────────
+      const colorHead = esSalida ? [239, 68, 68] : [37, 99, 235];
+      const filasTabla = esSalida
+        ? (recepcion.items || []).map(it => [it.descripcion, it.cantidadRecibida])
+        : (recepcion.items || []).map(it => [it.descripcion, it.cantidadRecibida, '$' + parseFloat(it.costoUnitario || 0).toFixed(2)]);
+
+      doc.autoTable({
+        startY: y,
+        head: esSalida
+          ? [['Descripción / SKU', 'Cantidad']]
+          : [['Descripción / SKU', 'Cantidad Recibida', 'Costo Unit.']],
+        body: filasTabla,
+        styles: { fontSize: 9, cellPadding: 4 },
+        headStyles: { fillColor: colorHead, textColor: 255, fontStyle: 'bold' },
+        alternateRowStyles: { fillColor: [248, 250, 252] },
+        columnStyles: esSalida
+          ? { 1: { halign: 'center', cellWidth: 40 } }
+          : { 1: { halign: 'center', cellWidth: 45 }, 2: { halign: 'right', cellWidth: 35 } },
+        margin: { left: 14, right: 14 }
+      });
+
+      // ── PIE DE PAGINA ───────────────────────────────────────────────────
+      const yFinal = H - 10;
+      doc.setFontSize(7);
+      doc.setFont(undefined, 'normal');
+      doc.setTextColor(148, 163, 184);
+      doc.text('Powered by ' + nombreErp, W / 2, yFinal, { align: 'center' });
+
+      doc.save(recepcion.id + '.pdf');
+    } catch (e) {
+      window.erpToast('Error al generar el PDF: ' + e.message, 'error');
+    }
+  }
+
+  // ==========================================================================
+  // REGISTRAR SALIDA — Averia / Entrega a Produccion
+  // ==========================================================================
+  function poblarSelectorVariantesSalida() {
+    const select = document.getElementById('recep-salida-sku');
+    if (!select) return;
+    const valorActual = select.value;
+    select.innerHTML = '<option value="">-- Selecciona una variante --</option>';
+    TODAS_LAS_VARIANTES_RECEP.forEach(v => {
+      const opt = document.createElement('option');
+      opt.value = v.sku;
+      opt.innerText = v.descripcion + ' (SKU: ' + v.sku + ')';
+      select.appendChild(opt);
+    });
+    if (valorActual) select.value = valorActual;
+  }
+
+  function poblarSelectorBodegasSalida() {
+    const select = document.getElementById('recep-salida-bodega');
+    if (!select) return;
+    const valorActual = select.value;
+    select.innerHTML = '<option value="Sin Bodega">Sin Bodega</option>';
+    BODEGAS_GLOBAL_RECEP.forEach(b => {
+      const opt = document.createElement('option');
+      opt.value = b;
+      opt.innerText = b;
+      select.appendChild(opt);
+    });
+    if (valorActual) select.value = valorActual;
+  }
+
+  window.recep_AbrirModalSalida = function() {
+    window.recep_CambiarTipoSalida('Avería');
+    document.getElementById('recep-salida-sku').value = '';
+    document.getElementById('recep-salida-cantidad').value = '';
+    document.getElementById('recep-salida-motivo').value = '';
+    document.getElementById('recep-salida-responsable').value = '';
+    document.getElementById('recep-salida-area').value = '';
+    document.getElementById('recep-salida-nota').value = '';
+    document.getElementById('recep-salida-stock-disponible').innerText = '';
+    document.getElementById('recep-salida-firma-confirmada-texto').style.display = 'none';
+    firmaSalidaCapturada = false;
+    document.getElementById('recep-modal-salida').showModal();
+  };
+
+  window.recep_CambiarTipoSalida = function(tipo) {
+    tipoSalidaActual = tipo;
+    const tabAveria = document.getElementById('recep-salida-tab-averia');
+    const tabProduccion = document.getElementById('recep-salida-tab-produccion');
+    const bloqueAveria = document.getElementById('recep-salida-bloque-averia');
+    const bloqueProduccion = document.getElementById('recep-salida-bloque-produccion');
+
+    const esAveria = tipo === 'Avería';
+    tabAveria.style.background = esAveria ? '#ef4444' : '#ffffff';
+    tabAveria.style.color = esAveria ? 'white' : '#475569';
+    tabAveria.style.border = esAveria ? '2px solid #ef4444' : '2px solid #cbd5e1';
+    tabProduccion.style.background = !esAveria ? '#ef4444' : '#ffffff';
+    tabProduccion.style.color = !esAveria ? 'white' : '#475569';
+    tabProduccion.style.border = !esAveria ? '2px solid #ef4444' : '2px solid #cbd5e1';
+    bloqueAveria.style.display = esAveria ? 'flex' : 'none';
+    bloqueProduccion.style.display = !esAveria ? 'flex' : 'none';
+  };
+
+  window.recep_SimularFirmaSalidaPro = function() {
+    if (!recepLicenciaPro) {
+      window.erpToast("La firma digital de entrega es una función PRO.", "info");
+      return;
+    }
+    firmaSalidaCapturada = true;
+    const texto = document.getElementById('recep-salida-firma-confirmada-texto');
+    if (texto) texto.style.display = 'inline-block';
+    window.erpToast("Firma de entrega confirmada (simulada). La captura real llegará en la app móvil.", "exito");
+  };
+
+  window.recep_GuardarSalida = function() {
+    const sku = document.getElementById('recep-salida-sku').value;
+    const bodega = document.getElementById('recep-salida-bodega').value;
+    const cantidad = parseFloat(document.getElementById('recep-salida-cantidad').value) || 0;
+
+    if (!sku) { window.erpToast("Selecciona una variante.", "error"); return; }
+    if (cantidad <= 0) { window.erpToast("Ingresa una cantidad mayor a cero.", "error"); return; }
+
+    const datos = {
+      sku: sku, bodega: bodega, cantidad: cantidad, tipoSalida: tipoSalidaActual,
+      firmaDigital: firmaSalidaCapturada ? 'CONFIRMADA' : ''
+    };
+
+    if (tipoSalidaActual === 'Avería') {
+      datos.motivo = document.getElementById('recep-salida-motivo').value.trim();
+      datos.responsable = document.getElementById('recep-salida-responsable').value.trim();
+      if (!datos.motivo) { window.erpToast("Indica el motivo de la avería.", "error"); return; }
+    } else {
+      datos.areaDestino = document.getElementById('recep-salida-area').value.trim();
+      datos.motivo = document.getElementById('recep-salida-nota').value.trim();
+      if (!datos.areaDestino) { window.erpToast("Indica el área que recibe.", "error"); return; }
+    }
+
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+    google.script.run
+      .withSuccessHandler(function(res) {
+        window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+        if (res.exito) {
+          document.getElementById('recep-modal-salida').close();
+          window.recep_CargarDatos();
+          if (document.getElementById('recep-panel-recibos').style.display !== 'none') window.recep_CargarHistorial();
+        }
+      })
+      .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+      .registrarSalidaAveriaServidor(datos);
+  };
+
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'erp_licencia_pro') sincronizarLicenciaLocal();
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) sincronizarLicenciaLocal();
+  });
+  document.addEventListener('mousemove', () => {
+    const checkActual = localStorage.getItem('erp_licencia_pro') === 'true';
+    if (checkActual !== recepLicenciaPro) sincronizarLicenciaLocal();
+  });
+
+})();
+</script>
