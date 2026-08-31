@@ -1,0 +1,588 @@
+<div class="erp-main-card" style="animation: fadeIn 0.3s ease; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+    <div class="erp-card-header">
+        <h3>
+            <i class="fa-solid fa-building-shield" style="color: var(--accent);"></i> Perfil e Identidad Corporativa
+        </h3>
+    </div>
+    
+    <form id="form-config-empresa" class="erp-card-body" onsubmit="event.preventDefault(); guardarConfiguracionEmpresaReal();" style="padding: 20px;">
+        
+        <div style="background: #f8fafc; padding: 15px 20px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 25px; display: flex; flex-direction: column; gap: 8px; box-sizing: border-box;">
+            <span style="font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px;">
+                <i class="fa-solid fa-toggle-on"></i> Régimen de Operación de la Empresa
+            </span>
+            <div style="display: flex; flex-direction: column; gap: 6px; max-width: 400px;">
+                <select id="config-empresa-regimen" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; font-size: 13px; color: var(--text); background-color: #ffffff; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05); transition: all 0.2s;" onchange="toggleSeccionesHacienda()">
+                    <option value="INFORMAL">Informal / Emprendedor (No emite documentos tributarios)</option>
+                    <option value="DTE">Contribuyente / Formalizado (Emisor de Facturación Electrónica DTE)</option>
+                </select>
+            </div>
+            <p style="margin: 4px 0 0 0; font-size: 11px; color: var(--text-muted); font-style: italic;">
+                Al seleccionar modo Informal, se ocultarán los campos obligatorios de Hacienda para mantener tu interfaz limpia y ágil.
+            </p>
+        </div>
+
+        <div class="erp-form-section" style="background: #ffffff; padding: 20px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; box-sizing: border-box; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+            <label class="erp-section-label" style="font-size: 14px; font-weight: 600; margin-bottom: 15px; display: block; color: var(--text);">
+                <i class="fa-solid fa-scale-balanced" style="color: var(--accent); margin-right: 6px;"></i> 1. Datos de Identidad Legal y Comercial
+            </label>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 11fr)); gap: 15px; box-sizing: border-box;">
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Nombre de la Empresa / Razón Social:</span>
+                    <input type="text" id="config-empresa-nombre" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; font-size: 13px;" placeholder="Ej: Juan Pérez o Inversiones S.A. de C.V.">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Nombre Comercial / Marca:</span>
+                    <input type="text" id="config-empresa-comercial" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; font-size: 13px;" placeholder="Ej: Variedades El Sol">
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 11fr)); gap: 15px; margin-top: 15px; box-sizing: border-box;">
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">NIT / DUI:</span>
+                    <input type="text" id="config-empresa-nit" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; font-size: 13px;" placeholder="0000-000000-000-0">
+                </div>
+                <div class="seccion-contribuyente-exclusivo" style="display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">NRC:</span>
+                    <input type="text" id="config-empresa-nrc" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; font-size: 13px;" placeholder="000000-0">
+                </div>
+                <div class="seccion-contribuyente-exclusivo" style="display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Clasificación de Contribuyente:</span>
+                    <select id="config-empresa-clasificacion" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; font-size: 13px; background-color: #fff; cursor: pointer;">
+                        <option value="Otros">Otros (Pequeño / Mediano)</option>
+                        <option value="Gran Contribuyente">Gran Contribuyente (Aplica Retención 1%)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="seccion-contribuyente-exclusivo" style="display: flex; flex-direction: column; gap: 6px; margin-top: 15px;">
+                <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Actividad Económica (Código CIIU):</span>
+                <select id="config-empresa-ciiu" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; font-size: 13px; background-color: #fff; cursor: pointer;">
+                    <option value="">-- Seleccione una actividad autorizada por MH --</option>
+                    <option value="62010">62010 - Actividades de desarrollo de sistemas informáticos</option>
+                    <option value="47190">47190 - Venta al por menor en almacenes no especializados</option>
+                </select>
+            </div>
+            
+            <div id="wrapper-giro-simple" style="display: flex; flex-direction: column; gap: 6px; margin-top: 15px;">
+                <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Giro Comercial General:</span>
+                <input type="text" id="config-empresa-giro" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; font-size: 13px;" placeholder="Ej: Venta de calzado, Tienda de conveniencia, etc.">
+            </div>
+        </div>
+
+        <div id="bloque-ubicacion-dte" class="erp-form-section" style="background: #ffffff; padding: 20px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; box-sizing: border-box; box-shadow: 0 1px 3px rgba(0,0,0,0.02); transition: all 0.3s ease;">
+            <label class="erp-section-label" style="font-size: 14px; font-weight: 600; margin-bottom: 15px; display: block; color: var(--text);">
+                <i class="fa-solid fa-map-location-dot" style="color: var(--accent); margin-right: 6px;"></i> 2. Ubicación Geográfica (Estructura DTE)
+            </label>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 11fr)); gap: 15px; box-sizing: border-box;">
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Departamento:</span>
+                    <select id="config-ubicacion-depto" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; font-size: 13px; background-color: #fff; cursor: pointer;" onchange="cargarMunicipiosDTE()">
+                        <option value="">-- Seleccione --</option>
+                        <option value="01">Ahuachapán</option>
+                        <option value="02">Santa Ana</option>
+                        <option value="03">Sonsonate</option>
+                        <option value="04">Chalatenango</option>
+                        <option value="05">La Libertad</option>
+                        <option value="06">San Salvador</option>
+                        <option value="07">Cuscatlán</option>
+                        <option value="08">La Paz</option>
+                        <option value="09">Cabañas</option>
+                        <option value="10">San Vicente</option>
+                        <option value="11">Usulután</option>
+                        <option value="12">San Miguel</option>
+                        <option value="13">Morazán</option>
+                        <option value="14">La Unión</option>
+                    </select>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Municipio (44 Nuevos):</span>
+                    <select id="config-ubicacion-muni" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; font-size: 13px; background-color: #fff; cursor: pointer;" onchange="cargarDistritosDTE()" disabled>
+                        <option value="">-- Seleccione Municipio --</option>
+                    </select>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Distrito:</span>
+                    <select id="config-ubicacion-distrito" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; font-size: 13px; background-color: #fff; cursor: pointer;" disabled>
+                        <option value="">-- Seleccione Distrito --</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="erp-form-section" style="background: #ffffff; padding: 20px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; box-sizing: border-box;">
+            <label class="erp-section-label" style="font-size: 14px; font-weight: 600; margin-bottom: 15px; display: block; color: var(--text);">
+                <i class="fa-solid fa-address-book" style="color: var(--accent); margin-right: 6px;"></i> 3. Dirección y Contacto Comercial
+            </label>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+                <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Dirección de Establecimiento / Local:</span>
+                <input type="text" id="config-empresa-direccion" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; font-size: 13px;" placeholder="Calle, pasaje, colonia, local o número de casa">
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 11fr)); gap: 15px; margin-top: 15px; box-sizing: border-box;">
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Teléfono:</span>
+                    <input type="text" id="config-empresa-telefono" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; font-size: 13px;" placeholder="Ej: 2200-0000">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Correo de Contacto / Clientes:</span>
+                    <input type="email" id="config-empresa-correo" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; font-size: 13px;" placeholder="contacto@empresa.com">
+                </div>
+            </div>
+        </div>
+
+        <div id="bloque-credenciales-mh" class="erp-form-section" style="background: #f8fafc; padding: 20px; border: 1px dashed var(--accent); border-radius: 8px; margin-bottom: 20px; box-sizing: border-box; transition: all 0.3s ease;">
+            <label class="erp-section-label" style="font-size: 14px; font-weight: 600; margin-bottom: 15px; display: block; color: var(--text);">
+                <i class="fa-solid fa-key" style="color: var(--accent); margin-right: 6px;"></i> 4. Credenciales Técnicas de Hacienda (MH)
+            </label>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 11fr)); gap: 15px; box-sizing: border-box;">
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Ambiente de Transmisión:</span>
+                    <select id="config-hacienda-ambiente" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; font-size: 13px; background-color: #fff; cursor: pointer;">
+                        <option value="00">00 - Entorno de Pruebas (Sandbox)</option>
+                        <option value="01">01 - Entorno de Producción</option>
+                    </select>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Firma Electrónica (.p12 o .pfx):</span>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px; flex-wrap: wrap;">
+                        <label for="config-hacienda-p12" class="btn-submit" style="margin:0; width: auto; padding: 0 14px; background: #fff; color: var(--text); border: 1px solid #cbd5e1; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; height: 40px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
+                            <i class="fa-solid fa-file-shield" style="color: var(--accent);"></i> Cargar Llave Firma
+                        </label>
+                        <input type="file" id="config-hacienda-p12" accept=".p12,.pfx" style="display: none;">
+                        <span id="txt-nombre-p12" style="font-size: 11px; color: var(--text-muted); font-style: italic;">No cargado</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 11fr)); gap: 15px; margin-top: 15px; box-sizing: border-box;">
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Contraseña del Certificado:</span>
+                    <input type="password" id="config-hacienda-pwd" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; font-size: 13px;" placeholder="••••••••••••••••">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Token de Autenticación / API Key MH:</span>
+                    <input type="text" id="config-hacienda-token" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; font-size: 13px;" placeholder="Token de integración proporcionado por MH">
+                </div>
+            </div>
+        </div>
+
+        <div class="erp-form-section" style="background: #ffffff; padding: 20px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; box-sizing: border-box;">
+            <label class="erp-section-label" style="font-size: 14px; font-weight: 600; margin-bottom: 15px; display: block; color: var(--text);">
+                <i class="fa-solid fa-coins" style="color: var(--accent); margin-right: 6px;"></i> 5. Configuración Financiera y Regional
+            </label>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 11fr)); gap: 15px; box-sizing: border-box;">
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Moneda Base:</span>
+                    <input type="text" id="config-finanzas-moneda" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; font-size: 13px; background: #f1f5f9; color: #64748b;" value="USD (Dólar)" readonly>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Moneda Secundaria:</span>
+                    <select id="config-finanzas-monedasec" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; font-size: 13px; background-color: #fff; cursor: pointer;">
+                        <option value="NINGUNA">Ninguna (Solo USD)</option>
+                        <option value="BTC">BTC (Bitcoin - Ley Bitcoin)</option>
+                    </select>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Zona Horaria Sello DTE:</span>
+                    <input type="text" id="config-finanzas-timezone" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; font-size: 13px; background: #f1f5f9; color: #64748b;" value="America/El_Salvador (GMT-6)" readonly>
+                </div>
+                <div id="wrapper-tasa-iva" style="display: flex; flex-direction: column; gap: 6px;">
+                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Tasa de IVA General (%):</span>
+                    <input type="number" id="config-finanzas-iva" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; font-size: 13px;" value="13">
+                </div>
+            </div>
+        </div>
+
+        <div class="erp-form-section" style="background: #ffffff; padding: 20px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 25px; box-sizing: border-box;">
+            <label class="erp-section-label" style="font-size: 14px; font-weight: 600; margin-bottom: 15px; display: block; color: var(--text);">
+                <i class="fa-solid fa-palette" style="color: var(--accent); margin-right: 6px;"></i> 6. Identidad Visual y Documentación
+            </label>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 11fr)); gap: 20px; box-sizing: border-box;">
+                
+                <div style="display: flex; flex-direction: column; gap: 6px; background: #f8fafc; padding: 15px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                    <span style="font-size: 12px; font-weight: 700; color: var(--text);"><i class="fa-solid fa-desktop"></i> Logotipo en Plataforma</span>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px; flex-wrap: wrap;">
+                        <label for="config-empresa-file" class="btn-submit" style="margin:0; width: auto; padding: 0 12px; background: #fff; color: var(--text); border: 1px solid #cbd5e1; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 12px; height: 35px; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
+                            <i class="fa-solid fa-image" style="color: var(--accent);"></i> Subir Logo
+                        </label>
+                        <input type="file" id="config-empresa-file" accept="image/png, image/jpeg" style="display: none;" onchange="config_ProcesarYPrevisualizarLogo(this)">
+                        
+                        <span id="config-txt-file-name" style="font-size: 11px; color: var(--text-muted); font-style: italic;">Ningún archivo seleccionado</span>
+                    </div>
+                    
+                    <input type="hidden" id="config-empresa-logo">
+
+                    <div id="config-wrapper-preview" style="display: none; margin-top: 10px; position: relative; width: fit-content; background: #fff; border: 1px dashed #cbd5e1; padding: 5px; border-radius: 4px;">
+                        <img id="config-img-preview" src="" alt="Vista previa ERP" style="max-height: 50px; max-width: 150px; object-fit: contain; display: block;">
+                        <button type="button" onclick="config_RemoverLogoCargado()" style="position: absolute; top: -6px; right: -6px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 16px; height: 16px; display: grid; place-items: center; cursor: pointer; font-size: 9px;">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="subseccion-logo-dte" style="display: flex; flex-direction: column; gap: 6px; background: #f8fafc; padding: 15px; border-radius: 6px; border: 1px solid #e2e8f0;">
+                    <span style="font-size: 12px; font-weight: 700; color: var(--text);"><i class="fa-solid fa-print"></i> Logo Ticket / PDF DTE</span>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px; flex-wrap: wrap;">
+                        <label for="config-dte-file" class="btn-submit" style="margin:0; width: auto; padding: 0 12px; background: #fff; color: var(--text); border: 1px solid #cbd5e1; border-radius: 4px; font-weight: 600; cursor: pointer; font-size: 12px; height: 35px; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 1px 2px rgba(0,0,0,0.02);">
+                            <i class="fa-solid fa-print" style="color: var(--accent);"></i> Subir Logo DTE
+                        </label>
+                        <input type="file" id="config-dte-file" accept="image/png, image/jpeg" style="display: none;" onchange="config_ProcesarLogoDTE(this)">
+                        
+                        <span id="config-txt-dte-name" style="font-size: 11px; color: var(--text-muted); font-style: italic;">Ningún archivo seleccionado</span>
+                    </div>
+                    
+                    <input type="hidden" id="config-empresa-logo-dte">
+
+                    <div id="config-wrapper-preview-dte" style="display: none; margin-top: 10px; position: relative; width: fit-content; background: #fff; border: 1px dashed #cbd5e1; padding: 5px; border-radius: 4px;">
+                        <img id="config-img-preview-dte" src="" alt="Vista previa DTE" style="max-height: 50px; max-width: 150px; object-fit: contain; display: block;">
+                        <button type="button" onclick="config_RemoverLogoDTECargado()" style="position: absolute; top: -6px; right: -6px; background: #ef4444; color: white; border: none; border-radius: 50%; width: 16px; height: 16px; display: grid; place-items: center; cursor: pointer; font-size: 9px;">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 15px;">
+                <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Nombre Personalizado del ERP (Pestaña):</span>
+                <input type="text" id="config-sistema-nombre-erp" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; font-size: 13px;" placeholder="Ej: Mi Negocio Control">
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-start;">
+            <button type="submit" class="btn-submit" style="width: auto; padding: 0 24px; background: var(--accent); color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; height: 40px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <i class="fa-solid fa-floppy-disk"></i> Guardar Perfil Configuración
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+// Diccionario oficial de la distribución territorial de El Salvador (44 Municipios y sus Distritos)
+const mapaUbicacionesSV = {
+    "01": { // Ahuachapán
+        "municipios": {
+            "Ahuachapán Centro": ["Ahuachapán", "Apaneca", "Concepción de Ataco", "El Refugio"],
+            "Ahuachapán Norte": ["Atiquizaya", "El Palmar", "San Lorenzo", "Turín"],
+            "Ahuachapán Sur": ["Guaymango", "Jujutla", "San Francisco Menéndez", "San Pedro Puxtla"]
+        }
+    },
+    "02": { // Santa Ana
+        "municipios": {
+            "Santa Ana Centro": ["Santa Ana"],
+            "Santa Ana Este": ["Coatepeque", "El Congo"],
+            "Santa Ana Norte": ["Masahuat", "Metapán", "Santa Rosa Guachipilín", "Texistepeque"],
+            "Santa Ana Oeste": ["Chalchuapa", "Candelaria de la Frontera", "El Porvenir", "San Antonio Pajonal", "San Sebastián Salitrillo", "Santiago de la Frontera"]
+        }
+    },
+    "03": { // Sonsonate
+        "municipios": {
+            "Sonsonate Centro": ["Sonsonate", "Sonzacate", "Nahulingo", "San Antonio del Monte", "Santo Domingo de Guzmán"],
+            "Sonsonate Este": ["Izalco", "Armenia", "Caluco", "Cuisnahuat", "San Julián", "Santa Isabel Ishuatán"],
+            "Sonsonate Norte": ["Juayúa", "Nahuizalco", "Salcoatitán", "Santa Catarina Masahuat"],
+            "Sonsonate Oeste": ["Acajutla"]
+        }
+    },
+    "04": { // Chalatenango
+        "municipios": {
+            "Chalatenango Centro": ["Chalatenango", "Agua Caliente", "Dulce Nombre de María", "El Paraíso", "La Reina", "Nueva Concepción", "San Fernando", "San Francisco Morazán", "San Rafael", "Santa Rita"],
+            "Chalatenango Norte": ["Citalá", "La Palma", "San Ignacio"],
+            "Chalatenango Sur": ["Arcatao", "Azacualpa", "Cancasque", "Comalapa", "Concepción Quezaltepeque", "El Carrizal", "Las Vueltas", "Nombre de Jesús", "Nueva Trinidad", "Ojos de Agua", "Potonico", "San Antonio de la Cruz", "San Antonio Los Ranchos", "San Francisco Lempa", "San Isidro Labrador", "San José Las Flores", "San Luis del Carmen", "San Miguel de Mercedes", "San José Cancasque"]
+        }
+    },
+    "05": { // La Libertad
+        "municipios": {
+            "La Libertad Centro": ["San Juan Opico", "Ciudad Arce"],
+            "La Libertad Este": ["Antiguo Cuscatlán", "Huizúcar", "Nuevo Cuscatlán", "San José Villanueva", "Zaragoza"],
+            "La Libertad Norte": ["Quezaltepeque", "San Matías", "San Pablo Tacachico"],
+            "La Libertad Oeste": ["Colón", "Sacacoyo", "Tepecoyo", "Talnique", "Jayaque"],
+            "La Libertad Sur": ["Santa Tecla", "Comasagua"],
+            "La Libertad Costa": ["Chiltiupán", "Jicalapa", "La Libertad", "Tamanique", "Teotepeque"]
+        }
+    },
+    "06": { // San Salvador
+        "municipios": {
+            "San Salvador Centro": ["Ayutuxtepeque", "Mejicanos", "San Salvador", "Cuscatancingo", "Ciudad Delgado"],
+            "San Salvador Este": ["Ilopango", "San Martín", "Soyapango", "Tonacatepeque"],
+            "San Salvador Oeste": ["Apopa", "Nejapa", "El Paisnal"]
+        }
+    },
+    "07": { // Cuscatlán
+        "municipios": {
+            "Cuscatlán Norte": ["Suchitoto", "San José Guayabal", "Oratorio de Concepción", "San Bartolomé Perulapía", "San Pedro Perulapán"],
+            "Cuscatlán Sur": ["Cojutepeque", "Candelaria", "El Carmen", "El Rosario", "Monte San Juan", "San Cristóbal", "San Rafael Cedros", "Ramón Grande", "Santa Cruz Analquito", "Santa Cruz Michapa", "Tenancingo"]
+        }
+    },
+    "08": { // La Paz
+        "municipios": {
+            "La Paz Centro": ["El Rosario", "Jerusalén", "Mercedes La Ceiba", "Paraíso de Osorio", "San Antonio Masahuat", "San Emigdio", "San Juan Tepezontes", "San Luis La Herradura", "San Miguel Tepezontes", "San Pedro Nonualco", "Santa María Ostuma", "Santiago Nonualco"],
+            "La Paz Este": ["San Juan Nonualco", "San Rafael Obrajuelo", "Zacatecoluca"],
+            "La Paz Oeste": ["Cuyultitán", "Olocuilta", "San Juan Talpa", "San Luis Talpa", "San Pedro Masahuat", "Tapalhuaca", "San Francisco Chinameca"]
+        }
+    },
+    "09": { // Cabañas
+        "municipios": {
+            "Cabañas Este": ["Sensuntepeque", "Victoria", "Dolores", "Guacotecti", "San Isidro"],
+            "Cabañas Oeste": ["Ilobasco", "Tejutepeque", "Jutiapa", "Cinquera"]
+        }
+    },
+    "10": { // San Vicente
+        "municipios": {
+            "San Vicente Centro": ["San Vicente", "Apastepeque", "Granada", "San Cayetano Istepeque", "Santa Clara", "Tecoluca"],
+            "San Vicente Norte": ["San Ildefonso", "San Esteban Catarina", "San Sebastián", "San Lorenzo", "Santo Domingo"]
+        }
+    },
+    "11": { // Usulután
+        "municipios": {
+            "Usulután Centro": ["Usulután", "Concepción Batres", "Ereguayquín", "Jiquilisco", "Jucuapa", "Ozatlán", "San Dionisio", "San Buenaventura", "Santa Elena", "Santa María", "Tecapán"],
+            "Usulután Este": ["Berlin", "California", "El Triunfo", "Estanzuelas", "Mercedes Umaña", "Nueva Granada", "San Buenaventura", "Santiago de María"],
+            "Usulután Oeste": ["Jiquilisco", "Puerto El Triunfo", "San Agustín", "San Francisco Javier"]
+        }
+    },
+    "12": { // San Miguel
+        "municipios": {
+            "San Miguel Centro": ["San Miguel", "Comacarán", "Chirilagua", "Moncagua", "Quelepa", "Uluazapa"],
+            "San Miguel Norte": ["Ciudad Barrios", "Carolina", "Chapeltique", "Edén de San Juan", "Gerardo Barrios", "San Antonio del Mosco", "San Luis de la Reina", "San Gerardo", "Sesori"],
+            "San Miguel Oeste": ["Chinameca", "El Tránsito", "Lolotique", "Nueva Guadalupe", "San Jorge", "San Rafael Oriente"]
+        }
+    },
+    "13": { // Morazán
+        "municipios": {
+            "Morazán Centro": ["San Francisco Gotera", "Chile", "Delicias de Concepción", "El Rosario", "Gualococti", "Guatajiagua", "Meanguera", "Osicala", "San Carlos", "San Fernando", "San Isidro", "Simon", "Sensembra", "Torola", "Yamabal", "Yoloaiquín"],
+            "Morazán Norte": ["Arambala", "Cacaopera", "Corinto", "El Rosario", "Joateca", "Jocoaitique", "Meanguera", "Perquín", "San Fernando", "San Isidro", "Torola"]
+        }
+    },
+    "14": { // La Unión
+        "municipios": {
+            "La Unión Centro": ["La Unión", "Conchagua", "El Carmen", "Intipucá", "Meanguera del Golfo", "San Alejo", "Yayaantique"],
+            "La Unión Norte": ["Anamorós", "Bolívar", "Concepción de Oriente", "El Sauce", "Lislique", "Nueva Esparta", "Pasaquina", "Polorós", "San José", "Santa Rosa de Lima"]
+        }
+    }
+};
+
+function cargarMunicipiosDTE() {
+    const deptoId = document.getElementById('config-ubicacion-depto').value;
+    const muniSelect = document.getElementById('config-ubicacion-muni');
+    const distSelect = document.getElementById('config-ubicacion-distrito');
+    
+    // Resetear selectores dependientes
+    muniSelect.innerHTML = '<option value="">-- Seleccione Municipio --</option>';
+    distSelect.innerHTML = '<option value="">-- Seleccione Distrito --</option>';
+    distSelect.disabled = true;
+
+    if (!deptoId || !mapaUbicacionesSV[deptoId]) {
+        muniSelect.disabled = true;
+        return;
+    }
+
+    const municipios = Object.keys(mapaUbicacionesSV[deptoId].municipios);
+    municipios.sort().forEach(muni => {
+        const option = document.createElement('option');
+        option.value = muni;
+        option.textContent = muni;
+        muniSelect.appendChild(option);
+    });
+
+    muniSelect.disabled = false;
+}
+
+function cargarDistritosDTE() {
+    const deptoId = document.getElementById('config-ubicacion-depto').value;
+    const muniName = document.getElementById('config-ubicacion-muni').value;
+    const distSelect = document.getElementById('config-ubicacion-distrito');
+
+    distSelect.innerHTML = '<option value="">-- Seleccione Distrito --</option>';
+
+    if (!muniName || !mapaUbicacionesSV[deptoId]?.municipios[muniName]) {
+        distSelect.disabled = true;
+        return;
+    }
+
+    const distritos = mapaUbicacionesSV[deptoId].municipios[muniName];
+    distritos.sort().forEach(dist => {
+        const option = document.createElement('option');
+        option.value = dist.toUpperCase(); // Estandarizado para payloads DTE
+        option.textContent = dist;
+        distSelect.appendChild(option);
+    });
+
+    distSelect.disabled = false;
+}
+
+function toggleSeccionesHacienda() {
+    const regimen = document.getElementById('config-empresa-regimen').value;
+    const esInformal = (regimen === 'INFORMAL');
+
+    const deptoBlock = document.getElementById('bloque-ubicacion-dte');
+    const credsBlock = document.getElementById('bloque-credenciales-mh');
+    const subLogoDte = document.getElementById('subseccion-logo-dte');
+    
+    if (esInformal) {
+        if(deptoBlock) deptoBlock.style.display = 'none';
+        if(credsBlock) credsBlock.style.display = 'none';
+        if(subLogoDte) subLogoDte.style.display = 'none';
+    } else {
+        if(deptoBlock) deptoBlock.style.display = 'block';
+        if(credsBlock) credsBlock.style.display = 'block';
+        if(subLogoDte) subLogoDte.style.display = 'flex';
+    }
+
+    document.querySelectorAll('.seccion-contribuyente-exclusivo').forEach(el => {
+        el.style.display = esInformal ? 'none' : 'flex';
+    });
+
+    const txtNit = document.getElementById('config-empresa-nit');
+    if(txtNit) txtNit.placeholder = esInformal ? "DUI o NIT del propietario" : "0000-000000-000-0";
+    
+    const wrapperIva = document.getElementById('wrapper-tasa-iva');
+    if(wrapperIva) wrapperIva.style.display = esInformal ? 'none' : 'flex';
+}
+
+// ==========================================
+// CONTROLADORES DE IDENTIDAD VISUAL (LÓGICA)
+// ==========================================
+
+function config_ProcesarYPrevisualizarLogo(input) {
+    const file = input.files[0];
+    const txtName = document.getElementById('config-txt-file-name');
+    const hiddenLogo = document.getElementById('config-empresa-logo');
+    const wrapperPreview = document.getElementById('config-wrapper-preview');
+    const imgPreview = document.getElementById('config-img-preview');
+
+    if (!file) return;
+
+    txtName.textContent = file.name;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const base64Data = e.target.result;
+        hiddenLogo.value = base64Data;
+        localStorage.setItem('dalemar_logo_plataforma', base64Data); // Guarda en navegador
+        if (imgPreview) imgPreview.src = base64Data;
+        if (wrapperPreview) wrapperPreview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+}
+
+function config_RemoverLogoCargado() {
+    const inputFiles = document.getElementById('config-empresa-file');
+    const txtName = document.getElementById('config-txt-file-name');
+    const hiddenLogo = document.getElementById('config-empresa-logo');
+    const wrapperPreview = document.getElementById('config-wrapper-preview');
+    const imgPreview = document.getElementById('config-img-preview');
+
+    if (inputFiles) inputFiles.value = "";
+    if (hiddenLogo) hiddenLogo.value = "";
+    localStorage.removeItem('dalemar_logo_plataforma'); // Borra de la memoria
+    if (txtName) txtName.textContent = "Ningún archivo seleccionado";
+    if (imgPreview) imgPreview.src = "";
+    if (wrapperPreview) wrapperPreview.style.display = 'none';
+}
+
+function config_ProcesarLogoDTE(input) {
+    const file = input.files[0];
+    const txtDteName = document.getElementById('config-txt-dte-name');
+    const hiddenLogoDte = document.getElementById('config-empresa-logo-dte');
+    const wrapperPreviewDte = document.getElementById('config-wrapper-preview-dte'); 
+    const imgPreviewDte = document.getElementById('config-img-preview-dte');         
+
+    if (!file) return;
+
+    txtDteName.textContent = file.name;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const base64Data = e.target.result;
+        hiddenLogoDte.value = base64Data;
+        localStorage.setItem('dalemar_logo_dte', base64Data); // ¡Guarda el logo DTE en el navegador!
+        if (imgPreviewDte) imgPreviewDte.src = base64Data;
+        if (wrapperPreviewDte) wrapperPreviewDte.style.display = 'block'; 
+    };
+    reader.readAsDataURL(file);
+}
+
+function config_RemoverLogoDTECargado() {
+    const inputFilesDte = document.getElementById('config-dte-file'); 
+    const txtDteName = document.getElementById('config-txt-dte-name');
+    const hiddenLogoDte = document.getElementById('config-empresa-logo-dte');
+    const wrapperPreviewDte = document.getElementById('config-wrapper-preview-dte');
+    const imgPreviewDte = document.getElementById('config-img-preview-dte');
+
+    if (inputFilesDte) inputFilesDte.value = "";
+    if (hiddenLogoDte) hiddenLogoDte.value = "";
+    localStorage.removeItem('dalemar_logo_dte'); // Borra el logo DTE de la memoria
+    if (txtDteName) txtDteName.textContent = "Ningún archivo seleccionado";
+    if (imgPreviewDte) imgPreviewDte.src = "";
+    if (wrapperPreviewDte) wrapperPreviewDte.style.display = 'none'; 
+}
+
+// =========================================================================
+// INICIALIZACIÓN AUTOMÁTICA CON MEMORIA LOCAL COMPLETA
+// =========================================================================
+document.addEventListener("DOMContentLoaded", function() {
+    const selectRegimen = document.getElementById('config-empresa-regimen');
+
+    // 1. Recuperar Régimen
+    const regimenGuardado = localStorage.getItem('dalemar_regimen');
+    if (selectRegimen && regimenGuardado) {
+        selectRegimen.value = regimenGuardado;
+    }
+
+    if (selectRegimen) {
+        selectRegimen.addEventListener('change', function() {
+            localStorage.setItem('dalemar_regimen', this.value);
+        });
+    }
+
+    // Activar vista de Hacienda de inmediato
+    if (typeof toggleSeccionesHacienda === 'function') {
+        toggleSeccionesHacienda();
+    }
+
+    // 2. Recuperar e Inyectar Logo de Plataforma
+    const hiddenLogo = document.getElementById('config-empresa-logo');
+    let logoPlataforma = hiddenLogo?.value;
+    
+    if (!logoPlataforma || logoPlataforma.trim() === "") {
+        logoPlataforma = localStorage.getItem('dalemar_logo_plataforma');
+        if (hiddenLogo && logoPlataforma) hiddenLogo.value = logoPlataforma;
+    }
+
+    if (logoPlataforma && logoPlataforma.trim() !== "") {
+        const imgPreview = document.getElementById('config-img-preview');
+        const wrapperPreview = document.getElementById('config-wrapper-preview');
+        const txtName = document.getElementById('config-txt-file-name');
+        
+        if (imgPreview) imgPreview.src = logoPlataforma;
+        if (wrapperPreview) wrapperPreview.style.display = 'block';
+        if (txtName) txtName.textContent = "Logo cargado desde el perfil";
+    }
+
+    // 3. Recuperar e Inyectar Logo DTE (Ticket / PDF)
+    const hiddenLogoDte = document.getElementById('config-empresa-logo-dte');
+    let logoDte = hiddenLogoDte?.value;
+
+    if (!logoDte || logoDte.trim() === "") {
+        logoDte = localStorage.getItem('dalemar_logo_dte');
+        if (hiddenLogoDte && logoDte) hiddenLogoDte.value = logoDte;
+    }
+
+    if (logoDte && logoDte.trim() !== "") {
+        const imgPreviewDte = document.getElementById('config-img-preview-dte');
+        const wrapperPreviewDte = document.getElementById('config-wrapper-preview-dte');
+        const txtDteName = document.getElementById('config-txt-dte-name');
+        
+        if (imgPreviewDte) imgPreviewDte.src = logoDte;
+        if (wrapperPreviewDte) wrapperPreviewDte.style.display = 'block';
+        if (txtDteName) txtDteName.textContent = "Logo DTE cargado desde el perfil";
+    }
+});
+
+setTimeout(toggleSeccionesHacienda, 200);
+</script>
