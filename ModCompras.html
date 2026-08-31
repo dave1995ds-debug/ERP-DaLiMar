@@ -1,0 +1,1983 @@
+<div style="animation: fadeIn 0.3s ease;">
+
+  <nav class="nav-buttons" style="display: flex; gap: 12px; margin-bottom: 20px; box-sizing: border-box; flex-wrap: wrap; align-items: center;">
+    <button class="menu-btn active" id="compras-tab-comprar" onclick="window.compras_CambiarTab('comprar')" style="width: auto; background: var(--accent); color: white; font-weight: 600; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;">
+      <i class="fa-solid fa-cart-shopping"></i> Comprar
+    </button>
+    <button class="menu-btn" id="compras-tab-historial" onclick="window.compras_CambiarTab('historial')" style="width: auto; background: #e2e8f0; color: var(--text); font-weight: 500; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;">
+      <i class="fa-solid fa-clipboard-list"></i> Registro de Compras
+    </button>
+    <button class="menu-btn" id="compras-tab-proveedores" onclick="window.compras_CambiarTab('proveedores')" style="width: auto; background: #e2e8f0; color: var(--text); font-weight: 500; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;">
+      <i class="fa-solid fa-truck-field"></i> Proveedores
+    </button>
+  </nav>
+
+  <!-- ========================== PANEL: COMPRAR ========================== -->
+  <div id="compras-panel-comprar" class="content-area active" style="box-sizing: border-box;">
+    <div class="erp-main-card">
+      <div class="erp-card-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box;">
+        <h3 style="margin: 0; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-cart-plus" style="color: var(--accent);"></i> Registrar Orden de Compra
+        </h3>
+        <div style="display: inline-flex; align-items: center; gap: 8px;">
+          <span id="compras-info-modo-estandar" style="display: inline-block; cursor: help; color: #64748b; font-size: 14px;" title="Especificaciones de la Licencia Activa: clasificacion avanzada de proveedores y reportes fiscales detallados.">
+            <i class="fa-solid fa-circle-info"></i>
+          </span>
+          <span id="compras-badge-modo-pro" style="display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; border: 1px solid #cbd5e1; background: #f1f5f9; color: #64748b;">
+            MODULO ESTANDAR
+          </span>
+        </div>
+      </div>
+      <div class="erp-card-body" style="padding-top: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px;">
+
+        <!-- ── FILA 1: Origen + Proveedor ─────────────────────────────── -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+
+          <!-- Sección 1: Tipo de Compra -->
+          <div style="background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 14px;">
+            <label style="font-weight: 700; color: #334155; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; margin: 0;">
+              <i class="fa-solid fa-layer-group" style="color: var(--accent);"></i> 1. Tipo de Compra
+            </label>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" id="orden-btn-origen-directa" onclick="window.compras_SeleccionarOrigenOrden('Directa')" style="flex:1; height: 44px; border-radius: 8px; border: 2px solid var(--accent); background: var(--accent); color: white; font-size: 12px; font-weight: 600; cursor: pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+                <i class="fa-solid fa-cart-plus"></i> Compra Directa
+              </button>
+              <button type="button" id="orden-btn-origen-requisicion" onclick="window.compras_SeleccionarOrigenOrden('Requisición')" style="flex:1; height: 44px; border-radius: 8px; border: 2px solid #cbd5e1; background: #ffffff; color: #475569; font-size: 12px; font-weight: 600; cursor: pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+                <i class="fa-solid fa-list-check"></i> Desde Requisición
+              </button>
+            </div>
+            <div id="orden-aviso-requisicion" style="display:none; align-items:center; justify-content:space-between; gap:10px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:10px 14px; flex-wrap:wrap;">
+              <span id="orden-aviso-requisicion-texto" style="font-size:12px; font-weight:600; color:#1e40af;"></span>
+              <button type="button" onclick="window.compras_AbrirPopupRequisiciones()" style="height:30px; padding:0 12px; background:#ffffff; color:#1e40af; border:1px solid #bfdbfe; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer;">Cambiar</button>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Destino:</span>
+              <div style="display: flex; gap: 8px;">
+                <button type="button" id="orden-btn-destino-bodega" onclick="window.compras_SeleccionarTipoDestino('Bodega')" style="flex:1; height: 38px; border-radius: 6px; border: 2px solid var(--accent); background: var(--accent); color: white; font-size: 12px; font-weight: 600; cursor: pointer;">
+                  <i class="fa-solid fa-warehouse"></i> Bodega
+                </button>
+                <button type="button" id="orden-btn-destino-directa" onclick="window.compras_SeleccionarTipoDestino('Entrega Directa')" style="flex:1; height: 38px; border-radius: 6px; border: 2px solid #cbd5e1; background: #ffffff; color: #475569; font-size: 12px; font-weight: 600; cursor: pointer;">
+                  <i class="fa-solid fa-hand-holding"></i> Entrega Directa
+                </button>
+              </div>
+              <select id="orden-select-bodega" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; background:#ffffff; font-size: 13px;">
+                <option value="">-- Selecciona una bodega --</option>
+              </select>
+              <input type="text" id="orden-entrega-directa-a" placeholder="¿A quién se entregará? (Ej. departamento o persona)" style="display:none; height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; box-sizing: border-box; font-size: 13px;">
+            </div>
+          </div>
+
+          <!-- Sección 2: Proveedor -->
+          <div style="background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 14px; position: relative;">
+            <label style="font-weight: 700; color: #334155; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; margin: 0;">
+              <i class="fa-solid fa-truck-field" style="color: var(--accent);"></i> 2. Proveedor
+            </label>
+            <div style="position: relative;">
+              <input type="text" id="orden-buscador-proveedor" placeholder="Busca por nombre del proveedor..." autocomplete="off" style="height: 42px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 14px; box-sizing: border-box; font-size: 13px; width: 100%;">
+              <input type="hidden" id="orden-select-proveedor">
+              <div id="orden-sugerencias-proveedor" style="display:none; position:absolute; top:46px; left:0; right:0; background:white; border:1px solid var(--border); border-radius:8px; max-height:220px; overflow-y:auto; z-index:50; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15);"></div>
+            </div>
+            <div id="orden-preview-proveedor" style="display:none; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:12px 14px; font-size:12px; color:#15803d; line-height: 1.6;"></div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Términos de Pago:</span>
+                <select id="orden-select-terminos-pago" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; background:#ffffff; font-size: 12px;">
+                  <option value="Contado">Contado</option>
+                  <option value="Crédito 15 días">Crédito 15 días</option>
+                  <option value="Crédito 30 días">Crédito 30 días</option>
+                  <option value="Anticipo 50% + Saldo">Anticipo 50% + Saldo</option>
+                  <option value="Otro">Otro</option>
+                </select>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Llegada Prevista:</span>
+                <input type="date" id="orden-llegada-prevista" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; font-size: 13px;">
+              </div>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Notas (opcional):</span>
+              <input type="text" id="orden-notas" class="form-control-erp" style="height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; box-sizing: border-box; width: 100%; font-size: 13px;">
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SECCIÓN 3: Ítems ───────────────────────────────────────── -->
+        <div style="background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0;">
+          <label style="font-weight: 700; color: #334155; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; margin: 0 0 16px 0;">
+            <i class="fa-solid fa-boxes-stacked" style="color: var(--accent);"></i> 3. Ítems de la Orden
+          </label>
+
+          <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; position: relative;">
+            <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Buscar producto / ítem:</span>
+            <input type="text" id="orden-buscador-producto" placeholder="Escribe el nombre del producto para agregar..." autocomplete="off" style="height: 42px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 14px; box-sizing: border-box; font-size: 13px; background: white;">
+            <div id="orden-sugerencias-producto" style="display:none; position:absolute; top:62px; left:0; right:0; background:white; border:1px solid var(--border); border-radius:8px; max-height:240px; overflow-y:auto; z-index:50; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15);"></div>
+          </div>
+
+          <div id="orden-items-agregados" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px;">
+            <div style="text-align:center; color:#94a3b8; padding:24px; font-size:12px; border:1px dashed #cbd5e1; border-radius:8px; background: white;">Busca y agrega los ítems a ordenar arriba.</div>
+          </div>
+
+          <div id="orden-total-resumen" style="background:white; border:1px solid #e2e8f0; border-radius:8px; padding:14px 18px; font-size:13px; color:#0f172a; display:none; flex-direction:column; gap:6px;"></div>
+        </div>
+
+        <!-- ── BOTONES FINALES ────────────────────────────────────────── -->
+        <div style="display: flex; gap: 10px;">
+          <button type="button" id="orden-btn-guardar" style="height: 50px; flex: 2; background: var(--accent); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+            <i class="fa-solid fa-floppy-disk"></i> Crear Orden de Compra
+          </button>
+          <button type="button" id="orden-btn-guardar-pdf" style="height: 50px; flex: 1; background: #0f172a; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+            <i class="fa-solid fa-file-pdf"></i> Crear y Descargar PDF
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ULTIMA ORDEN CREADA -->
+    <div id="compras-tarjeta-ultima-orden" class="erp-main-card" style="display: none; margin-top: 20px;">
+      <div class="erp-card-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box;">
+        <h3 style="margin: 0; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-circle-check" style="color: #16a34a;"></i> Última Orden Creada
+        </h3>
+      </div>
+      <div class="erp-card-body" style="padding-top: 16px; box-sizing: border-box;">
+        <div id="compras-lista-ultima-orden" style="display: flex; flex-direction: column; gap: 10px; box-sizing: border-box;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================== PANEL: HISTORIAL ========================== -->
+  <div id="compras-panel-historial" class="content-area" style="display: none; box-sizing: border-box;">
+    <div class="erp-main-card">
+      <div class="erp-card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; width: 100%; box-sizing: border-box;">
+        <h3 style="margin: 0; min-width: 200px; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-clipboard-list" style="color: var(--accent);"></i> Registro de Compras
+        </h3>
+        <div style="display: inline-flex; align-items: center; gap: 8px;">
+          <span id="hist-info-modo-estandar" style="display: inline-block; cursor: help; color: #64748b; font-size: 14px;" title="Especificaciones de la Licencia Activa: descarga de reportes Excel (listado de ordenes, varianza de precio, comparativa de proveedores).">
+            <i class="fa-solid fa-circle-info"></i>
+          </span>
+          <span id="hist-badge-modo-pro" style="display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; border: 1px solid #cbd5e1; background: #f1f5f9; color: #64748b;">
+            MODULO ESTANDAR
+          </span>
+        </div>
+      </div>
+      <div class="erp-card-body" style="padding-top: 16px; box-sizing: border-box;">
+
+        <!-- FILA 1: filtros de estado/pago + reportes PRO -->
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px;">
+          <select id="hist-filtro-estado" onchange="window.compras_FiltrarHistorial()" style="height: 36px; padding: 0 10px; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; font-size: 12px;">
+            <option value="">Todos los estados</option>
+            <option value="Pendiente de Recepción">Pendiente de Recepción</option>
+            <option value="Recibida Parcial">Recibida Parcial</option>
+            <option value="Recibida Completa">Recibida Completa</option>
+            <option value="Cerrada">Cerrada</option>
+            <option value="Cancelada">Cancelada</option>
+          </select>
+
+          <select id="hist-filtro-pago" onchange="window.compras_FiltrarHistorial()" style="height: 36px; padding: 0 10px; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; font-size: 12px;">
+            <option value="">Todos los pagos</option>
+            <option value="Pendiente">Pago Pendiente</option>
+            <option value="Parcial">Pago Parcial</option>
+            <option value="Pagada">Pagada</option>
+          </select>
+
+          <div id="hist-reportes-pro" style="display: none; margin-left: auto; align-items: center; gap: 8px;">
+            <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Reportes:</span>
+            <button type="button" onclick="window.compras_ExportarOrdenes()" title="Descargar listado de órdenes" style="height: 32px; padding: 0 12px; background: #ffffff; color: #16a34a; border: 1px solid #bbf7d0; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+              <i class="fa-solid fa-file-excel"></i> Listado
+            </button>
+            <button type="button" onclick="window.compras_ExportarVarianzaPrecio()" title="Descargar varianza de precio por producto" style="height: 32px; padding: 0 12px; background: #ffffff; color: #16a34a; border: 1px solid #bbf7d0; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+              <i class="fa-solid fa-chart-line"></i> Varianza de Precio
+            </button>
+            <button type="button" onclick="window.compras_ExportarComparativaProveedores()" title="Descargar comparativa entre proveedores" style="height: 32px; padding: 0 12px; background: #ffffff; color: #16a34a; border: 1px solid #bbf7d0; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+              <i class="fa-solid fa-scale-balanced"></i> Comparativa Proveedores
+            </button>
+          </div>
+        </div>
+
+        <!-- FILA 2: buscador + paginacion -->
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px;">
+          <div style="position: relative; flex: 1; min-width: 240px; box-sizing: border-box;">
+            <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 13px;"></i>
+            <input type="text" id="hist-filtro-texto" oninput="window.compras_FiltrarHistorial()" style="padding-left: 38px; border-radius: 50px; background: #ffffff; border: 1px solid #cbd5e1; height: 36px; font-size: 12px; color: #334155; box-sizing: border-box; width: 100%;" placeholder="Buscar por proveedor, ítem o N° de requisición...">
+          </div>
+
+          <button type="button" id="hist-btn-mostrar-todo" onclick="window.compras_ToggleMostrarTodo()" style="height: 36px; padding: 0 14px; background: #ffffff; color: #475569; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; white-space: nowrap;">
+            Mostrar todo
+          </button>
+
+          <div id="hist-controles-paginacion" style="display: flex; align-items: center; gap: 8px; background: #f1f5f9; padding: 4px 8px; border-radius: 30px; border: 1px solid #e2e8f0;">
+            <span id="hist-txt-paginacion" style="font-size: 11px; font-weight: 600; color: #64748b; padding: 0 4px;">Pág. 1 de 1</span>
+            <div style="display: flex; gap: 3px;">
+              <button type="button" id="hist-btn-pag-prev" title="Página Anterior" style="width: 28px; height: 28px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #475569; font-size: 10px; transition: all 0.2s;">
+                <i class="fa-solid fa-chevron-left"></i>
+              </button>
+              <button type="button" id="hist-btn-pag-next" title="Página Siguiente" style="width: 28px; height: 28px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #475569; font-size: 10px; transition: all 0.2s;">
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="compras-lista-ordenes" style="display: flex; flex-direction: column; gap: 10px; box-sizing: border-box;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================== PANEL: PROVEEDORES ========================== -->
+  <div id="compras-panel-proveedores" class="content-area" style="display: none; box-sizing: border-box;">
+    <?!= include('ModCompras_Proveedores'); ?>
+  </div>
+
+<!-- MODAL: COMPRAR DESDE REQUISICION -->
+<dialog id="compras-modal-requisiciones" class="modal-dialog-erp" style="max-width: 760px !important;">
+  <div style="display: flex; justify-content: space-between; align-items: center; background: var(--accent); padding: 14px 20px; color: #ffffff;">
+    <h4 style="margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 8px;">
+      <i class="fa-solid fa-list-check"></i> Seleccionar Ítems Pendientes de Requisiciones
+    </h4>
+    <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px; color: rgba(255,255,255,0.8);" onclick="this.closest('dialog').close()"></i>
+  </div>
+  <div style="padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px;">
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <div style="position: relative; flex: 1;">
+        <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 13px;"></i>
+        <input type="text" id="reqpop-filtro-texto" placeholder="Buscar por ítem, departamento o N° de requisición..." oninput="window.compras_RenderizarPopupRequisiciones()" style="height: 44px; width: 100%; border: 1px solid #cbd5e1; border-radius: 50px; padding: 0 16px 0 38px; box-sizing: border-box; font-size:13px;">
+      </div>
+      <button type="button" id="reqpop-btn-agregar-seleccionados" style="height: 44px; padding: 0 18px; background: var(--accent); color: white; border: none; border-radius: 50px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; display:flex; align-items:center; gap:6px;"><i class="fa-solid fa-plus"></i> Agregar Seleccionados</button>
+    </div>
+    <div id="reqpop-lista" style="display: flex; flex-direction: column; gap: 10px; max-height: 60vh; overflow-y: auto;"></div>
+  </div>
+</dialog>
+
+<!-- MODAL: VISTA DE ORDEN DE COMPRA (HTML interactivo, texto seleccionable) -->
+<dialog id="compras-modal-vista-pdf" class="modal-dialog-erp">
+  <div style="display: flex; justify-content: space-between; align-items: center; background: var(--accent); padding: 14px 20px; color: #ffffff; flex-shrink: 0;">
+    <h4 style="margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 8px;">
+      <i class="fa-solid fa-file-contract"></i> Orden de Compra — <span id="vista-pdf-id-orden"></span>
+    </h4>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <button type="button" id="vista-pdf-btn-descargar" style="height: 30px; padding: 0 12px; background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.4); border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; display:inline-flex; align-items:center; gap:6px;">
+        <i class="fa-solid fa-download"></i> Descargar PDF
+      </button>
+      <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px; color: rgba(255,255,255,0.8);" onclick="this.closest('dialog').close()"></i>
+    </div>
+  </div>
+  <div class="oc-scroll-body" style="padding: 20px; box-sizing: border-box; display: block;">
+
+    <!-- Encabezado empresa + datos proveedor -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px;">
+        <div style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 5px;">Emisor</div>
+        <div id="oc-modal-empresa-nombre" style="font-size: 13px; font-weight: 700; color: #0f172a;"></div>
+        <div id="oc-modal-empresa-datos" style="font-size: 11px; color: #64748b; margin-top: 3px; line-height: 1.5; white-space: pre-line;"></div>
+      </div>
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px;">
+        <div style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 5px;">Proveedor</div>
+        <div id="oc-modal-proveedor-nombre" style="font-size: 13px; font-weight: 700; color: #0f172a;"></div>
+        <div id="oc-modal-proveedor-datos" style="font-size: 11px; color: #64748b; margin-top: 3px; line-height: 1.5; white-space: pre-line;"></div>
+      </div>
+    </div>
+
+    <!-- Datos de la orden -->
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px;">
+      <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 10px; text-align: center;">
+        <div style="font-size: 10px; font-weight: 700; color: #1e40af; text-transform: uppercase; margin-bottom: 3px;">Fecha</div>
+        <div id="oc-modal-fecha" style="font-size: 12px; font-weight: 600; color: #1e293b;"></div>
+      </div>
+      <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 10px; text-align: center;">
+        <div style="font-size: 10px; font-weight: 700; color: #1e40af; text-transform: uppercase; margin-bottom: 3px;">Términos de Pago</div>
+        <div id="oc-modal-terminos" style="font-size: 12px; font-weight: 600; color: #1e293b;"></div>
+      </div>
+      <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 10px; text-align: center;">
+        <div style="font-size: 10px; font-weight: 700; color: #1e40af; text-transform: uppercase; margin-bottom: 3px;">Destino</div>
+        <div id="oc-modal-destino" style="font-size: 12px; font-weight: 600; color: #1e293b;"></div>
+      </div>
+    </div>
+
+    <!-- Tabla de ítems -->
+    <div style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; margin-bottom: 14px;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
+        <thead>
+          <tr style="background: var(--accent); color: white;">
+            <th style="padding: 9px 10px; text-align: left; font-weight: 700;">Descripción</th>
+            <th style="padding: 9px 8px; text-align: center; width: 42px; font-weight: 700;">Cant.</th>
+            <th style="padding: 9px 8px; text-align: right; width: 80px; font-weight: 700;">Costo U.</th>
+            <th style="padding: 9px 8px; text-align: right; width: 80px; font-weight: 700;">Subtotal</th>
+          </tr>
+        </thead>
+        <tbody id="oc-modal-tabla-items"></tbody>
+      </table>
+    </div>
+
+    <!-- Totales -->
+    <!-- Notas + Totales lado a lado -->
+    <div style="display: flex; gap: 12px; align-items: flex-start; margin-bottom: 14px;">
+      <div id="oc-modal-notas-wrap" style="display: none; flex: 1; background: #fef3c7; border: 1px solid #fde68a; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #92400e; align-self: stretch;"></div>
+      <div id="oc-modal-totales" style="min-width: 220px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 16px; display: flex; flex-direction: column; gap: 5px; margin-left: auto;"></div>
+    </div>
+
+    <!-- Footer -->
+    <div id="oc-modal-footer" style="text-align: center; font-size: 10px; color: #94a3b8; padding-top: 4px; border-top: 1px solid #f1f5f9;"></div>
+  </div>
+</dialog>
+
+<!-- MODAL: ENVIAR ORDEN (PRO) -->
+<dialog id="compras-modal-enviar-orden" class="modal-dialog-erp" style="max-width: 420px !important;">
+  <div style="display: flex; justify-content: space-between; align-items: center; background: var(--accent); padding: 14px 20px; color: #ffffff;">
+    <h4 style="margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 8px;">
+      <i class="fa-solid fa-paper-plane"></i> Enviar Orden — <span id="enviar-orden-id"></span>
+      <span style="background:#deff9a; color:#000000; border:1px solid #b4e63b; font-size:9px; font-weight:700; padding:1px 6px; border-radius:8px;">PRO</span>
+    </h4>
+    <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px; color: rgba(255,255,255,0.8);" onclick="this.closest('dialog').close()"></i>
+  </div>
+  <div style="padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px;">
+    <span style="font-size: 11px; color: #94a3b8;">Elige cómo quieres enviar esta orden de compra al proveedor.</span>
+    <div id="enviar-orden-aviso-enviado" style="display:none; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:6px; padding:8px 12px; font-size:11px; color:#15803d;"></div>
+
+    <div id="enviar-orden-seccion-correo" style="display:none; flex-direction: column; gap: 8px;">
+      <button type="button" id="enviar-orden-btn-correo" style="height: 42px; background: var(--accent); color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display:flex; align-items:center; justify-content:center; gap:8px;"><i class="fa-solid fa-envelope"></i> Enviar por Correo (PDF adjunto)</button>
+    </div>
+
+    <div id="enviar-orden-seccion-whatsapp" style="display:none; flex-direction: column; gap: 8px; border-top: 1px solid #f1f5f9; padding-top: 14px;">
+      <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; display:flex; align-items:center; gap:6px;"><i class="fa-brands fa-whatsapp" style="color:#16a34a;"></i> WhatsApp</span>
+      <div id="enviar-orden-whatsapp-link"></div>
+    </div>
+
+    <button type="button" id="enviar-orden-btn-descargar-pdf" style="height: 38px; background: #ffffff; color: #475569; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display:flex; align-items:center; justify-content:center; gap:8px; margin-top: 4px;"><i class="fa-solid fa-file-pdf"></i> Descargar PDF</button>
+  </div>
+</dialog>
+
+<!-- MODAL: HITOS DE PAGO -->
+<dialog id="compras-modal-hitos-pago" class="modal-dialog-erp" style="max-width: 480px !important;">
+  <div style="display: flex; justify-content: space-between; align-items: center; background: var(--accent); padding: 14px 20px; color: #ffffff;">
+    <h4 style="margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 8px;">
+      <i class="fa-solid fa-money-bill-wave"></i> Hitos de Pago — <span id="hitos-modal-id-orden"></span>
+    </h4>
+    <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px; color: rgba(255,255,255,0.8);" onclick="this.closest('dialog').close()"></i>
+  </div>
+  <div style="padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px;">
+    <div id="hitos-resumen-totales" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px 14px; font-size:12px; color:#475569; display:flex; flex-direction:column; gap:4px;"></div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Registros existentes:</span>
+      <div id="hitos-lista" style="display: flex; flex-direction: column; gap: 6px; max-height: 180px; overflow-y: auto;"></div>
+    </div>
+
+    <div style="border-top: 1px dashed #cbd5e1; padding-top: 14px; display: flex; flex-direction: column; gap: 10px;">
+      <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Registrar nuevo hito:</span>
+      <input type="hidden" id="hito-id-orden">
+      <div style="display: flex; gap: 8px;">
+        <input type="number" id="hito-monto" placeholder="Monto $" min="0" step="0.01" style="flex:1; height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box;">
+        <input type="date" id="hito-fecha" style="flex:1; height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box;">
+      </div>
+      <select id="hito-metodo" style="height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; background:#ffffff;">
+        <option value="Transferencia">Transferencia</option>
+        <option value="Cheque">Cheque</option>
+        <option value="Efectivo">Efectivo</option>
+        <option value="Tarjeta">Tarjeta</option>
+        <option value="Otro">Otro</option>
+      </select>
+      <input type="text" id="hito-nota" placeholder="Nota (ej. Anticipo 50%, Saldo final...)" style="height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box;">
+      <button type="button" id="hito-btn-registrar" style="height: 42px; background: var(--accent); color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer;"><i class="fa-solid fa-plus"></i> Registrar Hito de Pago</button>
+    </div>
+  </div>
+</dialog>
+
+</div>
+
+<style>
+  .modal-dialog-erp {
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 460px !important;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25) !important;
+    background: #f8fafc !important;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    margin: 0 !important;
+  }
+  .modal-dialog-erp::backdrop {
+    background: rgba(15, 23, 42, 0.45) !important;
+    backdrop-filter: blur(2px) !important;
+  }
+  #compras-modal-vista-pdf {
+    max-width: 560px !important;
+    width: 96vw !important;
+    height: 90vh !important;
+    max-height: 90vh !important;
+    overflow: hidden !important;
+  }
+  #compras-modal-vista-pdf[open] {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  #compras-modal-vista-pdf > div.oc-scroll-body {
+    height: calc(90vh - 54px) !important;
+    overflow-y: scroll !important;
+    overscroll-behavior: contain !important;
+  }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+<script>
+(function() {
+  console.log("Core-Compras: script inicializado correctamente.");
+
+  let CARGOS_COMPRA_GLOBAL = [];
+  let BODEGAS_COMPRA_GLOBAL = [];
+  let paginaActualHistorial = 1;
+  let mostrarTodoHistorial = false;
+  const itemsPorPaginaHistorial = 5;
+
+  let REQUISICIONES_GLOBAL = [];
+  let ORDENES_GLOBAL = [];
+  let PROVEEDORES_GLOBAL = [];
+  let TODAS_LAS_VARIANTES_COMPRAS = [];
+  let CONFIG_EMPRESA_COMPRAS = null;
+  let itemsOrdenTemp = [];
+  let comprasLicenciaPro = false;
+
+  setTimeout(() => {
+    inicializarEventosCompras();
+    sincronizarLicenciaLocal();
+    // Fuerza el estado inicial de pestana explicitamente -- las tarjetas
+    // independientes de Historial y Proveedores (que viven afuera de la
+    // tarjeta principal) dependen de esta llamada para ocultarse/mostrarse
+    // correctamente desde el primer render, sin esperar a que el usuario
+    // haga clic en alguna pestana.
+    window.compras_CambiarTab('comprar');
+    window.compras_CargarTodo();
+    // Se retrasa un instante para dar tiempo a que compras_CargarTodo() complete
+    // sus llamadas asincronas (en especial el selector de bodegas, necesario
+    // para la auto-asignacion de bodega de origen).
+    setTimeout(window.compras_AplicarPreseleccionDesdeRequisiciones, 700);
+  }, 50);
+
+  /**
+   * Si el usuario vino desde Requisiciones con items ya seleccionados
+   * (boton "Crear Orden de Compra con seleccionados"), los recoge del
+   * sessionStorage, los carga en la orden, y cambia automaticamente al modo
+   * "Comprar desde Requisición". Se limpia el storage de inmediato para que
+   * no se reaplique si el usuario vuelve a entrar al modulo despues.
+   */
+  window.compras_AplicarPreseleccionDesdeRequisiciones = function aplicarPreseleccionDesdeRequisiciones() {
+    let itemsPreseleccionados = null;
+    try {
+      const guardado = sessionStorage.getItem('erp_orden_prellenada');
+      if (guardado) itemsPreseleccionados = JSON.parse(guardado);
+      sessionStorage.removeItem('erp_orden_prellenada');
+    } catch (e) { /* si el storage no esta disponible o el JSON es invalido, simplemente se omite */ }
+
+    if (!itemsPreseleccionados || itemsPreseleccionados.length === 0) return;
+
+    itemsOrdenTemp = itemsPreseleccionados.map(it => ({
+      sku: it.sku,
+      skuOrigen: it.skuOrigen || it.sku,
+      descripcion: it.descripcion,
+      cantidadOrdenada: it.cantidadOrdenada,
+      costoUnitario: 0,
+      cargos: [],
+      idRequisicionOrigen: it.idRequisicionOrigen || '',
+      tipoFiscal: it.tipoFiscal || 'Bienes',
+      bodegaOrigen: it.bodegaOrigen || ''
+    }));
+
+    window.compras_SeleccionarOrigenOrden('Requisición');
+    if (document.getElementById('compras-modal-requisiciones').open) document.getElementById('compras-modal-requisiciones').close();
+    pintarItemsOrdenTemp();
+    sincronizarAvisoRequisicionOrigen();
+
+    const primerItemConBodega = itemsOrdenTemp.find(it => it.bodegaOrigen);
+    if (primerItemConBodega) {
+      window.compras_SeleccionarTipoDestino('Bodega');
+      const selectBodega = document.getElementById('orden-select-bodega');
+      const bodegaBuscada = primerItemConBodega.bodegaOrigen.toString().trim().toLowerCase();
+      const opcionCoincidente = Array.from(selectBodega.options).find(opt => opt.value.toString().trim().toLowerCase() === bodegaBuscada);
+      if (opcionCoincidente) selectBodega.value = opcionCoincidente.value;
+    }
+
+    window.erpToast("Ítems precargados desde Requisiciones. Completa proveedor y costos para continuar.", "info");
+  }
+
+  function inicializarEventosCompras() {
+    const btnGuardarOrden = document.getElementById('orden-btn-guardar');
+    if (btnGuardarOrden) btnGuardarOrden.addEventListener('click', () => window.compras_GuardarOrden(false));
+
+    const btnGuardarOrdenPdf = document.getElementById('orden-btn-guardar-pdf');
+    if (btnGuardarOrdenPdf) btnGuardarOrdenPdf.addEventListener('click', () => window.compras_GuardarOrden(true));
+
+    const btnAgregarDesdePopup = document.getElementById('reqpop-btn-agregar-seleccionados');
+    if (btnAgregarDesdePopup) btnAgregarDesdePopup.addEventListener('click', () => window.compras_AgregarSeleccionadosDesdePopup());
+
+    const btnHistPrev = document.getElementById('hist-btn-pag-prev');
+    if (btnHistPrev) btnHistPrev.addEventListener('click', () => { if (paginaActualHistorial > 1) { paginaActualHistorial--; window.compras_RenderizarHistorial(); } });
+
+    const btnHistNext = document.getElementById('hist-btn-pag-next');
+    if (btnHistNext) btnHistNext.addEventListener('click', () => { paginaActualHistorial++; window.compras_RenderizarHistorial(); });
+
+    const btnRegistrarHito = document.getElementById('hito-btn-registrar');
+    if (btnRegistrarHito) btnRegistrarHito.addEventListener('click', () => window.compras_RegistrarHitoPago());
+
+    const btnDescargarPdfModal = document.getElementById('enviar-orden-btn-descargar-pdf');
+    if (btnDescargarPdfModal) btnDescargarPdfModal.addEventListener('click', () => { if (ordenActualEnModalEnvio) window.compras_AbrirVistaPreviaPdf(ordenActualEnModalEnvio); });
+
+    const btnDescargarVistaPdf = document.getElementById('vista-pdf-btn-descargar');
+    if (btnDescargarVistaPdf) btnDescargarVistaPdf.addEventListener('click', () => { if (ordenActualEnVistaPdf) window.compras_GenerarPdfOrden(ordenActualEnVistaPdf); });
+
+    const buscador = document.getElementById('orden-buscador-producto');
+    if (buscador) buscador.addEventListener('input', () => window.compras_BuscarProducto(buscador.value));
+
+    const buscadorProv = document.getElementById('orden-buscador-proveedor');
+    if (buscadorProv) buscadorProv.addEventListener('input', () => window.compras_BuscarProveedor(buscadorProv.value));
+
+    document.addEventListener('click', function(e) {
+      const cont = document.getElementById('orden-sugerencias-producto');
+      if (cont && e.target.id !== 'orden-buscador-producto') cont.style.display = 'none';
+
+      const contProv = document.getElementById('orden-sugerencias-proveedor');
+      if (contProv && e.target.id !== 'orden-buscador-proveedor') contProv.style.display = 'none';
+
+      // Cierra cualquier popup de "agregar cargo" abierto si el clic no fue
+      // sobre su propio boton disparador.
+      if (!e.target.closest('.orden-btn-agregar-cargo')) {
+        document.querySelectorAll('.orden-sugerencias-cargo').forEach(c => c.style.display = 'none');
+      }
+    });
+  }
+
+  function sincronizarLicenciaLocal() {
+    const estadoFresco = localStorage.getItem('erp_licencia_pro') === 'true';
+    window.actualizarModuloComprasPorLicencia(estadoFresco);
+  }
+
+  window.actualizarModuloComprasPorLicencia = function(esPro) {
+    try {
+      comprasLicenciaPro = (esPro === true || esPro === "true");
+      const badge = document.getElementById('compras-badge-modo-pro');
+      const infoIcon = document.getElementById('compras-info-modo-estandar');
+      const histBadge = document.getElementById('hist-badge-modo-pro');
+      const histInfoIcon = document.getElementById('hist-info-modo-estandar');
+      const reportesPro = document.getElementById('hist-reportes-pro');
+
+      if (comprasLicenciaPro) {
+        if (badge) {
+          badge.style.display = 'inline-block';
+          badge.innerHTML = '<i class="fa-solid fa-star"></i> MODULO PRO ACTIVO';
+          badge.style.background = "#deff9a";
+          badge.style.color = "#000000";
+          badge.style.borderColor = "#b4e63b";
+        }
+        if (infoIcon) infoIcon.style.display = 'none';
+        if (histBadge) {
+          histBadge.innerHTML = '<i class="fa-solid fa-star"></i> MODULO PRO ACTIVO';
+          histBadge.style.background = "#deff9a";
+          histBadge.style.color = "#000000";
+          histBadge.style.borderColor = "#b4e63b";
+        }
+        if (histInfoIcon) histInfoIcon.style.display = 'none';
+        if (reportesPro) reportesPro.style.display = 'flex';
+      } else {
+        if (badge) {
+          badge.style.display = 'inline-block';
+          badge.innerHTML = 'MODULO ESTANDAR';
+          badge.style.background = "#f1f5f9";
+          badge.style.color = "#64748b";
+          badge.style.borderColor = "#cbd5e1";
+        }
+        if (infoIcon) infoIcon.style.display = 'inline-block';
+        if (histBadge) {
+          histBadge.innerHTML = 'MODULO ESTANDAR';
+          histBadge.style.background = "#f1f5f9";
+          histBadge.style.color = "#64748b";
+          histBadge.style.borderColor = "#cbd5e1";
+        }
+        if (histInfoIcon) histInfoIcon.style.display = 'inline-block';
+        if (reportesPro) reportesPro.style.display = 'none';
+      }
+
+      if (typeof window.compras_RenderizarHistorial === 'function') window.compras_RenderizarHistorial();
+    } catch (e) {
+      console.error("Error en actualizacion de licencia (Compras):", e.message);
+    }
+  };
+
+  window.compras_CambiarTab = function(tab) {
+    const tabs = { comprar: 'compras-tab-comprar', historial: 'compras-tab-historial', proveedores: 'compras-tab-proveedores' };
+    const paneles = { comprar: 'compras-panel-comprar', historial: 'compras-panel-historial', proveedores: 'compras-panel-proveedores' };
+
+    Object.keys(tabs).forEach(key => {
+      const btn = document.getElementById(tabs[key]);
+      const activo = key === tab;
+      btn.style.background = activo ? 'var(--accent)' : '#e2e8f0';
+      btn.style.color = activo ? 'white' : 'var(--text)';
+      btn.style.fontWeight = activo ? '600' : '500';
+      document.getElementById(paneles[key]).style.display = activo ? 'block' : 'none';
+    });
+  };
+
+  window.compras_CargarTodo = function() {
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+
+    google.script.run.withSuccessHandler(function(reqs) { REQUISICIONES_GLOBAL = reqs || []; }).obtenerRequisicionesServidor();
+    google.script.run.withSuccessHandler(function(ords) { ORDENES_GLOBAL = ords || []; window.compras_RenderizarHistorial(); }).obtenerOrdenesCompraServidor();
+    google.script.run.withSuccessHandler(function(provs) { PROVEEDORES_GLOBAL = provs || []; poblarSelectorProveedores(); }).obtenerProveedoresServidor();
+    google.script.run.withSuccessHandler(function(cargos) { CARGOS_COMPRA_GLOBAL = cargos || []; }).obtenerCargosCompraServidor();
+    google.script.run.withSuccessHandler(function(bodegas) { BODEGAS_COMPRA_GLOBAL = bodegas || []; poblarSelectorBodegaOrden(); }).obtenerBodegasServidor();
+    google.script.run.withSuccessHandler(function(catalogo) {
+      TODAS_LAS_VARIANTES_COMPRAS = [];
+      (catalogo || []).forEach(p => (p.variantes || []).forEach(v => {
+        TODAS_LAS_VARIANTES_COMPRAS.push({
+          sku: v.sku,
+          descripcion: p.nombre + ' - ' + (v.etiqueta || 'Estandar'),
+          // El catalogo de cargos filtra por "Bienes" o "Servicios"; un
+          // Producto/Insumo/Produccion cuenta como Bien, y un Servicio
+          // cuenta como Servicio para esa clasificacion fiscal.
+          tipoFiscal: (p.tipo === 'Servicio') ? 'Servicios' : 'Bienes'
+        });
+      }));
+    }).obtenerCatalogoParaRequisicionesServidor();
+    google.script.run.withSuccessHandler(function(config) { CONFIG_EMPRESA_COMPRAS = config; }).obtenerConfiguracionEmpresaServidor();
+  };
+
+  function poblarSelectorBodegaOrden() {
+    const select = document.getElementById('orden-select-bodega');
+    if (!select) return;
+    const valorActual = select.value;
+    select.innerHTML = '<option value="">-- Selecciona una bodega --</option>';
+    BODEGAS_COMPRA_GLOBAL.forEach(b => {
+      const opt = document.createElement('option');
+      opt.value = b;
+      opt.innerText = b;
+      select.appendChild(opt);
+    });
+    if (valorActual) select.value = valorActual;
+  }
+
+  function poblarSelectorProveedores() {
+    const select = document.getElementById('orden-select-proveedor');
+    if (!select) return;
+    select.innerHTML = '<option value="">-- Selecciona un proveedor --</option>';
+    PROVEEDORES_GLOBAL.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.nombre;
+      opt.innerText = p.nombre;
+      select.appendChild(opt);
+    });
+  }
+
+  let origenOrdenActual = 'Directa';
+  let ordenActualEnModalEnvio = null;
+  let tipoDestinoActual = 'Bodega';
+  let REQUISICIONES_PENDIENTES_COMPRA = [];
+  let requisicionesSeleccionadasParaOrden = []; // [idRequisicion, ...] elegidas en el popup, solo para mostrar el aviso
+
+  window.compras_SeleccionarOrigenOrden = function(origen) {
+    origenOrdenActual = origen;
+    const btnDirecta = document.getElementById('orden-btn-origen-directa');
+    const btnRequisicion = document.getElementById('orden-btn-origen-requisicion');
+    const aviso = document.getElementById('orden-aviso-requisicion');
+
+    const activarBoton = (btn, activo) => {
+      btn.style.background = activo ? 'var(--accent)' : '#ffffff';
+      btn.style.color = activo ? 'white' : '#475569';
+      btn.style.border = activo ? '2px solid var(--accent)' : '2px solid #cbd5e1';
+    };
+    activarBoton(btnDirecta, origen === 'Directa');
+    activarBoton(btnRequisicion, origen === 'Requisición');
+
+    if (origen === 'Requisición') {
+      window.compras_AbrirPopupRequisiciones();
+    } else {
+      aviso.style.display = 'none';
+      itemsOrdenTemp = [];
+      requisicionesSeleccionadasParaOrden = [];
+      pintarItemsOrdenTemp();
+    }
+  };
+
+  window.compras_SeleccionarTipoDestino = function(tipo) {
+    tipoDestinoActual = tipo;
+    const btnBodega = document.getElementById('orden-btn-destino-bodega');
+    const btnDirecta = document.getElementById('orden-btn-destino-directa');
+    const selectBodega = document.getElementById('orden-select-bodega');
+    const inputEntrega = document.getElementById('orden-entrega-directa-a');
+
+    const activarBoton = (btn, activo) => {
+      btn.style.background = activo ? 'var(--accent)' : '#ffffff';
+      btn.style.color = activo ? 'white' : '#475569';
+      btn.style.border = activo ? '2px solid var(--accent)' : '2px solid #cbd5e1';
+    };
+    activarBoton(btnBodega, tipo === 'Bodega');
+    activarBoton(btnDirecta, tipo === 'Entrega Directa');
+
+    selectBodega.style.display = (tipo === 'Bodega') ? 'block' : 'none';
+    inputEntrega.style.display = (tipo === 'Entrega Directa') ? 'block' : 'none';
+  };
+
+  window.compras_BuscarProveedor = function(texto) {
+    const cont = document.getElementById('orden-sugerencias-proveedor');
+    if (!cont) return;
+    const filtro = (texto || '').toLowerCase().trim();
+    if (!filtro) { cont.style.display = 'none'; return; }
+
+    const coincidencias = PROVEEDORES_GLOBAL.filter(p => p.nombre.toLowerCase().includes(filtro));
+    if (coincidencias.length === 0) {
+      cont.innerHTML = '<div style="padding:12px; color:#94a3b8; font-size:12px; text-align:center;">Sin coincidencias.</div>';
+      cont.style.display = 'block';
+      return;
+    }
+
+    cont.innerHTML = '';
+    coincidencias.slice(0, 8).forEach(p => {
+      const div = document.createElement('div');
+      div.style.cssText = "padding:10px 14px; cursor:pointer; border-bottom:1px solid #f1f5f9; font-size:13px; color:#1e293b;";
+      div.innerHTML = p.nombre + ' <span style="color:#94a3b8; font-size:10px;">(' + p.nitDui + ')</span>';
+      div.addEventListener('click', () => {
+        document.getElementById('orden-select-proveedor').value = p.nombre;
+        document.getElementById('orden-buscador-proveedor').value = p.nombre;
+        pintarPreviewProveedor(p);
+        cont.style.display = 'none';
+      });
+      cont.appendChild(div);
+    });
+    cont.style.display = 'block';
+  };
+
+  function pintarPreviewProveedor(p) {
+    const cont = document.getElementById('orden-preview-proveedor');
+    if (!cont) return;
+    cont.style.display = 'block';
+    cont.innerHTML =
+      '<strong>' + p.nombre + '</strong> · ' + (p.tipoPersona || 'Persona Natural') + ' · ' + (p.tipoContribuyente || '') + '<br>' +
+      'NIT/DUI: ' + (p.nitDui || '—') + (p.nrc ? (' · NRC: ' + p.nrc) : '') + '<br>' +
+      (p.telefono ? ('Tel: ' + p.telefono + ' ') : '') + (p.correo ? ('· ' + p.correo) : '');
+  }
+
+  window.compras_AbrirPopupRequisiciones = function() {
+    // Se calcula localmente con los datos ya cargados (REQUISICIONES_GLOBAL +
+    // TODAS_LAS_VARIANTES_COMPRAS) en vez de hacer un viaje al servidor cada
+    // vez que se abre el popup -- esto evita la lentitud de recorrer todas
+    // las requisiciones y todo el catalogo de productos en el backend en
+    // cada apertura, ya que esos mismos datos viven en memoria del cliente
+    // desde que se cargo el modulo.
+    const mapaTipoFiscal = {};
+    TODAS_LAS_VARIANTES_COMPRAS.forEach(v => { mapaTipoFiscal[v.sku] = v.tipoFiscal || 'Bienes'; });
+
+    REQUISICIONES_PENDIENTES_COMPRA = REQUISICIONES_GLOBAL
+      .filter(r => r.estado !== 'Cancelada')
+      .map(r => {
+        const itemsPendientes = (r.items || [])
+          .filter(it => it.estadoItem !== 'Cancelado')
+          .map(it => {
+            const comprada = parseFloat(it.cantidadComprada) || 0;
+            const pendiente = (parseFloat(it.cantidad) || 0) - comprada;
+            return Object.assign({}, it, { cantidadPendiente: pendiente, tipoFiscal: mapaTipoFiscal[it.sku] || 'Bienes' });
+          })
+          .filter(it => it.cantidadPendiente > 0);
+
+        return { id: r.id, fecha: r.fecha, solicitanteNombre: r.solicitanteNombre, departamento: r.departamento, items: itemsPendientes };
+      })
+      .filter(r => r.items.length > 0);
+
+    window.compras_RenderizarPopupRequisiciones();
+    document.getElementById('compras-modal-requisiciones').showModal();
+  };
+
+  window.compras_RenderizarPopupRequisiciones = function() {
+    const cont = document.getElementById('reqpop-lista');
+    if (!cont) return;
+
+    const filtro = (document.getElementById('reqpop-filtro-texto').value || '').toLowerCase().trim();
+    const filtradas = REQUISICIONES_PENDIENTES_COMPRA.filter(r => {
+      if (!filtro) return true;
+      const texto = (r.id + ' ' + (r.departamento || '') + ' ' + (r.items || []).map(it => it.descripcion).join(' ')).toLowerCase();
+      return texto.includes(filtro);
+    });
+
+    cont.innerHTML = '';
+    if (filtradas.length === 0) {
+      cont.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:20px; font-size:12px;">No hay ítems pendientes de comprar.</div>';
+      return;
+    }
+
+    filtradas.forEach(r => {
+      const tarjeta = document.createElement('div');
+      tarjeta.style.cssText = "border:1px solid #e2e8f0; border-radius:8px; padding:12px 14px;";
+      const itemsHtml = (r.items || []).map(it => {
+        const clave = r.id + '|' + it.sku;
+        const yaEnOrden = itemsOrdenTemp.some(io => io.idRequisicionOrigen === r.id && io.skuOrigen === it.sku);
+        return '<label style="display:flex; align-items:center; gap:8px; font-size:12px; color:#475569; padding:4px 0; cursor:pointer;">' +
+          '<input type="checkbox" class="reqpop-chk-item" data-clave="' + clave + '" data-idreq="' + r.id + '" data-sku="' + it.sku + '" data-desc="' + it.descripcion.replace(/"/g, '&quot;') + '" data-cant="' + it.cantidadPendiente + '" data-tipofiscal="' + (it.tipoFiscal || 'Bienes') + '" data-bodegaorigen="' + (it.bodegaOrigen || '') + '" ' + (yaEnOrden ? 'checked disabled' : '') + ' style="accent-color: var(--accent); width:15px; height:15px;">' +
+          it.descripcion + ' — Pendiente: <strong>' + it.cantidadPendiente + '</strong>' + (yaEnOrden ? ' <span style="color:#16a34a; font-size:10px;">(ya en la orden)</span>' : '') +
+        '</label>';
+      }).join('');
+
+      tarjeta.innerHTML =
+        '<div style="font-weight:700; color:#0f172a; font-size:12px; margin-bottom:4px;">' + r.id + ' <span style="color:#94a3b8; font-weight:500;">· ' + (r.departamento || '') + ' · ' + (r.solicitanteNombre || '') + '</span></div>' +
+        itemsHtml;
+      cont.appendChild(tarjeta);
+    });
+  };
+
+  /**
+   * Toma los checkboxes marcados (y no deshabilitados) del popup y los
+   * agrega como items temporales de la orden, conservando idRequisicionOrigen
+   * + skuOrigen para que, al guardar, el backend sepa exactamente que linea
+   * de que requisicion descontar.
+   */
+  window.compras_AgregarSeleccionadosDesdePopup = function() {
+    const checks = Array.from(document.querySelectorAll('.reqpop-chk-item:checked:not(:disabled)'));
+    if (checks.length === 0) { window.erpToast("Selecciona al menos un ítem.", "error"); return; }
+
+    checks.forEach(chk => {
+      const idReq = chk.dataset.idreq;
+      itemsOrdenTemp.push({
+        sku: chk.dataset.sku,
+        skuOrigen: chk.dataset.sku,
+        descripcion: chk.dataset.desc,
+        cantidadOrdenada: parseFloat(chk.dataset.cant) || 1,
+        costoUnitario: 0,
+        cargos: [],
+        idRequisicionOrigen: idReq,
+        tipoFiscal: chk.dataset.tipofiscal || 'Bienes',
+        bodegaOrigen: chk.dataset.bodegaorigen || ''
+      });
+      if (!requisicionesSeleccionadasParaOrden.includes(idReq)) requisicionesSeleccionadasParaOrden.push(idReq);
+    });
+
+    pintarItemsOrdenTemp();
+    document.getElementById('compras-modal-requisiciones').close();
+
+    const aviso = document.getElementById('orden-aviso-requisicion');
+    const avisoTexto = document.getElementById('orden-aviso-requisicion-texto');
+    avisoTexto.innerText = 'Comprando desde: ' + requisicionesSeleccionadasParaOrden.join(', ');
+    aviso.style.display = 'flex';
+
+    // Si el primer item agregado especifica de que bodega surgio la
+    // necesidad (porque vino de una sugerencia de stock bajo en
+    // Inventarios), se asigna automaticamente esa misma bodega como destino
+    // de la orden -- tiene prioridad sobre el autocompletado de "Entrega
+    // Directa A", ya que el flujo de bodega es mas especifico.
+    const primerItemConBodega = itemsOrdenTemp.find(it => it.bodegaOrigen);
+    if (primerItemConBodega) {
+      window.compras_SeleccionarTipoDestino('Bodega');
+      const selectBodega = document.getElementById('orden-select-bodega');
+      const bodegaBuscada = primerItemConBodega.bodegaOrigen.toString().trim().toLowerCase();
+      const opcionCoincidente = Array.from(selectBodega.options).find(opt => opt.value.toString().trim().toLowerCase() === bodegaBuscada);
+      if (opcionCoincidente) selectBodega.value = opcionCoincidente.value;
+    } else {
+      // Autocompleta "Entrega Directa A" con el departamento de la primera
+      // requisicion de origen, si el campo todavia esta vacio -- el usuario
+      // puede editarlo despues si necesita corregirlo.
+      const inputEntrega = document.getElementById('orden-entrega-directa-a');
+      if (inputEntrega && !inputEntrega.value.trim() && requisicionesSeleccionadasParaOrden.length > 0) {
+        const primeraReq = REQUISICIONES_GLOBAL.find(r => r.id === requisicionesSeleccionadasParaOrden[0]);
+        if (primeraReq && primeraReq.departamento) inputEntrega.value = primeraReq.departamento;
+      }
+    }
+  };
+
+  window.compras_BuscarProducto = function(texto) {
+    const cont = document.getElementById('orden-sugerencias-producto');
+    if (!cont) return;
+    const filtro = (texto || '').toLowerCase().trim();
+    if (!filtro) { cont.style.display = 'none'; return; }
+
+    const coincidencias = TODAS_LAS_VARIANTES_COMPRAS.filter(v => v.descripcion.toLowerCase().includes(filtro));
+    if (coincidencias.length === 0) {
+      cont.innerHTML = '<div style="padding:12px; color:#94a3b8; font-size:12px; text-align:center;">Sin resultados.</div>';
+      cont.style.display = 'block';
+      return;
+    }
+
+    cont.innerHTML = '';
+    coincidencias.slice(0, 8).forEach(v => {
+      const div = document.createElement('div');
+      div.style.cssText = "padding:10px 14px; cursor:pointer; border-bottom:1px solid #f1f5f9; font-size:13px; color:#1e293b;";
+      div.innerHTML = v.descripcion + ' <span style="color:#94a3b8; font-size:10px;">(SKU: ' + v.sku + ')</span>';
+      div.addEventListener('click', () => {
+        window.compras_AgregarItemOrdenPorSku(v.sku, v.descripcion, v.tipoFiscal);
+        document.getElementById('orden-buscador-producto').value = '';
+        cont.style.display = 'none';
+      });
+      cont.appendChild(div);
+    });
+    cont.style.display = 'block';
+  };
+
+  window.compras_AgregarItemOrdenPorSku = function(sku, descripcion, tipoFiscal) {
+    if (itemsOrdenTemp.some(it => it.sku === sku)) {
+      window.erpToast("Ese ítem ya está en la lista.", "info");
+      return;
+    }
+    itemsOrdenTemp.push({ sku: sku, skuOrigen: '', descripcion: descripcion, cantidadOrdenada: 1, costoUnitario: 0, cargos: [], idRequisicionOrigen: '', tipoFiscal: tipoFiscal || 'Bienes' });
+    pintarItemsOrdenTemp();
+  };
+
+  /**
+   * Recalcula la lista de requisiciones de origen y el aviso visual a partir
+   * de los items que ACTUALMENTE quedan en la orden (no de un registro
+   * separado que podia desincronizarse al quitar items). Si ya no queda
+   * ningun item proveniente de requisicion, el aviso se oculta por completo.
+   */
+  function sincronizarAvisoRequisicionOrigen() {
+    requisicionesSeleccionadasParaOrden = [...new Set(itemsOrdenTemp.filter(it => it.idRequisicionOrigen).map(it => it.idRequisicionOrigen))];
+
+    const aviso = document.getElementById('orden-aviso-requisicion');
+    const avisoTexto = document.getElementById('orden-aviso-requisicion-texto');
+    if (requisicionesSeleccionadasParaOrden.length > 0) {
+      avisoTexto.innerText = 'Comprando desde: ' + requisicionesSeleccionadasParaOrden.join(', ');
+      aviso.style.display = 'flex';
+    } else {
+      aviso.style.display = 'none';
+    }
+  }
+
+  function pintarItemsOrdenTemp() {
+    const cont = document.getElementById('orden-items-agregados');
+    cont.innerHTML = '';
+    if (itemsOrdenTemp.length === 0) {
+      cont.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:20px; font-size:12px; border:1px dashed #cbd5e1; border-radius:8px;">Busca y agrega los ítems a ordenar.</div>';
+      window.compras_RecalcularTotalOrden();
+      return;
+    }
+    itemsOrdenTemp.forEach((it, idx) => {
+      const origenHtml = it.idRequisicionOrigen ? (' <span style="color:#94a3b8; font-size:10px;">(' + it.idRequisicionOrigen + (it.bodegaOrigen ? (' · pedido desde ' + it.bodegaOrigen) : '') + ')</span>') : '';
+      const cargosChipsHtml = (it.cargos || []).map((c, ci) => {
+        const esResta = c.tipo === 'Resta';
+        const bg = esResta ? '#fee2e2' : '#dcfce7';
+        const color = esResta ? '#b91c1c' : '#16a34a';
+        const borde = esResta ? '#fca5a5' : '#86efac';
+        const signo = esResta ? '−' : '+';
+        return '<span class="orden-chip-cargo" data-idx-item="' + idx + '" data-idx-cargo="' + ci + '" style="display:inline-flex; align-items:center; gap:5px; background:' + bg + '; color:' + color + '; border:1px solid ' + borde + '; padding:3px 8px; border-radius:14px; font-size:10px; font-weight:600; cursor:pointer;">' +
+          signo + ' ' + c.nombre + ' ' + c.porcentaje + '% <i class="fa-solid fa-xmark" style="font-size:8px;"></i>' +
+        '</span>';
+      }).join('');
+
+      const fila = document.createElement('div');
+      fila.style.cssText = "display:flex; flex-direction:column; gap:8px; background:#ffffff; border:1px solid #e2e8f0; border-radius:8px; padding:10px 14px;";
+      fila.innerHTML =
+        '<div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">' +
+          '<span style="font-size:13px; color:#1e293b; flex:1; min-width:160px;">' + it.descripcion + origenHtml + '</span>' +
+          '<input type="number" class="orden-input-cant" min="1" step="1" value="' + (it.cantidadOrdenada || 1) + '" placeholder="Cant." style="width:70px; height:34px; border:1px solid #cbd5e1; border-radius:6px; padding:0 8px; box-sizing:border-box; font-size:12px;">' +
+          '<input type="number" class="orden-input-costo" min="0" step="0.01" value="' + (it.costoUnitario || 0) + '" placeholder="Costo $" style="width:90px; height:34px; border:1px solid #cbd5e1; border-radius:6px; padding:0 8px; box-sizing:border-box; font-size:12px;">' +
+          '<button type="button" class="orden-btn-quitar-item" style="background:#fee2e2; color:#b91c1c; border:none; width:30px; height:30px; border-radius:6px; cursor:pointer; font-size:11px; flex-shrink:0;"><i class="fa-solid fa-xmark"></i></button>' +
+        '</div>' +
+        '<div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; position:relative;">' +
+          '<span style="font-size:10px; color:#94a3b8; font-weight:700; text-transform:uppercase;">Cargos:</span>' +
+          cargosChipsHtml +
+          '<button type="button" class="orden-btn-agregar-cargo" data-idx-item="' + idx + '" style="background:#f1f5f9; color:#475569; border:1px dashed #cbd5e1; padding:3px 10px; border-radius:14px; font-size:10px; font-weight:600; cursor:pointer;"><i class="fa-solid fa-plus"></i> Agregar cargo</button>' +
+          '<div class="orden-sugerencias-cargo" data-idx-item="' + idx + '" style="display:none; position:absolute; top:26px; left:0; background:white; border:1px solid var(--border); border-radius:8px; min-width:180px; max-height:160px; overflow-y:auto; z-index:50; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15);"></div>' +
+        '</div>';
+
+      const inputCant = fila.querySelector('.orden-input-cant');
+      inputCant.addEventListener('input', () => { itemsOrdenTemp[idx].cantidadOrdenada = parseFloat(inputCant.value) || 0; window.compras_RecalcularTotalOrden(); });
+      const inputCosto = fila.querySelector('.orden-input-costo');
+      inputCosto.addEventListener('input', () => { itemsOrdenTemp[idx].costoUnitario = parseFloat(inputCosto.value) || 0; window.compras_RecalcularTotalOrden(); });
+      fila.querySelector('.orden-btn-quitar-item').addEventListener('click', () => { itemsOrdenTemp.splice(idx, 1); sincronizarAvisoRequisicionOrigen(); pintarItemsOrdenTemp(); });
+
+      fila.querySelectorAll('.orden-chip-cargo').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const idxItem = parseInt(chip.dataset.idxItem, 10);
+          const idxCargo = parseInt(chip.dataset.idxCargo, 10);
+          itemsOrdenTemp[idxItem].cargos.splice(idxCargo, 1);
+          pintarItemsOrdenTemp();
+        });
+      });
+
+      const btnAgregarCargo = fila.querySelector('.orden-btn-agregar-cargo');
+      const contSugerenciasCargo = fila.querySelector('.orden-sugerencias-cargo');
+      btnAgregarCargo.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const cargosYaAplicados = (itemsOrdenTemp[idx].cargos || []).map(c => c.nombre);
+
+        // Filtra los cargos disponibles segun el tipo fiscal del ITEM (Bienes
+        // o Servicios) y el tipo de PROVEEDOR seleccionado (Persona Natural o
+        // Empresa) -- el usuario sigue eligiendo manualmente, esto solo evita
+        // ofrecer combinaciones que no aplican (ej. Retencion ISR 10% de
+        // Servicios a un proveedor que es Empresa).
+        const tipoFiscalItem = itemsOrdenTemp[idx].tipoFiscal || 'Bienes';
+        const nombreProveedorSel = document.getElementById('orden-select-proveedor').value;
+        const proveedorSel = PROVEEDORES_GLOBAL.find(p => p.nombre === nombreProveedorSel);
+        const tipoProveedorSel = proveedorSel ? (proveedorSel.tipoPersona || 'Persona Natural') : null;
+
+        const disponibles = CARGOS_COMPRA_GLOBAL.filter(c => {
+          if (cargosYaAplicados.includes(c.nombre)) return false;
+          const coincideCompra = (c.tipoCompra || 'Ambos') === 'Ambos' || c.tipoCompra === tipoFiscalItem;
+          const coincideProveedor = !tipoProveedorSel || (c.tipoProveedor || 'Ambos') === 'Ambos' || c.tipoProveedor === tipoProveedorSel;
+          return coincideCompra && coincideProveedor;
+        });
+
+        if (disponibles.length === 0) {
+          contSugerenciasCargo.innerHTML = '<div style="padding:10px; color:#94a3b8; font-size:11px; text-align:center;">No hay cargos disponibles para este tipo de ítem/proveedor.</div>';
+        } else {
+          contSugerenciasCargo.innerHTML = '';
+          disponibles.forEach(c => {
+            const opcion = document.createElement('div');
+            opcion.style.cssText = "padding:8px 12px; cursor:pointer; border-bottom:1px solid #f1f5f9; font-size:12px; color:#1e293b;";
+            opcion.innerHTML = c.nombre + ' (' + c.porcentaje + '%) <span style="color:' + (c.tipo === 'Resta' ? '#b91c1c' : '#16a34a') + '; font-size:9px; font-weight:700;">' + (c.tipo === 'Resta' ? 'RESTA' : 'SUMA') + '</span>';
+            opcion.addEventListener('click', () => {
+              // Se guarda el cargo COMPLETO (incluyendo tipo Suma/Resta) -- antes
+              // solo se guardaba nombre+porcentaje, por lo que el backend nunca
+              // podia saber si debia restar, y todo se trataba como suma.
+              itemsOrdenTemp[idx].cargos.push({ nombre: c.nombre, porcentaje: c.porcentaje, tipo: c.tipo });
+              pintarItemsOrdenTemp();
+            });
+            contSugerenciasCargo.appendChild(opcion);
+          });
+        }
+        document.querySelectorAll('.orden-sugerencias-cargo').forEach(c => { if (c !== contSugerenciasCargo) c.style.display = 'none'; });
+        contSugerenciasCargo.style.display = contSugerenciasCargo.style.display === 'block' ? 'none' : 'block';
+      });
+
+      cont.appendChild(fila);
+    });
+    window.compras_RecalcularTotalOrden();
+  }
+
+  /**
+   * Recalcula el total a pagar EN EL CLIENTE, sumando por cada item su
+   * subtotal (cantidad x costo) mas el % de cada cargo asignado sobre ese
+   * mismo subtotal. Es un espejo instantaneo del calculo que hace el
+   * backend al guardar (obtenerOrdenesCompraServidor).
+   */
+  window.compras_RecalcularTotalOrden = function() {
+    const cont = document.getElementById('orden-total-resumen');
+    if (!cont) return;
+
+    if (itemsOrdenTemp.length === 0) { cont.style.display = 'none'; return; }
+
+    let subtotalGeneral = 0;
+    const cargosAgrupados = {}; // nombre -> { porcentaje, tipo, monto }
+
+    itemsOrdenTemp.forEach(it => {
+      const subtotalItem = (it.cantidadOrdenada || 0) * (it.costoUnitario || 0);
+      subtotalGeneral += subtotalItem;
+      (it.cargos || []).forEach(c => {
+        const monto = subtotalItem * ((c.porcentaje || 0) / 100);
+        if (!cargosAgrupados[c.nombre]) cargosAgrupados[c.nombre] = { porcentaje: c.porcentaje, tipo: c.tipo, monto: 0 };
+        cargosAgrupados[c.nombre].monto += monto;
+      });
+    });
+
+    let totalAPagar = subtotalGeneral;
+    let filasHtml = '<div style="display:flex; justify-content:space-between;"><span>Subtotal:</span><strong>$' + subtotalGeneral.toFixed(2) + '</strong></div>';
+
+    Object.keys(cargosAgrupados).forEach(nombre => {
+      const c = cargosAgrupados[nombre];
+      const esResta = c.tipo === 'Resta';
+      totalAPagar += esResta ? -c.monto : c.monto;
+      const color = esResta ? '#b91c1c' : '#16a34a';
+      const signo = esResta ? '−' : '+';
+      filasHtml += '<div style="display:flex; justify-content:space-between; color:' + color + ';"><span>' + nombre + ' - ' + c.porcentaje + '% (' + signo + '):</span><strong>$' + c.monto.toFixed(2) + '</strong></div>';
+    });
+
+    filasHtml += '<div style="display:flex; justify-content:space-between; border-top:1px solid #e2e8f0; margin-top:6px; padding-top:6px; font-weight:700; color:#0f172a; font-size:14px;"><span>Total a pagar:</span><span>$' + totalAPagar.toFixed(2) + '</span></div>';
+
+    cont.style.display = 'flex';
+    cont.innerHTML = filasHtml;
+  };
+
+  /**
+   * Formatea una fecha de forma segura para mostrarla -- si el valor no es
+   * una fecha valida (vacio, formato raro, etc.) devuelve cadena vacia en
+   * vez de romper la vista con "Invalid Date".
+   */
+  function formatearFechaSegura(valor) {
+    if (!valor) return '';
+    const fecha = new Date(valor.includes('T') ? valor : valor + 'T00:00:00');
+    if (isNaN(fecha.getTime())) return '';
+    return fecha.toLocaleDateString();
+  }
+
+  function obtenerDatosFormularioOrden() {
+    const proveedor = document.getElementById('orden-select-proveedor').value;
+    const bodegaDestino = document.getElementById('orden-select-bodega').value;
+    const entregaDirectaA = document.getElementById('orden-entrega-directa-a').value.trim();
+
+    if (!proveedor) { window.erpToast("Busca y selecciona un proveedor.", "error"); return null; }
+    if (itemsOrdenTemp.length === 0) { window.erpToast("Agrega al menos un ítem.", "error"); return null; }
+    if (tipoDestinoActual === 'Bodega' && !bodegaDestino) { window.erpToast("Selecciona la bodega destino.", "error"); return null; }
+    if (tipoDestinoActual === 'Entrega Directa' && !entregaDirectaA) { window.erpToast("Indica a quién se entregará.", "error"); return null; }
+
+    return {
+      proveedor: proveedor,
+      bodegaDestino: tipoDestinoActual === 'Bodega' ? bodegaDestino : '',
+      tipoDestino: tipoDestinoActual,
+      entregaDirectaA: tipoDestinoActual === 'Entrega Directa' ? entregaDirectaA : '',
+      origenTipo: origenOrdenActual,
+      items: itemsOrdenTemp,
+      notas: document.getElementById('orden-notas').value.trim(),
+      terminosPago: document.getElementById('orden-select-terminos-pago').value,
+      llegadaPrevista: document.getElementById('orden-llegada-prevista').value
+    };
+  }
+
+  function limpiarFormularioOrden() {
+    itemsOrdenTemp = [];
+    requisicionesSeleccionadasParaOrden = [];
+    pintarItemsOrdenTemp();
+    document.getElementById('orden-select-proveedor').value = '';
+    document.getElementById('orden-buscador-proveedor').value = '';
+    document.getElementById('orden-preview-proveedor').style.display = 'none';
+    document.getElementById('orden-select-bodega').value = '';
+    document.getElementById('orden-entrega-directa-a').value = '';
+    document.getElementById('orden-notas').value = '';
+    document.getElementById('orden-select-terminos-pago').value = 'Contado';
+    document.getElementById('orden-llegada-prevista').value = '';
+    document.getElementById('orden-aviso-requisicion').style.display = 'none';
+    window.compras_SeleccionarOrigenOrden('Directa');
+    window.compras_SeleccionarTipoDestino('Bodega');
+  }
+
+  window.compras_GuardarOrden = function(generarPdfAlTerminar) {
+    const datos = obtenerDatosFormularioOrden();
+    if (!datos) return;
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+
+    google.script.run
+      .withSuccessHandler(function(res) {
+        window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+        if (res.exito) {
+          if (generarPdfAlTerminar) {
+            window.compras_GenerarPdfOrden(Object.assign({}, datos, { id: res.idOrden, fecha: new Date() }));
+          }
+          limpiarFormularioOrden();
+          // Recarga las ordenes primero, y SOLO entonces muestra la tarjeta
+          // de "Ultima Orden Creada" -- ORDENES_GLOBAL debe estar actualizado
+          // con la orden recien guardada antes de poder encontrarla.
+          if (typeof google !== 'undefined' && google.script && google.script.run) {
+            google.script.run
+              .withSuccessHandler(function(ords) {
+                ORDENES_GLOBAL = ords || [];
+                window.compras_RenderizarHistorial();
+                mostrarUltimaOrdenCreada(res.idOrden);
+              })
+              .obtenerOrdenesCompraServidor();
+          }
+          window.compras_CargarTodo();
+        }
+      })
+      .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+      .crearOrdenCompraServidor(datos);
+  };
+
+  // ==========================================================================
+  // HISTORIAL DE COMPRAS — acordeon, paginacion, filtro de pago, rama visual
+  // ==========================================================================
+  window.compras_FiltrarHistorial = function() {
+    paginaActualHistorial = 1;
+    window.compras_RenderizarHistorial();
+  };
+
+  window.compras_ToggleMostrarTodo = function() {
+    mostrarTodoHistorial = !mostrarTodoHistorial;
+    const btn = document.getElementById('hist-btn-mostrar-todo');
+    const controles = document.getElementById('hist-controles-paginacion');
+    if (mostrarTodoHistorial) {
+      btn.style.background = 'var(--accent)';
+      btn.style.color = 'white';
+      btn.style.borderColor = 'var(--accent)';
+      btn.innerText = 'Volver a paginar';
+      if (controles) controles.style.display = 'none';
+    } else {
+      btn.style.background = '#ffffff';
+      btn.style.color = '#475569';
+      btn.style.borderColor = '#cbd5e1';
+      btn.innerText = 'Mostrar todo';
+      if (controles) controles.style.display = 'flex';
+    }
+    paginaActualHistorial = 1;
+    window.compras_RenderizarHistorial();
+  };
+
+  window.compras_RenderizarHistorial = function() {
+    const cont = document.getElementById('compras-lista-ordenes');
+    if (!cont) return;
+
+    const filtroTexto = (document.getElementById('hist-filtro-texto').value || '').toLowerCase().trim();
+    const filtroEstado = document.getElementById('hist-filtro-estado').value;
+    const filtroPago = document.getElementById('hist-filtro-pago').value;
+
+    const filtradas = ORDENES_GLOBAL.filter(o => {
+      if (filtroEstado && o.estado !== filtroEstado) return false;
+      if (filtroPago && (o.estadoPago || 'Pendiente') !== filtroPago) return false;
+      if (filtroTexto) {
+        const texto = (o.proveedor + ' ' + o.idRequisicion + ' ' + (o.items || []).map(it => it.descripcion).join(' ')).toLowerCase();
+        if (!texto.includes(filtroTexto)) return false;
+      }
+      return true;
+    });
+
+    let paginadas;
+    if (mostrarTodoHistorial) {
+      paginadas = filtradas;
+      const txtPag = document.getElementById('hist-txt-paginacion');
+      if (txtPag) txtPag.innerText = 'Mostrando todo (' + filtradas.length + ')';
+    } else {
+      const totalItems = filtradas.length;
+      const totalPaginas = Math.ceil(totalItems / itemsPorPaginaHistorial) || 1;
+      if (paginaActualHistorial > totalPaginas) paginaActualHistorial = totalPaginas;
+      if (paginaActualHistorial < 1) paginaActualHistorial = 1;
+
+      const txtPag = document.getElementById('hist-txt-paginacion');
+      if (txtPag) txtPag.innerText = 'Pág. ' + paginaActualHistorial + ' de ' + totalPaginas;
+
+      const inicio = (paginaActualHistorial - 1) * itemsPorPaginaHistorial;
+      paginadas = filtradas.slice(inicio, inicio + itemsPorPaginaHistorial);
+    }
+
+    cont.innerHTML = '';
+    if (paginadas.length === 0) {
+      cont.innerHTML = '<div style="text-align:center; padding:30px; color:#94a3b8;">Sin órdenes de compra que coincidan.</div>';
+      return;
+    }
+    paginadas.forEach(o => cont.appendChild(construirTarjetaOrdenDOM(o)));
+  };
+
+  /**
+   * Construye el elemento DOM completo de UNA tarjeta de orden de compra
+   * (encabezado, badges, botones de accion, acordeon con detalle e hitos),
+   * con todos sus listeners ya conectados. Se usa tanto para el Registro de
+   * Compras (listado paginado) como para la tarjeta de "Ultima Orden
+   * Creada" en la pestana Comprar -- mismo diseno, una sola fuente de verdad.
+   */
+  function construirTarjetaOrdenDOM(o) {
+    const coloresRecepcion = {
+      'Pendiente de Recepción': { bg: '#fef3c7', color: '#b45309' },
+      'Recibida Parcial': { bg: '#dbeafe', color: '#1e40af' },
+      'Recibida Completa': { bg: '#dcfce7', color: '#16a34a' },
+      'Cerrada': { bg: '#e0e7ff', color: '#4338ca' },
+      'Cancelada': { bg: '#f1f5f9', color: '#94a3b8' }
+    };
+    const coloresPago = {
+      'Pendiente': { bg: '#fee2e2', color: '#b91c1c' },
+      'Parcial': { bg: '#dbeafe', color: '#1e40af' },
+      'Pagada': { bg: '#dcfce7', color: '#16a34a' }
+    };
+
+    const estiloEstado = coloresRecepcion[o.estado] || coloresRecepcion['Pendiente de Recepción'];
+    const estadoPago = o.estadoPago || 'Pendiente';
+    const estiloPago = coloresPago[estadoPago] || coloresPago['Pendiente'];
+    const idSeguro = o.id.replace(/[^a-zA-Z0-9]/g, '');
+
+    // "Rama" visual: si el item viene de una requisicion, se ve como una
+    // sub-linea conectada (borde izquierdo + sangria) que apunta al N° de
+    // requisicion origen, simulando el flujo requisicion -> orden.
+    const itemsHtml = (o.items || []).map(it => {
+      const cargosHtml = (it.cargos || []).map(c => {
+        const esResta = c.tipo === 'Resta';
+        const bg = esResta ? '#fee2e2' : '#dcfce7';
+        const color = esResta ? '#b91c1c' : '#16a34a';
+        const signo = esResta ? '−' : '+';
+        return '<span style="background:' + bg + '; color:' + color + '; font-size:9px; font-weight:700; padding:1px 6px; border-radius:8px; margin-left:4px;">' + signo + ' ' + c.nombre + ' ' + c.porcentaje + '%</span>';
+      }).join('');
+      const esParcial = (it.cantidadRecibida || 0) > 0 && (it.cantidadRecibida || 0) < (it.cantidadOrdenada || 0);
+      const chipParcial = esParcial ? ' <span style="background:#fef3c7; color:#b45309; font-size:9px; font-weight:700; padding:1px 6px; border-radius:8px;">RECEPCIÓN PARCIAL</span>' : '';
+      const lineaItem = '<div style="font-size:12px; color:#475569; padding:4px 0;">• ' + it.descripcion + ' — Ordenado: ' + it.cantidadOrdenada + ' / Recibido: ' + (it.cantidadRecibida || 0) + ' @ $' + parseFloat(it.costoUnitario || 0).toFixed(2) + cargosHtml + chipParcial + '</div>';
+
+      if (it.idRequisicionOrigen) {
+        return '<div style="border-left:2px solid #bfdbfe; margin-left:6px; padding-left:10px;">' +
+          '<div style="font-size:10px; color:#1e40af; font-weight:600;"><i class="fa-solid fa-arrow-turn-up fa-rotate-90" style="font-size:9px;"></i> Desde ' + it.idRequisicionOrigen + (it.bodegaOrigen ? (' · pedido desde ' + it.bodegaOrigen) : '') + '</div>' +
+          lineaItem +
+        '</div>';
+      }
+      return lineaItem;
+    }).join('');
+
+    const hitosHtml = (o.hitosPago || []).length > 0
+      ? (o.hitosPago || []).map(h => '<div style="font-size:11px; color:#475569; padding:3px 0;">💵 $' + parseFloat(h.monto).toFixed(2) + ' — ' + h.metodo + ' (' + h.fecha + ')' + (h.nota ? ' · ' + h.nota : '') + '</div>').join('')
+      : '<div style="font-size:11px; color:#94a3b8;">Sin hitos de pago registrados.</div>';
+
+    const tarjeta = document.createElement('div');
+    tarjeta.style.cssText = "border:1px solid #e2e8f0; border-radius:8px; background:white; overflow:hidden;";
+    tarjeta.innerHTML =
+      '<div onclick="window.compras_ToggleAcordeonOrden(\'' + idSeguro + '\')" style="padding:14px 18px; cursor:pointer;">' +
+        '<div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">' +
+          '<div style="font-weight:700; color:#0f172a; font-size:13px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">' +
+            o.id +
+            '<span style="background:' + estiloEstado.bg + '; color:' + estiloEstado.color + '; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px;">' + o.estado + '</span>' +
+            '<span style="background:' + estiloPago.bg + '; color:' + estiloPago.color + '; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px;">Pago: ' + estadoPago + '</span>' +
+            (o.origenTipo === 'Requisición' ? '<span style="background:#eff6ff; color:#1e40af; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px;">Desde Requisición</span>' : '<span style="background:#f1f5f9; color:#64748b; font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px;">Compra Directa</span>') +
+          '</div>' +
+          '<div style="display:flex; align-items:center; gap:8px; flex-shrink:0;" onclick="event.stopPropagation()">' +
+            (comprasLicenciaPro ? '<button type="button" data-action="enviar-orden" style="height:30px; padding:0 12px; background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:6px; white-space:nowrap;"><i class="fa-solid fa-paper-plane"></i> Enviar</button>' : '') +
+            '<button type="button" data-action="descargar-pdf" title="Ver / Descargar PDF" style="width:30px; height:30px; background:#ffffff; color:#475569; border:1px solid #cbd5e1; border-radius:6px; font-size:12px; cursor:pointer; flex-shrink:0;"><i class="fa-solid fa-file-pdf"></i></button>' +
+            '<button type="button" data-action="hitos-pago" style="height:30px; padding:0 12px; background:#eff6ff; color:#1e40af; border:1px solid #bfdbfe; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:6px; white-space:nowrap;"><i class="fa-solid fa-money-bill-wave"></i> Hitos de Pago</button>' +
+            (o.estado !== 'Cancelada' && o.estado !== 'Recibida Completa' && o.estado !== 'Cerrada' ? '<button type="button" data-action="cancelar-orden" style="height:30px; padding:0 12px; background:#ffffff; color:#ef4444; border:1px solid #ef4444; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer; white-space:nowrap;">Cancelar</button>' : '') +
+            '<i id="flecha-orden-' + idSeguro + '" class="fa-solid fa-chevron-down" style="color:#94a3b8; transition: transform 0.2s; font-size:12px; flex-shrink:0;" onclick="event.stopPropagation(); window.compras_ToggleAcordeonOrden(\'' + idSeguro + '\')"></i>' +
+          '</div>' +
+        '</div>' +
+        '<div style="font-size:11px; color:#94a3b8; margin-top:6px;">' + (o.fecha ? new Date(o.fecha).toLocaleString() : '') + ' · Proveedor: ' + o.proveedor + (o.bodegaDestino ? (' · Bodega: ' + o.bodegaDestino) : '') + ' · Total: $' + (o.totalAPagar || 0).toFixed(2) + ' · Saldo: $' + (o.saldoPendiente || 0).toFixed(2) + '</div>' +
+        '<div style="font-size:11px; color:#94a3b8; margin-top:2px;">Términos: ' + (o.terminosPago || 'Contado') + (formatearFechaSegura(o.llegadaPrevista) ? (' · Llegada prevista: ' + formatearFechaSegura(o.llegadaPrevista)) : '') + '</div>' +
+      '</div>' +
+      '<div id="acordeon-orden-' + idSeguro + '" style="display:none; background:#f8fafc; border-top:1px solid #e2e8f0; padding:14px 18px;">' +
+        itemsHtml +
+        (o.notas ? '<div style="font-size:11px; color:#94a3b8; margin-top:8px; font-style:italic;">' + o.notas + '</div>' : '') +
+        '<div style="margin-top:10px; padding-top:10px; border-top:1px solid #e2e8f0;">' +
+          '<div style="font-size:10px; font-weight:700; color:#64748b; text-transform:uppercase; margin-bottom:4px;">Hitos de Pago</div>' +
+          hitosHtml +
+        '</div>' +
+      '</div>';
+
+    const btnCancelar = tarjeta.querySelector('[data-action="cancelar-orden"]');
+    if (btnCancelar) btnCancelar.addEventListener('click', (e) => { e.stopPropagation(); window.compras_CancelarOrden(o.id); });
+
+    const btnHitos = tarjeta.querySelector('[data-action="hitos-pago"]');
+    if (btnHitos) btnHitos.addEventListener('click', (e) => { e.stopPropagation(); window.compras_AbrirModalHitosPago(o.id); });
+
+    const btnEnviar = tarjeta.querySelector('[data-action="enviar-orden"]');
+    if (btnEnviar) btnEnviar.addEventListener('click', (e) => { e.stopPropagation(); window.compras_AbrirModalEnviarOrden(o.id); });
+
+    const btnDescargarPdf = tarjeta.querySelector('[data-action="descargar-pdf"]');
+    if (btnDescargarPdf) btnDescargarPdf.addEventListener('click', (e) => { e.stopPropagation(); window.compras_DescargarPdfOrdenExistente(o.id); });
+
+    return tarjeta;
+  }
+
+  /**
+   * Pinta la tarjeta de "Ultima Orden Creada" en la pestana Comprar, usando
+   * la misma construccion de tarjeta que el Registro de Compras. Se llama
+   * justo despues de guardar una orden con exito.
+   */
+  function mostrarUltimaOrdenCreada(idOrden) {
+    const contTarjeta = document.getElementById('compras-tarjeta-ultima-orden');
+    const contLista = document.getElementById('compras-lista-ultima-orden');
+    if (!contTarjeta || !contLista) return;
+
+    const orden = ORDENES_GLOBAL.find(o => o.id === idOrden);
+    if (!orden) return;
+
+    contLista.innerHTML = '';
+    contLista.appendChild(construirTarjetaOrdenDOM(orden));
+    contTarjeta.style.display = 'block';
+  }
+
+  // ==========================================================================
+  // HITOS DE PAGO
+  // ==========================================================================
+  /**
+   * Abre el modal de envio de la orden (PRO): correo (siempre, si el
+   * proveedor tiene correo registrado) y WhatsApp (siempre, si tiene
+   * whatsapp registrado) -- el usuario elige cual usar, igual al patron de
+   * Requisiciones. El cuerpo del mensaje resume los items y el total.
+   */
+  window.compras_AbrirModalEnviarOrden = function(idOrden) {
+    const orden = ORDENES_GLOBAL.find(o => o.id === idOrden);
+    if (!orden) return;
+    ordenActualEnModalEnvio = orden;
+    const proveedor = PROVEEDORES_GLOBAL.find(p => p.nombre === orden.proveedor) || {};
+
+    document.getElementById('enviar-orden-id').innerText = idOrden;
+
+    const seccionCorreo = document.getElementById('enviar-orden-seccion-correo');
+    const seccionWhatsapp = document.getElementById('enviar-orden-seccion-whatsapp');
+    const linkWhatsapp = document.getElementById('enviar-orden-whatsapp-link');
+    const avisoEnviado = document.getElementById('enviar-orden-aviso-enviado');
+
+    if (avisoEnviado) {
+      if (orden.fechaUltimoEnvio) {
+        avisoEnviado.style.display = 'block';
+        avisoEnviado.innerHTML = '<i class="fa-solid fa-circle-check"></i> Enviada por última vez el ' + new Date(orden.fechaUltimoEnvio).toLocaleString();
+      } else {
+        avisoEnviado.style.display = 'none';
+      }
+    }
+
+    const listaItems = (orden.items || []).map(it => '- ' + it.descripcion + ' (Cant: ' + it.cantidadOrdenada + ')').join('\n');
+    const mensaje = 'Hola, le compartimos el detalle de la Orden de Compra ' + idOrden + ':\n\n' + listaItems + '\n\nTotal: $' + (orden.totalAPagar || 0).toFixed(2) + '\n\nQuedamos atentos.';
+
+    if (proveedor.correo) {
+      seccionCorreo.style.display = 'flex';
+      document.getElementById('enviar-orden-btn-correo').onclick = function() {
+        if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+        let pdfBase64 = '';
+        try {
+          const doc = construirPdfOrden(orden);
+          pdfBase64 = doc.output('datauristring').split(',')[1];
+        } catch (e) {
+          console.error("No se pudo generar el PDF para adjuntar: " + e.message);
+        }
+        google.script.run
+          .withSuccessHandler(function(res) {
+            window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+            if (res.exito) window.compras_CargarTodo();
+          })
+          .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+          .enviarOrdenCompraCorreoServidor({ idOrden: idOrden, correoProveedor: proveedor.correo, pdfBase64: pdfBase64 });
+      };
+    } else {
+      seccionCorreo.style.display = 'none';
+    }
+
+    if (proveedor.whatsapp) {
+      seccionWhatsapp.style.display = 'flex';
+      const numeroLimpio = proveedor.whatsapp.toString().replace(/[^0-9]/g, '');
+      const urlWhatsapp = 'https://wa.me/' + numeroLimpio + '?text=' + encodeURIComponent(mensaje);
+      linkWhatsapp.innerHTML =
+        '<a href="' + urlWhatsapp + '" target="_blank" style="background:#16a34a; color:#ffffff; border:none; border-radius:6px; padding:10px 16px; font-size:13px; font-weight:600; cursor:pointer; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:8px;"><i class="fa-brands fa-whatsapp"></i> Abrir chat con ' + proveedor.nombre + '</a>' +
+        '<span style="font-size:10px; color:#94a3b8; margin-top:6px; display:block;">WhatsApp no permite adjuntar archivos por link. Descarga el PDF (botón abajo) y adjúntalo manualmente en el chat.</span>';
+    } else {
+      seccionWhatsapp.style.display = 'none';
+    }
+
+    if (!proveedor.correo && !proveedor.whatsapp) {
+      window.erpToast("Este proveedor no tiene correo ni WhatsApp registrado.", "info");
+    }
+
+    document.getElementById('compras-modal-enviar-orden').showModal();
+  };
+
+  window.compras_AbrirModalHitosPago = function(idOrden) {
+    const orden = ORDENES_GLOBAL.find(o => o.id === idOrden);
+    if (!orden) return;
+
+    document.getElementById('hitos-modal-id-orden').innerText = idOrden;
+    document.getElementById('hito-id-orden').value = idOrden;
+    document.getElementById('hito-monto').value = '';
+    document.getElementById('hito-fecha').value = new Date().toISOString().slice(0, 10);
+    document.getElementById('hito-metodo').value = 'Transferencia';
+    document.getElementById('hito-nota').value = '';
+
+    pintarResumenYListaHitos(orden);
+    document.getElementById('compras-modal-hitos-pago').showModal();
+  };
+
+  function pintarResumenYListaHitos(orden) {
+    const contResumen = document.getElementById('hitos-resumen-totales');
+    contResumen.innerHTML =
+      '<div style="display:flex; justify-content:space-between;"><span>Total de la orden:</span><strong>$' + (orden.totalAPagar || 0).toFixed(2) + '</strong></div>' +
+      '<div style="display:flex; justify-content:space-between; color:#16a34a;"><span>Total pagado:</span><strong>$' + (orden.totalPagado || 0).toFixed(2) + '</strong></div>' +
+      '<div style="display:flex; justify-content:space-between; color:#b91c1c;"><span>Saldo pendiente:</span><strong>$' + (orden.saldoPendiente || 0).toFixed(2) + '</strong></div>';
+
+    const contLista = document.getElementById('hitos-lista');
+    contLista.innerHTML = '';
+    if ((orden.hitosPago || []).length === 0) {
+      contLista.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:10px; font-size:11px;">Aún no hay hitos registrados.</div>';
+      return;
+    }
+    orden.hitosPago.forEach(h => {
+      const fila = document.createElement('div');
+      fila.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:#f8fafc; border:1px solid #f1f5f9; border-radius:6px; padding:8px 12px;";
+      fila.innerHTML =
+        '<span style="font-size:12px; color:#1e293b;">$' + parseFloat(h.monto).toFixed(2) + ' — ' + h.metodo + ' <span style="color:#94a3b8;">(' + h.fecha + ')</span>' + (h.nota ? '<br><span style="font-size:10px; color:#94a3b8; font-style:italic;">' + h.nota + '</span>' : '') + '</span>' +
+        '<button type="button" style="background:#fee2e2; color:#b91c1c; border:none; width:24px; height:24px; border-radius:4px; cursor:pointer; font-size:10px; flex-shrink:0;"><i class="fa-solid fa-trash-can"></i></button>';
+      fila.querySelector('button').addEventListener('click', () => window.compras_EliminarHitoPago(orden.id, h.id));
+      contLista.appendChild(fila);
+    });
+  }
+
+  window.compras_RegistrarHitoPago = function() {
+    const idOrden = document.getElementById('hito-id-orden').value;
+    const monto = parseFloat(document.getElementById('hito-monto').value);
+    const fecha = document.getElementById('hito-fecha').value;
+    const metodo = document.getElementById('hito-metodo').value;
+    const nota = document.getElementById('hito-nota').value.trim();
+
+    if (isNaN(monto) || monto <= 0) { window.erpToast("Ingresa un monto válido.", "error"); return; }
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+
+    google.script.run
+      .withSuccessHandler(function(res) {
+        window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+        if (res.exito) {
+          document.getElementById('hito-monto').value = '';
+          document.getElementById('hito-nota').value = '';
+          window.compras_CargarTodo();
+          // Repinta el modal con datos frescos un instante despues de recargar.
+          setTimeout(() => {
+            const ordenActualizada = ORDENES_GLOBAL.find(o => o.id === idOrden);
+            if (ordenActualizada) pintarResumenYListaHitos(ordenActualizada);
+          }, 400);
+        }
+      })
+      .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+      .registrarHitoPagoOrdenServidor({ idOrden: idOrden, monto: monto, fecha: fecha, metodo: metodo, nota: nota });
+  };
+
+  window.compras_EliminarHitoPago = async function(idOrden, idHito) {
+    const confirmar = await window.erpConfirm('¿Eliminar este hito de pago?');
+    if (!confirmar) return;
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+
+    google.script.run
+      .withSuccessHandler(function(res) {
+        window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+        window.compras_CargarTodo();
+        setTimeout(() => {
+          const ordenActualizada = ORDENES_GLOBAL.find(o => o.id === idOrden);
+          if (ordenActualizada) pintarResumenYListaHitos(ordenActualizada);
+        }, 400);
+      })
+      .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+      .eliminarHitoPagoOrdenServidor(idOrden, idHito);
+  };
+
+  // ==========================================================================
+  // REPORTES PRO (Excel)
+  // ==========================================================================
+  /**
+   * Genera el PDF de una Orden de Compra recien creada, usando los datos de
+   * la empresa (Config_Empresa) y del proveedor seleccionado. Se llama
+   * justo despues de guardar exitosamente la orden, con el id real ya
+   * asignado por el backend.
+   */
+  /**
+   * Construye el documento PDF de una Orden de Compra y lo devuelve (sin
+   * descargarlo). Quien llama decide que hacer con el: descargarlo
+   * directamente (.save) o convertirlo a base64 para adjuntarlo a un correo.
+   */
+  function construirPdfOrden(datosOrden) {
+    const proveedor = PROVEEDORES_GLOBAL.find(p => p.nombre === datosOrden.proveedor) || {};
+    const empresa = CONFIG_EMPRESA_COMPRAS || {};
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'letter' });
+    const W = doc.internal.pageSize.getWidth();
+    const margen = 14;
+    const ancho = W - margen * 2;
+
+    // Helper formato miles
+    const fmt = n => parseFloat(n || 0).toLocaleString('es-SV', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    // Helper: dibuja un rectángulo redondeado relleno (simula border-radius)
+    const rectRounded = (x, y, w, h, r, fillColor, strokeColor) => {
+      doc.setFillColor(...fillColor);
+      if (strokeColor) doc.setDrawColor(...strokeColor);
+      else doc.setDrawColor(...fillColor);
+      doc.roundedRect(x, y, w, h, r, r, strokeColor ? 'FD' : 'F');
+    };
+
+    let y = margen;
+
+    // ── HEADER AZUL (igual al header del modal) ──────────────────────────
+    const alturaHeader = 18;
+    rectRounded(0, 0, W, alturaHeader, 0, [37, 99, 235]);
+
+    // Logo a la izquierda si existe
+    let xTextoHeader = margen;
+    const tieneLogo = empresa.logoUrl && empresa.logoUrl.toString().startsWith('data:image');
+    if (tieneLogo) {
+      try {
+        const fmt2 = empresa.logoUrl.includes('image/png') ? 'PNG' : 'JPEG';
+        doc.addImage(empresa.logoUrl, fmt2, margen, 3, 12, 12);
+        xTextoHeader = margen + 15;
+      } catch(e) {}
+    }
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(11);
+    doc.setFont(undefined, 'bold');
+    doc.text(empresa.nombreEmpresa || 'Mi Empresa', xTextoHeader, 11);
+
+    doc.setFontSize(9);
+    doc.setFont(undefined, 'bold');
+    doc.text('ORDEN DE COMPRA', W - margen, 8, { align: 'right' });
+    doc.setFontSize(10);
+    doc.text(datosOrden.id || '', W - margen, 14, { align: 'right' });
+
+    y = alturaHeader + 8;
+
+    // ── TARJETAS EMISOR + PROVEEDOR (grid 2 columnas) ────────────────────
+    const anchoTarjeta = (ancho - 4) / 2;
+    const alturaTarjeta = 26;
+
+    // Tarjeta Emisor
+    rectRounded(margen, y, anchoTarjeta, alturaTarjeta, 2, [248, 250, 252], [226, 232, 240]);
+    doc.setTextColor(100, 116, 139);
+    doc.setFontSize(7);
+    doc.setFont(undefined, 'bold');
+    doc.text('EMISOR', margen + 3, y + 5);
+    doc.setTextColor(15, 23, 42);
+    doc.setFontSize(9);
+    doc.text(empresa.nombreEmpresa || '—', margen + 3, y + 10);
+    doc.setFontSize(7);
+    doc.setFont(undefined, 'normal');
+    doc.setTextColor(100, 116, 139);
+    const lineasEmisor = [
+      empresa.nit ? 'NIT: ' + empresa.nit + (empresa.nrc ? '  ·  NRC: ' + empresa.nrc : '') : '',
+      empresa.direccion || '',
+      [empresa.telefono, empresa.correo].filter(Boolean).join('  ·  ')
+    ].filter(Boolean);
+    lineasEmisor.forEach((l, i) => doc.text(l, margen + 3, y + 15 + i * 4, { maxWidth: anchoTarjeta - 6 }));
+
+    // Tarjeta Proveedor
+    const xProv = margen + anchoTarjeta + 4;
+    rectRounded(xProv, y, anchoTarjeta, alturaTarjeta, 2, [248, 250, 252], [226, 232, 240]);
+    doc.setTextColor(100, 116, 139);
+    doc.setFontSize(7);
+    doc.setFont(undefined, 'bold');
+    doc.text('PROVEEDOR', xProv + 3, y + 5);
+    doc.setTextColor(15, 23, 42);
+    doc.setFontSize(9);
+    doc.text(datosOrden.proveedor || '—', xProv + 3, y + 10);
+    doc.setFontSize(7);
+    doc.setFont(undefined, 'normal');
+    doc.setTextColor(100, 116, 139);
+    const lineasProv = [
+      proveedor.nitDui ? 'NIT/DUI: ' + proveedor.nitDui + (proveedor.nrc ? '  ·  NRC: ' + proveedor.nrc : '') : '',
+      proveedor.direccion || '',
+      [proveedor.telefono, proveedor.correo].filter(Boolean).join('  ·  ')
+    ].filter(Boolean);
+    lineasProv.forEach((l, i) => doc.text(l, xProv + 3, y + 15 + i * 4, { maxWidth: anchoTarjeta - 6 }));
+
+    y += alturaTarjeta + 6;
+
+    // ── CHIPS FECHA / TÉRMINOS / DESTINO (3 columnas azules) ─────────────
+    const anchoChip = (ancho - 8) / 3;
+    const alturaChip = 12;
+    const chips = [
+      { label: 'FECHA', valor: datosOrden.fecha ? new Date(datosOrden.fecha).toLocaleDateString() : '—' },
+      { label: 'TÉRMINOS DE PAGO', valor: datosOrden.terminosPago || 'Contado' },
+      { label: 'DESTINO', valor: (() => {
+          if (datosOrden.tipoDestino === 'Entrega Directa') return 'Entrega directa: ' + (datosOrden.entregaDirectaA || '—');
+          const bodegasItems = [...new Set((datosOrden.items || []).map(it => it.bodegaOrigen).filter(Boolean))];
+          return 'Bodega: ' + (bodegasItems.length > 0 ? bodegasItems.join(', ') : (datosOrden.bodegaDestino || '—'));
+        })() }
+    ];
+    chips.forEach((chip, i) => {
+      const xChip = margen + i * (anchoChip + 4);
+      rectRounded(xChip, y, anchoChip, alturaChip, 2, [239, 246, 255], [191, 219, 254]);
+      doc.setTextColor(30, 64, 175);
+      doc.setFontSize(6);
+      doc.setFont(undefined, 'bold');
+      doc.text(chip.label, xChip + anchoChip / 2, y + 4, { align: 'center' });
+      doc.setFontSize(7.5);
+      doc.setFont(undefined, 'bold');
+      doc.text(chip.valor, xChip + anchoChip / 2, y + 9, { align: 'center', maxWidth: anchoChip - 4 });
+    });
+
+    y += alturaChip + 6;
+
+    // ── TABLA DE ÍTEMS ────────────────────────────────────────────────────
+    let subtotalGeneral = 0;
+    const cargosAgrupados = {};
+
+    const filasTabla = (datosOrden.items || []).map(it => {
+      const cant = it.cantidadOrdenada || it.cantidad || 0;
+      const costo = parseFloat(it.costoUnitario || 0);
+      const subtotal = cant * costo;
+      subtotalGeneral += subtotal;
+      (it.cargos || []).forEach(c => {
+        const monto = subtotal * ((c.porcentaje || 0) / 100);
+        if (!cargosAgrupados[c.nombre]) cargosAgrupados[c.nombre] = { porcentaje: c.porcentaje, tipo: c.tipo, monto: 0 };
+        cargosAgrupados[c.nombre].monto += monto;
+      });
+      const cargosTexto = (it.cargos || []).map(c => (c.tipo === 'Resta' ? '-' : '+') + c.nombre + ' ' + c.porcentaje + '%').join(', ');
+      const descCompleta = it.descripcion + (cargosTexto ? '\n' + cargosTexto : '');
+      return [descCompleta, cant, '$' + fmt(costo), '$' + fmt(subtotal)];
+    });
+
+    doc.autoTable({
+      startY: y,
+      head: [['Descripción', 'Cant.', 'Costo U.', 'Subtotal']],
+      body: filasTabla,
+      styles: { fontSize: 8, cellPadding: 3, textColor: [51, 65, 85] },
+      headStyles: { fillColor: [37, 99, 235], textColor: 255, fontStyle: 'bold', fontSize: 8 },
+      alternateRowStyles: { fillColor: [248, 250, 252] },
+      columnStyles: {
+        0: { cellWidth: 'auto' },
+        1: { cellWidth: 18, halign: 'center' },
+        2: { cellWidth: 28, halign: 'right' },
+        3: { cellWidth: 28, halign: 'right', fontStyle: 'bold' }
+      },
+      margin: { left: margen, right: margen }
+    });
+
+    y = doc.lastAutoTable.finalY + 6;
+
+    // ── NOTAS + TOTALES (lado a lado en la misma fila) ───────────────────
+    let totalFinal = subtotalGeneral;
+    const lineasTotales = [{ label: 'Subtotal:', valor: '$' + fmt(subtotalGeneral), color: [100, 116, 139], bold: false }];
+    Object.keys(cargosAgrupados).forEach(nombre => {
+      const c = cargosAgrupados[nombre];
+      const esResta = c.tipo === 'Resta';
+      totalFinal += esResta ? -c.monto : c.monto;
+      lineasTotales.push({
+        label: nombre + ' ' + (esResta ? '-' : '+') + c.porcentaje + '%:',
+        valor: '$' + fmt(c.monto),
+        color: esResta ? [185, 28, 28] : [22, 163, 74],
+        bold: false
+      });
+    });
+    lineasTotales.push({ label: 'TOTAL:', valor: '$' + fmt(totalFinal), color: [15, 23, 42], bold: true, grande: true });
+
+    const anchoTotales = 65;
+    const xTotales = W - margen - anchoTotales;
+    const alturaTotales = lineasTotales.length * 6 + 10;
+
+    // Notas a la izquierda (si existen), misma altura que la tarjeta de totales
+    if (datosOrden.notas) {
+      const anchoNotas = xTotales - margen - 4;
+      rectRounded(margen, y, anchoNotas, alturaTotales, 2, [254, 243, 199], [253, 230, 138]);
+      doc.setFontSize(7.5);
+      doc.setFont(undefined, 'bold');
+      doc.setTextColor(146, 64, 14);
+      doc.text('Notas:', margen + 3, y + 6);
+      doc.setFont(undefined, 'normal');
+      doc.text(datosOrden.notas, margen + 3, y + 12, { maxWidth: anchoNotas - 6 });
+    }
+
+    // Tarjeta de totales a la derecha
+    rectRounded(xTotales, y, anchoTotales, alturaTotales, 2, [248, 250, 252], [226, 232, 240]);
+    let yTot = y + 7;
+    lineasTotales.forEach(l => {
+      if (l.grande) {
+        doc.setDrawColor(226, 232, 240);
+        doc.line(xTotales + 3, yTot - 3, xTotales + anchoTotales - 3, yTot - 3);
+        doc.setFontSize(10);
+      } else {
+        doc.setFontSize(8);
+      }
+      doc.setFont(undefined, l.bold ? 'bold' : 'normal');
+      doc.setTextColor(...l.color);
+      doc.text(l.label, xTotales + 4, yTot);
+      doc.text(l.valor, xTotales + anchoTotales - 3, yTot, { align: 'right' });
+      yTot += l.grande ? 0 : 6;
+    });
+
+    y += alturaTotales + 6;
+
+    // ── FOOTER ────────────────────────────────────────────────────────────
+    const totalPags = doc.internal.getNumberOfPages();
+    for (let p = 1; p <= totalPags; p++) {
+      doc.setPage(p);
+      doc.setFontSize(7);
+      doc.setFont(undefined, 'normal');
+      doc.setTextColor(180, 180, 180);
+      doc.text('Powered by ' + (empresa.nombreErp || 'ERP Corporativo'), W / 2, doc.internal.pageSize.getHeight() - 8, { align: 'center' });
+    }
+
+    return doc;
+  }
+
+  /**
+   * Descarga directamente el PDF de una orden (uso desde "Crear y Descargar
+   * PDF" al guardar, y desde el boton "Ver/Descargar PDF" en el Registro).
+   */
+  window.compras_GenerarPdfOrden = function(datosOrden) {
+    try {
+      const doc = construirPdfOrden(datosOrden);
+      doc.save((datosOrden.id || 'Orden_Compra') + '.pdf');
+    } catch (e) {
+      window.erpToast('Error al generar el PDF: ' + e.message, 'error');
+    }
+  };
+
+  let ordenActualEnVistaPdf = null;
+
+  /**
+   * Abre el modal de Vista Previa con el PDF de una orden YA EXISTENTE del
+   * Registro de Compras (boton "Ver/Descargar PDF"), reconstruyendolo con
+   * los datos que ya estan cargados en ORDENES_GLOBAL -- no requiere otro
+   * viaje al servidor. La descarga real solo ocurre si el usuario pulsa el
+   * boton de "Descargar PDF" dentro del modal, no de forma automatica.
+   */
+  window.compras_DescargarPdfOrdenExistente = function(idOrden) {
+    const orden = ORDENES_GLOBAL.find(o => o.id === idOrden);
+    if (!orden) { window.erpToast("No se encontró la orden.", "error"); return; }
+    window.compras_AbrirVistaPreviaPdf(orden);
+  };
+
+  /**
+   * Pinta el modal HTML interactivo de la Orden de Compra -- texto
+   * seleccionable, igual al modal de "Recibo de Recepcion". No usa canvas
+   * ni PDF.js; el PDF solo se genera si el usuario hace clic en "Descargar".
+   */
+  window.compras_AbrirVistaPreviaPdf = function(datosOrden) {
+    ordenActualEnVistaPdf = datosOrden;
+
+    const empresa = CONFIG_EMPRESA_COMPRAS || {};
+    const proveedor = PROVEEDORES_GLOBAL.find(p => p.nombre === datosOrden.proveedor) || {};
+
+    document.getElementById('vista-pdf-id-orden').innerText = datosOrden.id || '';
+
+    // Empresa emisora
+    document.getElementById('oc-modal-empresa-nombre').innerText = empresa.nombreEmpresa || 'Mi Empresa';
+    const datosEmpresa = [
+      empresa.nit ? ('NIT: ' + empresa.nit) : '',
+      empresa.nrc ? ('NRC: ' + empresa.nrc) : '',
+      empresa.direccion || '',
+      [empresa.telefono, empresa.correo].filter(Boolean).join(' · ')
+    ].filter(Boolean).join('\n');
+    document.getElementById('oc-modal-empresa-datos').innerText = datosEmpresa;
+
+    // Proveedor
+    document.getElementById('oc-modal-proveedor-nombre').innerText = datosOrden.proveedor || '—';
+    const datosProveedor = [
+      proveedor.nitDui ? ('NIT/DUI: ' + proveedor.nitDui) : '',
+      proveedor.nrc ? ('NRC: ' + proveedor.nrc) : '',
+      proveedor.direccion || '',
+      [proveedor.telefono, proveedor.correo].filter(Boolean).join(' · ')
+    ].filter(Boolean).join('\n');
+    document.getElementById('oc-modal-proveedor-datos').innerText = datosProveedor || '—';
+
+    // Datos de la orden
+    document.getElementById('oc-modal-fecha').innerText = datosOrden.fecha ? new Date(datosOrden.fecha).toLocaleDateString() : '—';
+    document.getElementById('oc-modal-terminos').innerText = datosOrden.terminosPago || 'Contado';
+    // Destino: si es Bodega, muestra todas las bodegas distintas de los items
+    // (una orden de requisicion puede mezclar items de distintas bodegas).
+    if (datosOrden.tipoDestino === 'Entrega Directa') {
+      document.getElementById('oc-modal-destino').innerText = 'Entrega directa: ' + (datosOrden.entregaDirectaA || '—');
+    } else {
+      const bodegasItems = [...new Set((datosOrden.items || []).map(it => it.bodegaOrigen).filter(Boolean))];
+      const textoBodegas = bodegasItems.length > 0 ? bodegasItems.join(', ') : (datosOrden.bodegaDestino || '—');
+      document.getElementById('oc-modal-destino').innerText = 'Bodega: ' + textoBodegas;
+    }
+
+    // Tabla de ítems
+    const tbody = document.getElementById('oc-modal-tabla-items');
+    tbody.innerHTML = '';
+
+    // Helper: formato de moneda con separador de miles
+    const fmt = n => parseFloat(n || 0).toLocaleString('es-SV', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+    (datosOrden.items || []).forEach((it, idx) => {
+      const cant = it.cantidadOrdenada || it.cantidad || 0;
+      const costo = parseFloat(it.costoUnitario || 0);
+      const subtotal = cant * costo;
+      const cargosTexto = (it.cargos || []).map(c => (c.tipo === 'Resta' ? '−' : '+') + c.nombre + ' ' + c.porcentaje + '%').join(', ');
+      const tr = document.createElement('tr');
+      tr.style.cssText = 'border-bottom: 1px solid #f1f5f9;' + (idx % 2 === 0 ? 'background: white;' : 'background: #f8fafc;');
+      tr.innerHTML =
+        '<td style="padding: 8px 10px; color: #334155; font-size: 11px;">' + it.descripcion +
+          (it.idRequisicionOrigen ? '<br><span style="font-size:9px; color:#1e40af;">↑ Desde ' + it.idRequisicionOrigen + '</span>' : '') +
+          (cargosTexto ? '<br><span style="font-size:9px; color:#64748b;">' + cargosTexto + '</span>' : '') +
+        '</td>' +
+        '<td style="padding: 8px 6px; text-align: center; color: #475569; font-size: 11px; white-space: nowrap;">' + cant + '</td>' +
+        '<td style="padding: 8px 6px; text-align: right; color: #475569; font-size: 11px; white-space: nowrap;">$' + fmt(costo) + '</td>' +
+        '<td style="padding: 8px 6px; text-align: right; font-weight: 600; color: #0f172a; font-size: 11px; white-space: nowrap;">$' + fmt(subtotal) + '</td>';
+      tbody.appendChild(tr);
+    });
+
+    // Totales con formato de miles
+    let subtotalGeneral = 0;
+    const cargosAgrupados = {};
+    (datosOrden.items || []).forEach(it => {
+      const sub = (it.cantidadOrdenada || it.cantidad || 0) * (parseFloat(it.costoUnitario) || 0);
+      subtotalGeneral += sub;
+      (it.cargos || []).forEach(c => {
+        const monto = sub * ((c.porcentaje || 0) / 100);
+        if (!cargosAgrupados[c.nombre]) cargosAgrupados[c.nombre] = { porcentaje: c.porcentaje, tipo: c.tipo, monto: 0 };
+        cargosAgrupados[c.nombre].monto += monto;
+      });
+    });
+    let total = subtotalGeneral;
+    const contTotales = document.getElementById('oc-modal-totales');
+    contTotales.innerHTML = '<div style="display:flex; justify-content:space-between; font-size:12px; color:#64748b; padding-bottom:3px;"><span>Subtotal:</span><strong style="color:#1e293b; margin-left:20px;">$' + fmt(subtotalGeneral) + '</strong></div>';
+    Object.keys(cargosAgrupados).forEach(nombre => {
+      const c = cargosAgrupados[nombre];
+      const esResta = c.tipo === 'Resta';
+      total += esResta ? -c.monto : c.monto;
+      const color = esResta ? '#b91c1c' : '#16a34a';
+      contTotales.innerHTML += '<div style="display:flex; justify-content:space-between; font-size:12px; color:' + color + '; padding-bottom:3px;"><span>' + nombre + ' ' + (esResta ? '−' : '+') + c.porcentaje + '%:</span><strong style="margin-left:20px;">$' + fmt(c.monto) + '</strong></div>';
+    });
+    contTotales.innerHTML += '<div style="display:flex; justify-content:space-between; border-top:1px solid #e2e8f0; margin-top:5px; padding-top:8px; font-size:15px; font-weight:700; color:#0f172a;"><span>TOTAL:</span><span style="margin-left:20px;">$' + fmt(total) + '</span></div>';
+
+    // Notas
+    const notasWrap = document.getElementById('oc-modal-notas-wrap');
+    if (datosOrden.notas) {
+      notasWrap.style.display = 'flex';
+      notasWrap.innerHTML = '<i class="fa-solid fa-note-sticky" style="margin-right:6px; flex-shrink:0;"></i><span><strong>Notas:</strong> ' + datosOrden.notas + '</span>';
+    } else {
+      notasWrap.style.display = 'none';
+    }
+
+    // Footer
+    document.getElementById('oc-modal-footer').innerText = 'Powered by ' + (empresa.nombreErp || 'ERP Corporativo');
+
+    document.getElementById('compras-modal-vista-pdf').showModal();
+  };
+
+  window.compras_ExportarOrdenes = function() {
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+    google.script.run
+      .withSuccessHandler(function(filas) {
+        try {
+          const ws = XLSX.utils.aoa_to_sheet(filas);
+          const wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, "Ordenes");
+          XLSX.writeFile(wb, "Registro_Compras_" + new Date().toISOString().slice(0, 10) + ".xlsx");
+        } catch (e) { window.erpToast("Error al generar el archivo: " + e.message, "error"); }
+      })
+      .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+      .obtenerDatosExportacionOrdenesServidor();
+  };
+
+  window.compras_ExportarVarianzaPrecio = function() {
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+    google.script.run
+      .withSuccessHandler(function(filas) {
+        try {
+          const ws = XLSX.utils.aoa_to_sheet(filas);
+          const wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, "Varianza de Precio");
+          XLSX.writeFile(wb, "Varianza_Precio_" + new Date().toISOString().slice(0, 10) + ".xlsx");
+        } catch (e) { window.erpToast("Error al generar el archivo: " + e.message, "error"); }
+      })
+      .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+      .obtenerDatosExportacionVarianzaPrecioServidor();
+  };
+
+  window.compras_ExportarComparativaProveedores = function() {
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+    google.script.run
+      .withSuccessHandler(function(res) {
+        try {
+          const wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(res.resumen), "Resumen por Proveedor");
+          if ((res.comparativa || []).length > 1) {
+            XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(res.comparativa), "Comparativa por Ítem");
+          }
+          XLSX.writeFile(wb, "Comparativa_Proveedores_" + new Date().toISOString().slice(0, 10) + ".xlsx");
+        } catch (e) { window.erpToast("Error al generar el archivo: " + e.message, "error"); }
+      })
+      .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+      .obtenerDatosExportacionComparativaProveedoresServidor();
+  };
+
+  window.compras_ToggleAcordeonOrden = function(idSeguro) {
+    const panel = document.getElementById('acordeon-orden-' + idSeguro);
+    const flecha = document.getElementById('flecha-orden-' + idSeguro);
+    if (!panel) return;
+    const abierto = panel.style.display === 'block';
+    document.querySelectorAll('[id^="acordeon-orden-"]').forEach(p => p.style.display = 'none');
+    document.querySelectorAll('[id^="flecha-orden-"]').forEach(f => f.style.transform = 'rotate(0deg)');
+    if (!abierto) {
+      panel.style.display = 'block';
+      if (flecha) flecha.style.transform = 'rotate(180deg)';
+    }
+  };
+
+  window.compras_CancelarOrden = async function(id) {
+    const confirmar = await window.erpConfirm('¿Cancelar la orden ' + id + '?');
+    if (!confirmar) return;
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) { window.erpToast(res.mensaje, res.exito ? 'exito' : 'error'); if (res.exito) window.compras_CargarTodo(); })
+        .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+        .cancelarOrdenCompraServidor(id);
+    }
+  };
+
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'erp_licencia_pro') sincronizarLicenciaLocal();
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) sincronizarLicenciaLocal();
+  });
+  document.addEventListener('mousemove', () => {
+    const checkActual = localStorage.getItem('erp_licencia_pro') === 'true';
+    if (checkActual !== comprasLicenciaPro) sincronizarLicenciaLocal();
+  });
+
+})();
+</script>
