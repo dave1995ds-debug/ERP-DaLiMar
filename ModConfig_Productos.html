@@ -1,0 +1,1717 @@
+<div style="display: flex; flex-direction: column; gap: 25px; width: 100%; box-sizing: border-box;">
+
+  <form id="form-registro-productos" onsubmit="event.preventDefault();" style="margin: 0; width: 100%;">
+    <div class="erp-main-card">
+      
+      <div class="erp-card-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box;">
+        <h3 style="margin: 0;" id="prod-titulo-ficha">
+          <i class="fa-solid fa-boxes-stacked" style="color: var(--accent);"></i> Catálogo Maestro de Ítems y Servicios
+        </h3>
+        
+        <div style="display: inline-flex; align-items: center; gap: 8px;">
+          <span id="productos-info-modo-estandar" 
+                style="display: inline-block; cursor: help; color: #64748b; font-size: 14px;" 
+                title="Los SKU, QR, Codigos de Barra reduce el tiempo de toma de inventario y despacho en más de un 70%. ¡Hazte PRO!.">
+            <i class="fa-solid fa-circle-info"></i>
+          </span>
+          <div id="productos-badge-modo-pro" style="display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; border: 1px solid #cbd5e1; background: #f1f5f9; color: #64748b;">
+            MÓDULO ESTÁNDAR
+          </div>
+        </div>
+      </div>
+
+      <div class="erp-card-body" style="padding-top: 10px; box-sizing: border-box;">
+        
+        <!-- DISTRIBUCIÓN: Col. izquierda 50% (Ficha) | Col. derecha 50% (Categorías arriba + Etiquetas abajo) -->
+        <div style="padding: 10px 0 20px 0; box-sizing: border-box; display: flex; flex-direction: row; gap: 20px; width: 100%; flex-wrap: wrap; align-items: stretch;">
+          
+          <!-- 1. FICHA DE REGISTRO (50% del ancho, alto completo) -->
+          <div style="flex: 1 1 0; min-width: 300px; background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 20px; box-sizing: border-box;">
+            
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+              <label style="font-weight: 700; display: block; color: #334155; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">
+                <i class="fa-solid fa-sliders" style="color: var(--accent);"></i> 1. Ficha de Registro e Intención
+              </label>
+              
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">¿Qué vas a registrar hoy?</span>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                  <div class="tarjeta-intencion activo" data-tipo="Producto" style="border: 2px solid var(--accent); background: #ffffff; padding: 10px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                    <div style="background: #e0f2fe; color: #0369a1; width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 14px;"><i class="fa-solid fa-box"></i></div>
+                    <div>
+                      <div style="font-size: 11px; font-weight: 700; color: #1e293b;">Producto</div>
+                      <div style="font-size: 9px; color: #64748b;">Comercial</div>
+                    </div>
+                  </div>
+                  <div class="tarjeta-intencion" data-tipo="Insumo" style="border: 1px solid #cbd5e1; background: #ffffff; padding: 10px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                    <div style="background: #fef3c7; color: #b45309; width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 14px;"><i class="fa-solid fa-trowel-bricks"></i></div>
+                    <div>
+                      <div style="font-size: 11px; font-weight: 700; color: #1e293b;">Insumo</div>
+                      <div style="font-size: 9px; color: #64748b;">Materia Prima</div>
+                    </div>
+                  </div>
+                  <div class="tarjeta-intencion" data-tipo="Servicio" style="border: 1px solid #cbd5e1; background: #ffffff; padding: 10px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                    <div style="background: #dcfce7; color: #15803d; width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 14px;"><i class="fa-solid fa-user-gear"></i></div>
+                    <div>
+                      <div style="font-size: 11px; font-weight: 700; color: #1e293b;">Servicio</div>
+                      <div style="font-size: 9px; color: #64748b;">Mano Obra</div>
+                    </div>
+                  </div>
+                  <div class="tarjeta-intencion" data-tipo="Producción" style="border: 1px solid #cbd5e1; background: #ffffff; padding: 10px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                    <div style="background: #f3e8ff; color: #6b21a8; width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 14px;"><i class="fa-solid fa-industry"></i></div>
+                    <div>
+                      <div style="font-size: 11px; font-weight: 700; color: #1e293b;">Producción</div>
+                      <div style="font-size: 9px; color: #64748b;">Propia</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 6px;">
+                <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Nombre del Ítem o Servicio:</span>
+                <input type="text" id="prod-nombre" class="form-control-erp" required placeholder="Ej. Cemento Gris Tipo GU" style="height: 40px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; color: #334155; box-sizing: border-box; width: 100%;">
+              </div>
+
+              <div style="display: flex; gap: 15px; width: 100%; box-sizing: border-box;">
+                <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+                  <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Categoría:</span>
+                  <select id="prod-cat-padre" class="form-control-erp" required onchange="window.productos_AlCambiarCategoriaFicha()" style="height: 40px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; color: #334155; box-sizing: border-box; width: 100%;">
+                    <option value="">-- Selecciona --</option>
+                  </select>
+                </div>
+                <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+                  <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Subcategoría:</span>
+                  <select id="prod-subcategoria" class="form-control-erp" style="height: 40px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; color: #334155; box-sizing: border-box; width: 100%;">
+                    <option value="">-- Ninguna --</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid var(--border); margin: 5px 0;">
+
+            <div style="display: flex; flex-direction: column; gap: 15px; width: 100%;">
+              <div style="display: flex; gap: 15px; width: 100%; box-sizing: border-box;">
+                <div style="flex: 1.2; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+                  <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Tipo Tributo:</span>
+                  <select id="prod-tributo-dte" class="form-control-erp" style="height: 40px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; color: #334155; width: 100%; box-sizing: border-box;">
+                    <option value="1">Gravado IVA 13%</option>
+                    <option value="2">Exento / No Sujeto</option>
+                  </select>
+                </div>
+                <div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px;">
+                  <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Medida MH:</span>
+                  <select id="prod-unidad-dte" class="form-control-erp" style="height: 40px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; color: #334155; width: 100%; box-sizing: border-box;">
+                    <option value="805">Unidad / Pieza (805)</option>
+                    <option value="804">Docena (804)</option>
+                    <option value="801">Millar (801)</option>
+                    <option value="408">Libra (408)</option>
+                    <option value="406">Kilogramo (406)</option>
+                    <option value="404">Quintal (404)</option>
+                    <option value="103">Metro (103)</option>
+                    <option value="305">Galón (305)</option>
+                    <option value="306">Litro (306)</option>
+                    <option value="999">Sin unidad de medida (999) — Servicios</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 2px;">
+                <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Flujos y Destinos del Ítem:</span>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; background: #ffffff; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                  <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: #334155; cursor: pointer;">
+                    <input type="checkbox" id="flow-compra" checked style="accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer;"> 
+                    <i class="fa-solid fa-cart-shopping" style="color: #64748b; font-size: 12px; width: 14px; text-align: center;"></i> Se Compra
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: #334155; cursor: pointer;">
+                    <input type="checkbox" id="flow-venta" checked style="accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer;"> 
+                    <i class="fa-solid fa-hand-holding-dollar" style="color: #64748b; font-size: 12px; width: 14px; text-align: center;"></i> Se Vende
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: #334155; cursor: pointer;">
+                    <input type="checkbox" id="flow-stock" checked style="accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer;"> 
+                    <i class="fa-solid fa-cubes" style="color: #64748b; font-size: 12px; width: 14px; text-align: center;"></i> Controla Stock
+                  </label>
+                  <label style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: #334155; cursor: pointer;">
+                    <input type="checkbox" id="flow-activo" style="accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer;"> 
+                    <i class="fa-solid fa-building-user" style="color: #64748b; font-size: 12px; width: 14px; text-align: center;"></i> Activo Fijo
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div style="background: #eff6ff; border: 1px dashed var(--accent); border-radius: 6px; padding: 10px 12px; font-size: 11px; color: #1e40af; display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-circle-info"></i> Después de guardar, añade al menos una variante (SKU, costo, precio) desde la tabla de abajo.
+            </div>
+
+            <div style="display: flex; gap: 12px; align-items: center; margin-top: 5px; width: 100%;">
+              <button type="button" id="btn-guardar-item" class="btn-submit" style="padding: 10px 20px; font-size: 13px; background: var(--accent); color: white; border: none; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; border-radius: 6px; height: 40px; box-sizing: border-box;">
+                <i class="fa-solid fa-floppy-disk"></i> <span id="txt-btn-guardar-item">Guardar Producto</span>
+              </button>
+              <button type="button" id="btn-cancelar-edicion-item" onclick="window.productos_CancelarEdicion()" style="display: none; padding: 10px 20px; font-size: 13px; background: #fff; color: #ef4444; border: 1px solid #ef4444; cursor: pointer; font-weight: 600; align-items: center; gap: 8px; border-radius: 6px; height: 40px; box-sizing: border-box;">
+                <i class="fa-solid fa-xmark"></i> Cancelar
+              </button>
+            </div>
+          </div>
+
+          <!-- COLUMNA DERECHA (50% del ancho): Categorías arriba + Etiquetas abajo, apiladas -->
+          <div style="flex: 1 1 0; min-width: 300px; display: flex; flex-direction: column; gap: 20px; box-sizing: border-box;">
+
+            <!-- 2. ALMACÉN DE CATEGORÍAS -->
+            <div style="flex: 1; background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; box-sizing: border-box;">
+              <label style="font-weight: 700; display: block; color: #334155; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;">
+                <i class="fa-solid fa-folder-tree" style="color: var(--accent);"></i> 2. Almacén de Categorías
+              </label>
+              
+              <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+                <input type="text" id="cat-nombre" class="form-control-erp" placeholder="Nombre de categoría (Ej. Repuestos)" style="height: 40px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; color: #334155; box-sizing: border-box; width: 100%;">
+                
+                <div style="display: flex; flex-direction: column; gap: 4px; width: 100%;">
+                  <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">¿Subcategoría dependiente?</span>
+                  <select id="cat-padre-id" class="form-control-erp" style="height: 40px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; color: #334155; box-sizing: border-box; width: 100%;">
+                    <option value="NINGUNA">Ninguna - Es Categoría Raíz</option>
+                  </select>
+                </div>
+                
+                <div style="display: flex; gap: 10px; width: 100%; margin-top: 5px;">
+                  <button type="button" id="btn-crear-categoria" onclick="window.productos_CrearCategoria()" style="flex: 1.2; height: 40px; background: var(--accent); color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box;">
+                    <i class="fa-solid fa-folder-plus"></i> Crear
+                  </button>
+                  <button type="button" onclick="window.productos_AbrirModalCategorias()" style="flex: 1; height: 40px; background: #ffffff; color: #475569; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box;">
+                    <i class="fa-solid fa-eye" style="color: #64748b;"></i> Ver
+                  </button>
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 5px; flex: 1; min-height: 0;">
+                <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Categorías Creadas:</span>
+                <div id="lista-categorias-vivo" style="display: flex; flex-direction: column; gap: 6px; padding: 8px; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 6px; box-sizing: border-box; width: 100%; max-height: 180px; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. ETIQUETAS OPERACIONALES -->
+            <div style="flex: 1; background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; box-sizing: border-box;">
+              <label style="font-weight: 700; display: block; color: #334155; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px;">
+                <i class="fa-solid fa-tags" style="color: var(--accent);"></i> 3. Etiquetas Operacionales
+              </label>
+
+              <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
+                <input type="text" id="prod-tag-input" class="form-control-erp" placeholder="Nombre de etiqueta (Ej. Azul)" style="height: 40px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; color: #334155; box-sizing: border-box; width: 100%;">
+
+                <div style="display: flex; flex-direction: column; gap: 4px; width: 100%;">
+                  <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">¿Grupo de etiquetas?</span>
+                  <select id="prod-tag-grupo" class="form-control-erp" style="height: 40px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; color: #334155; box-sizing: border-box; width: 100%;">
+                    <option value="">Es Grupo Nuevo</option>
+                  </select>
+                </div>
+
+                <div style="display: flex; gap: 10px; width: 100%; margin-top: 5px;">
+                  <button type="button" id="btn-anadir-tag" onclick="window.productos_AnadirTag()" style="flex: 1.2; height: 40px; background: var(--accent); color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box;">
+                    <i class="fa-solid fa-tag"></i> Crear
+                  </button>
+                  <button type="button" onclick="window.productos_AbrirModalTags()" style="flex: 1; height: 40px; background: #ffffff; color: #475569; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box;">
+                    <i class="fa-solid fa-eye" style="color: #64748b;"></i> Ver
+                  </button>
+                </div>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 6px; margin-top: 5px; flex: 1; min-height: 0;">
+                <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Etiquetas Creadas:</span>
+                <div id="lista-etiquetas-vivo" style="display: flex; flex-direction: column; gap: 6px; padding: 8px; background: #ffffff; border: 1px dashed #cbd5e1; border-radius: 6px; box-sizing: border-box; width: 100%; max-height: 180px; overflow-y: auto;">
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+        
+      </div>
+    </div>
+  </form>
+
+  <div class="erp-main-card">
+    <div class="erp-card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; width: 100%; box-sizing: border-box;">
+      <h3 style="margin: 0; min-width: 200px; display:flex; align-items:center; gap:10px;">
+        <span><i class="fa-solid fa-table-list" style="color: var(--accent);"></i> Catálogos e Ítems Registrados</span>
+        <span style="display:flex; gap:4px;">
+          <button type="button" id="filtro-tipo-producto" onclick="window.productos_ToggleFiltroTipo('Producto')" title="Productos" style="width:28px; height:28px; border-radius:6px; border:1px solid #bae6fd; background:#e0f2fe; color:#0369a1; cursor:pointer; font-size:12px;"><i class="fa-solid fa-box"></i></button>
+          <button type="button" id="filtro-tipo-insumo" onclick="window.productos_ToggleFiltroTipo('Insumo')" title="Insumos" style="width:28px; height:28px; border-radius:6px; border:1px solid #fde68a; background:#fef3c7; color:#b45309; cursor:pointer; font-size:12px;"><i class="fa-solid fa-trowel-bricks"></i></button>
+          <button type="button" id="filtro-tipo-servicio" onclick="window.productos_ToggleFiltroTipo('Servicio')" title="Servicios" style="width:28px; height:28px; border-radius:6px; border:1px solid #bbf7d0; background:#dcfce7; color:#15803d; cursor:pointer; font-size:12px;"><i class="fa-solid fa-user-gear"></i></button>
+          <button type="button" id="filtro-tipo-produccion" onclick="window.productos_ToggleFiltroTipo('Producción')" title="Producción" style="width:28px; height:28px; border-radius:6px; border:1px solid #e9d5ff; background:#f3e8ff; color:#6b21a8; cursor:pointer; font-size:12px;"><i class="fa-solid fa-industry"></i></button>
+        </span>
+      </h3>
+      
+      <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap; box-sizing: border-box;">
+        <div style="position: relative; width: 260px; box-sizing: border-box;">
+          <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 13px;"></i>
+          <input type="text" id="inventario-buscador" class="form-control-erp" style="padding-left: 38px; border-radius: 50px; background: #ffffff; border: 1px solid #cbd5e1; height: 36px; font-size: 12px; color: #334155; box-sizing: border-box; width: 100%;" placeholder="Buscar SKU, nombre, etiqueta...">
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 8px; background: #f1f5f9; padding: 4px 8px; border-radius: 30px; border: 1px solid #e2e8f0;">
+          <span id="txt-paginacion" style="font-size: 11px; font-weight: 600; color: #64748b; padding: 0 4px;">Pág. 1 de 1</span>
+          <div style="display: flex; gap: 3px;">
+            <button type="button" id="btn-pag-prev" title="Página Anterior" style="width: 28px; height: 28px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #475569; font-size: 10px; transition: all 0.2s;">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button type="button" id="btn-pag-next" title="Siguiente Página" style="width: 28px; height: 28px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #475569; font-size: 10px; transition: all 0.2s;">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="erp-card-body" style="padding-top: 10px; box-sizing: border-box; width: 100%;">
+      <div id="catalogo-productos-contenedor" style="display: flex; flex-direction: column; gap: 10px; box-sizing: border-box; width: 100%;">
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL: AGREGAR / EDITAR VARIANTE -->
+<dialog id="modal-variante" class="modal-dialog-erp" style="max-width: 420px !important;">
+  <div style="display: flex; justify-content: space-between; align-items: center; background: var(--accent); padding: 14px 20px; color: #ffffff;">
+    <h4 id="modal-variante-titulo" style="margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 8px;">
+      <i class="fa-solid fa-layer-group"></i> Agregar Variante
+    </h4>
+    <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px; color: rgba(255,255,255,0.8);" onclick="this.closest('dialog').close()"></i>
+  </div>
+  <div style="padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px;">
+    <input type="hidden" id="var-id-producto">
+    <input type="hidden" id="var-sku-original">
+
+    <div style="font-size: 12px; color: #64748b; background: #f8fafc; padding: 8px 10px; border-radius: 6px; border: 1px solid #e2e8f0;">
+      Producto: <strong id="var-nombre-producto-ref" style="color: #1e293b;"></strong>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px; position: relative;">
+      <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Etiquetas / Atributos (Ej. Azul, Punta Fina):</span>
+      <div style="display: flex; gap: 8px;">
+        <input type="text" id="var-etiqueta-buscar" class="form-control-erp" placeholder="Buscar etiqueta..." style="flex:1; height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box;" autocomplete="off" oninput="window.productos_BuscarEtiquetaVariante(this.value)">
+        <button type="button" onclick="window.productos_AbrirModalTags()" title="Ver Diccionario de Tags" style="width: 38px; height: 38px; background: #ffffff; color: #475569; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer; flex-shrink:0;">
+          <i class="fa-solid fa-eye"></i>
+        </button>
+      </div>
+      <div id="var-etiqueta-sugerencias" style="display: none; position: absolute; left: 0; right: 46px; top: 62px; background: white; border: 1px solid var(--border); border-radius: 6px; max-height: 160px; overflow-y: auto; z-index: 120; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);"></div>
+      <div id="var-etiquetas-seleccionadas" style="display: flex; flex-wrap: wrap; gap: 6px; min-height: 26px; padding: 4px 0;"></div>
+      <span style="font-size: 10px; color: #94a3b8;">¿No existe la etiqueta que necesitas? Créala primero en la Sección 3 (Etiquetas Operacionales).</span>
+    </div>
+
+    <div style="display: flex; gap: 10px;">
+      <div style="flex: 1.2; display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">SKU:</span>
+        <input type="text" id="var-sku" class="form-control-erp" placeholder="Escribe o escanea..." style="height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; font-family: monospace; box-sizing: border-box; width: 100%;">
+      </div>
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; white-space: nowrap;">&nbsp;</span>
+        <button type="button" id="btn-autogenerar-pro" style="height: 38px; background: #f1f5f9; color: #cbd5e1; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: default; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box;">
+          <i class="fa-solid fa-bolt"></i> Auto
+        </button>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1.1fr; gap: 8px;">
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Costo ($):</span>
+        <input type="number" id="var-costo" step="0.01" value="0.00" class="form-control-erp" style="height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; width: 100%;">
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Ganancia %:</span>
+        <input type="number" id="var-margen" step="0.1" value="30.0" class="form-control-erp" style="height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; width: 100%;">
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 11px; font-weight: 700; color: #1e293b; text-transform: uppercase;">PVP ($):</span>
+        <input type="number" id="var-precio" step="0.01" value="0.00" class="form-control-erp" style="height: 38px; border: 2px solid var(--accent); border-radius: 6px; padding: 0 10px; font-weight: 700; box-sizing: border-box; width: 100%;">
+      </div>
+    </div>
+
+    <button type="button" id="btn-guardar-variante" style="height: 40px; background: var(--accent); color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+      <i class="fa-solid fa-floppy-disk"></i> <span id="txt-btn-guardar-variante">Guardar Variante</span>
+    </button>
+  </div>
+</dialog>
+
+<!-- MODAL: VER CATEGORÍAS EXISTENTES -->
+<dialog id="modal-categorias" class="modal-dialog-erp">
+  <div style="display: flex; justify-content: space-between; align-items: center; background: var(--accent); padding: 14px 20px; color: #ffffff;">
+    <h4 style="margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 8px;">
+      <i class="fa-solid fa-folder-tree"></i> Árbol de Categorías en Sistema
+    </h4>
+    <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px; color: rgba(255,255,255,0.8);" onclick="this.closest('dialog').close()"></i>
+  </div>
+  <div style="padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 8px;">
+    <input type="text" id="filtro-modal-categorias" placeholder="Filtrar categorías..." style="height: 38px; padding: 0 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; margin-bottom: 5px; box-sizing: border-box; width: 100%; outline: none;">
+    <div id="box-lista-categorias" style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 12px; display: flex; flex-direction: column; gap: 6px; font-size: 12px; color: #334155; max-height: 280px; overflow-y: auto;">
+    </div>
+  </div>
+</dialog>
+
+<!-- MODAL: VER ETIQUETAS GLOBALES -->
+<dialog id="modal-tags" class="modal-dialog-erp">
+  <div style="display: flex; justify-content: space-between; align-items: center; background: var(--accent); padding: 14px 20px; color: #ffffff;">
+    <h4 style="margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 8px;">
+      <i class="fa-solid fa-tags"></i> Diccionario de Tags Globales
+    </h4>
+    <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px; color: rgba(255,255,255,0.8);" onclick="this.closest('dialog').close()"></i>
+  </div>
+  <div style="padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 10px;">
+    <input type="text" id="filtro-modal-tags" placeholder="Buscar etiqueta existente..." style="height: 38px; padding: 0 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px; box-sizing: border-box; width: 100%; outline: none;">
+    <div id="box-lista-tags" style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 12px; display: flex; flex-wrap: wrap; gap: 8px; width: 100%; box-sizing: border-box; max-height: 280px; overflow-y: auto;">
+    </div>
+  </div>
+</dialog>
+
+<!-- MODAL: CÓDIGOS QR + BARRAS (por variante) -->
+<dialog id="modal-codigos" class="modal-dialog-erp" style="max-width: 360px !important;">
+  <div style="display: flex; justify-content: space-between; align-items: center; background: var(--accent); padding: 14px 20px; color: #ffffff;">
+    <h4 style="margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 8px;">
+      <i class="fa-solid fa-qrcode"></i> Etiqueta de la Variante
+    </h4>
+    <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px; color: rgba(255,255,255,0.8);" onclick="this.closest('dialog').close()"></i>
+  </div>
+  <div style="padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 15px;">
+    <div id="codigos-nombre-producto" style="font-size: 13px; font-weight: 700; color: #1e293b; text-align: center;"></div>
+    <div id="codigos-sku-texto" style="font-size: 12px; font-family: monospace; color: #64748b;"></div>
+    <div id="codigos-qr-contenedor" style="padding: 10px; background: white; border: 1px solid #e2e8f0; border-radius: 8px;"></div>
+    <div id="codigos-barras-contenedor" style="padding: 10px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; width: 100%; box-sizing: border-box; text-align: center; overflow-x: auto;">
+      <svg id="codigos-barras-svg"></svg>
+    </div>
+    <button type="button" id="btn-imprimir-etiqueta" style="width:100%; height: 40px; background: var(--accent); color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+      <i class="fa-solid fa-print"></i> Imprimir Etiqueta
+    </button>
+  </div>
+</dialog>
+
+<style>
+  .modal-dialog-erp {
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 460px !important;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25) !important;
+    background: #f8fafc !important;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    margin: 0 !important;
+  }
+  .modal-dialog-erp::backdrop {
+    background: rgba(15, 23, 42, 0.4) !important;
+    backdrop-filter: blur(2px) !important;
+  }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsbarcode/3.11.5/JsBarcode.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<script>
+(function() {
+  console.log("Core-Productos: script inicializado correctamente.");
+
+  let PRODUCTOS_GLOBAL = [];
+  let CATEGORIAS_GLOBAL = [];
+  let ETIQUETAS_GLOBALES = [];
+  let GRUPOS_ETIQUETAS = [];
+  let FILTROS_TIPO_ACTIVOS = [];
+  let productosLicenciaPro = false; 
+  let tipoSeleccionado = "Producto";
+  let idProductoEnEdicion = null;
+  let idProductoParaNuevaVariante = null;
+  let skuVarianteEnEdicion = null;
+  let ETIQUETAS_VARIANTE_SELECCIONADAS = [];
+  let skuCodigosActual = null;
+  let nombreCodigosActual = '';
+
+  let paginaActual = 1;
+  const itemsPorPagina = 5;
+
+  setTimeout(() => {
+    inicializarEventosFicha();
+    sincronizarLicenciaLocal();
+    window.productos_CargarDatosDesdeHoja();
+  }, 50);
+
+  function inicializarEventosFicha() {
+    try {
+      const tarjetas = document.querySelectorAll('.tarjeta-intencion');
+      tarjetas.forEach(t => {
+        t.addEventListener('click', function() {
+          tarjetas.forEach(tarj => {
+            tarj.classList.remove('activo');
+            tarj.style.border = "1px solid #cbd5e1";
+          });
+          this.classList.add('activo');
+          this.style.border = "2px solid var(--accent)";
+          
+          tipoSeleccionado = this.getAttribute('data-tipo') || "Producto";
+        });
+      });
+
+      const buscadorInput = document.getElementById('inventario-buscador');
+      if(buscadorInput) {
+        buscadorInput.addEventListener('input', () => {
+          paginaActual = 1; 
+          renderizarCatalogo();
+        });
+      }
+
+      const btnPrev = document.getElementById('btn-pag-prev');
+      const btnNext = document.getElementById('btn-pag-next');
+      if(btnPrev) btnPrev.addEventListener('click', () => { if(paginaActual > 1) { paginaActual--; renderizarCatalogo(); } });
+      if(btnNext) btnNext.addEventListener('click', () => { paginaActual++; renderizarCatalogo(); });
+
+      const btnGuardar = document.getElementById('btn-guardar-item');
+      if(btnGuardar) {
+        btnGuardar.addEventListener('click', () => {
+          window.productos_GuardarItem();
+        });
+      }
+
+      const inputCostoVar = document.getElementById('var-costo');
+      const inputMargenVar = document.getElementById('var-margen');
+      if(inputCostoVar) inputCostoVar.addEventListener('input', calcularPrecioVentaVariante);
+      if(inputMargenVar) inputMargenVar.addEventListener('input', calcularPrecioVentaVariante);
+
+      const btnGuardarVariante = document.getElementById('btn-guardar-variante');
+      if(btnGuardarVariante) btnGuardarVariante.addEventListener('click', () => window.productos_GuardarVariante());
+
+      const btnImprimir = document.getElementById('btn-imprimir-etiqueta');
+      if(btnImprimir) btnImprimir.addEventListener('click', () => window.productos_ImprimirEtiqueta());
+
+      const filtroModalCat = document.getElementById('filtro-modal-categorias');
+      if(filtroModalCat) filtroModalCat.addEventListener('input', () => renderizarListaCategoriasModal(filtroModalCat.value));
+
+      const filtroModalTags = document.getElementById('filtro-modal-tags');
+      if(filtroModalTags) filtroModalTags.addEventListener('input', () => renderizarListaTagsModal(filtroModalTags.value));
+
+    } catch(err) {
+      console.warn("Aviso controlado en inicializarEventos:", err.message);
+    }
+  }
+
+  function calcularPrecioVentaVariante() {
+    const costo = parseFloat(document.getElementById('var-costo').value) || 0;
+    const margen = parseFloat(document.getElementById('var-margen').value) || 0;
+    const inputPvp = document.getElementById('var-precio');
+    if(inputPvp) {
+      const pvp = costo * (1 + (margen / 100));
+      inputPvp.value = pvp.toFixed(2);
+    }
+  }
+
+  function sincronizarLicenciaLocal() {
+    const estadoFresco = localStorage.getItem('erp_licencia_pro') === 'true';
+    window.actualizarModuloProductosPorLicencia(estadoFresco);
+  }
+
+  window.actualizarModuloProductosPorLicencia = function(esPro) {
+    try {
+      productosLicenciaPro = (esPro === true || esPro === "true");
+      
+      const badge = document.getElementById('productos-badge-modo-pro'); 
+      const infoIcon = document.getElementById('productos-info-modo-estandar');
+      const btnAutoSku = document.getElementById('btn-autogenerar-pro');
+
+      if (productosLicenciaPro) {
+        if(badge) {
+          badge.style.display = 'inline-block';
+          badge.innerHTML = '<i class="fa-solid fa-star"></i> MODULO PRO ACTIVO';
+          badge.style.background = "#deff9a"; 
+          badge.style.color = "#000000";
+          badge.style.borderColor = "#b4e63b";
+        }
+        if(infoIcon) infoIcon.style.display = 'none';
+        
+        if(btnAutoSku) {
+          btnAutoSku.disabled = false;
+          btnAutoSku.style.pointerEvents = "auto";
+          btnAutoSku.style.opacity = "1";
+          btnAutoSku.style.cursor = "pointer";
+          btnAutoSku.style.background = "#deff9a";
+          btnAutoSku.style.color = "#000000";
+          btnAutoSku.style.border = "1px solid #b4e63b";
+          btnAutoSku.removeAttribute('title');
+          btnAutoSku.onclick = window.productos_AutoGenerarSKU;
+        }
+      } else {
+        if(badge) {
+          badge.style.display = 'inline-block';
+          badge.innerHTML = 'MODULO ESTANDAR';
+          badge.style.background = "#f1f5f9"; 
+          badge.style.color = "#64748b"; 
+          badge.style.borderColor = "#cbd5e1";
+        }
+        if(infoIcon) infoIcon.style.display = 'inline-block';
+        
+        if(btnAutoSku) {
+          btnAutoSku.onclick = null;
+          btnAutoSku.style.pointerEvents = "none";
+          btnAutoSku.style.cursor = "default";
+          btnAutoSku.style.background = "#f1f5f9";
+          btnAutoSku.style.color = "#cbd5e1";
+          btnAutoSku.style.border = "1px solid #e2e8f0";
+          btnAutoSku.removeAttribute('title');
+        }
+      }
+      renderizarCatalogo();
+    } catch(e) {
+      console.error("Error en actualizacion de UI por Licencia:", e.message);
+    }
+  };
+
+  window.productos_AutoGenerarSKU = function() {
+    if(!productosLicenciaPro) return;
+    const nombreProd = document.getElementById('var-nombre-producto-ref').innerText.trim();
+    const etiqueta = ETIQUETAS_VARIANTE_SELECCIONADAS.length > 0 ? ETIQUETAS_VARIANTE_SELECCIONADAS[0] : '';
+    if(!nombreProd) {
+      window.erpToast("No se detecto el producto base para esta variante.", "error");
+      return;
+    }
+    const prefijoNombre = nombreProd.substring(0, 3).toUpperCase().replace(/[^A-Z]/g, 'ITM');
+    const prefijoEtiqueta = etiqueta ? etiqueta.substring(0, 2).toUpperCase().replace(/[^A-Z]/g, '') : '';
+    const randomNum = Math.floor(1000 + Math.random() * 9000);
+    document.getElementById('var-sku').value = prefijoEtiqueta ? (prefijoNombre + '-' + prefijoEtiqueta + '-' + randomNum) : (prefijoNombre + '-' + randomNum);
+  };
+
+  window.productos_CargarDatosDesdeHoja = function() {
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(categorias) {
+          CATEGORIAS_GLOBAL = categorias || [];
+          actualizarSelectoresCategorias();
+        })
+        .obtenerCategoriasServidor();
+
+      google.script.run
+        .withSuccessHandler(function(etiquetas) {
+          ETIQUETAS_GLOBALES = etiquetas || [];
+          renderizarListaEtiquetasVivo();
+          actualizarSelectorGrupos();
+        })
+        .obtenerEtiquetasOperativasServidor();
+
+      google.script.run
+        .withSuccessHandler(function(grupos) {
+          GRUPOS_ETIQUETAS = grupos || [];
+          actualizarSelectorGrupos();
+          renderizarListaEtiquetasVivo();
+        })
+        .obtenerGruposEtiquetasServidor();
+
+      google.script.run
+        .withSuccessHandler(function(datos) {
+          PRODUCTOS_GLOBAL = datos || [];
+          renderizarCatalogo();
+        })
+        .obtenerProductosServidor();
+    } else {
+      renderizarCatalogo();
+    }
+  };
+
+  function actualizarSelectoresCategorias() {
+    const selectProducto = document.getElementById('prod-cat-padre');
+    const selectPadreModal = document.getElementById('cat-padre-id');
+
+    const categoriasRaiz = CATEGORIAS_GLOBAL.filter(c => !c.padre || c.padre === "NINGUNA");
+
+    if(selectProducto) {
+      const valorActual = selectProducto.value;
+      selectProducto.innerHTML = '<option value="">-- Selecciona --</option>';
+      categoriasRaiz.forEach(cat => {
+        const opt = document.createElement('option');
+        opt.value = cat.nombre;
+        opt.innerText = cat.nombre;
+        selectProducto.appendChild(opt);
+      });
+      if (valorActual) selectProducto.value = valorActual;
+      window.productos_AlCambiarCategoriaFicha();
+    }
+
+    if(selectPadreModal) {
+      const valorActualModal = selectPadreModal.value;
+      selectPadreModal.innerHTML = '<option value="NINGUNA">Ninguna - Es Categoria Raiz</option>';
+      categoriasRaiz.forEach(cat => {
+        const opt = document.createElement('option');
+        opt.value = cat.nombre;
+        opt.innerText = "Subcategoria de: " + cat.nombre;
+        selectPadreModal.appendChild(opt);
+      });
+      if (valorActualModal) selectPadreModal.value = valorActualModal;
+    }
+
+    renderizarListaCategoriasVivo();
+  }
+
+  window.productos_AlCambiarCategoriaFicha = function() {
+    const categoriaElegida = document.getElementById('prod-cat-padre').value;
+    const selectSub = document.getElementById('prod-subcategoria');
+    if (!selectSub) return;
+
+    selectSub.innerHTML = '<option value="">-- Ninguna --</option>';
+    if (!categoriaElegida) return;
+
+    const hijas = CATEGORIAS_GLOBAL.filter(c => c.padre === categoriaElegida);
+    hijas.forEach(h => {
+      const opt = document.createElement('option');
+      opt.value = h.nombre;
+      opt.innerText = h.nombre;
+      selectSub.appendChild(opt);
+    });
+  };
+
+  window.productos_CrearCategoria = function() {
+    const inputCat = document.getElementById('cat-nombre');
+    const selectPadre = document.getElementById('cat-padre-id');
+    const nombreCat = inputCat ? inputCat.value.trim() : '';
+    const padreCat = selectPadre ? selectPadre.value : 'NINGUNA';
+
+    if (!nombreCat) {
+      window.erpToast("Por favor, escribe el nombre de la categoria.", "error");
+      return;
+    }
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+          if (res.exito && inputCat) inputCat.value = '';
+          CATEGORIAS_GLOBAL = res.categorias || [];
+          actualizarSelectoresCategorias();
+          renderizarListaCategoriasModal('');
+        })
+        .withFailureHandler(function(error) {
+          window.erpToast("Error del servidor al crear categoria: " + error.message, "error");
+        })
+        .crearCategoriaServidor({ nombre: nombreCat, padre: padreCat });
+    } else {
+      window.erpToast("Error: No se detecto el entorno de Google Apps Script.", "error");
+    }
+  };
+
+  window.productos_AbrirModalCategorias = function() {
+    renderizarListaCategoriasModal('');
+    document.getElementById('modal-categorias').showModal();
+  };
+
+  function renderizarListaCategoriasModal(filtro) {
+    const box = document.getElementById('box-lista-categorias');
+    if (!box) return;
+
+    const filtroLimpio = (filtro || '').toLowerCase().trim();
+    const raices = CATEGORIAS_GLOBAL.filter(c => !c.padre || c.padre === "NINGUNA");
+
+    box.innerHTML = '';
+
+    if (raices.length === 0) {
+      box.innerHTML = '<div style="text-align:center; color:#94a3b8; padding: 20px; font-size: 12px;">Aun no hay categorias registradas.</div>';
+      return;
+    }
+
+    raices.forEach(raiz => {
+      const hijas = CATEGORIAS_GLOBAL.filter(c => c.padre === raiz.nombre);
+      const coincideRaiz = raiz.nombre.toLowerCase().includes(filtroLimpio);
+      const hijasFiltradas = hijas.filter(h => h.nombre.toLowerCase().includes(filtroLimpio));
+
+      if (filtroLimpio && !coincideRaiz && hijasFiltradas.length === 0) return;
+
+      const bloque = document.createElement('div');
+      bloque.style.cssText = "border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px; background: #f8fafc;";
+      let hijasHtml = '';
+      const hijasAMostrar = filtroLimpio && !coincideRaiz ? hijasFiltradas : hijas;
+      hijasAMostrar.forEach(h => {
+        hijasHtml += '<div style="font-size: 11px; color: #475569; padding: 4px 0 4px 18px;"><i class="fa-solid fa-turn-down" style="color:#cbd5e1; margin-right:6px;"></i>' + h.nombre + '</div>';
+      });
+
+      bloque.innerHTML =
+        '<div style="font-weight: 700; font-size: 12px; color: #1e293b; display: flex; align-items: center; gap: 6px;">' +
+          '<i class="fa-solid fa-folder" style="color: var(--accent);"></i> ' + raiz.nombre +
+        '</div>' + hijasHtml;
+      box.appendChild(bloque);
+    });
+
+    if (box.innerHTML === '') {
+      box.innerHTML = '<div style="text-align:center; color:#94a3b8; padding: 20px; font-size: 12px;">Sin coincidencias.</div>';
+    }
+  }
+
+  function renderizarListaCategoriasVivo() {
+    const cont = document.getElementById('lista-categorias-vivo');
+    if (!cont) return;
+
+    cont.innerHTML = '';
+
+    if (CATEGORIAS_GLOBAL.length === 0) {
+      cont.innerHTML = '<div style="text-align:center; color:#94a3b8; padding: 12px; font-size: 11px;">Aun no hay categorias.</div>';
+      return;
+    }
+
+    const raices = CATEGORIAS_GLOBAL.filter(c => !c.padre || c.padre === "NINGUNA");
+
+    raices.forEach((raiz, idx) => {
+      const hijas = CATEGORIAS_GLOBAL.filter(c => c.padre === raiz.nombre);
+      const idSeguro = 'cat' + idx + '_' + raiz.nombre.replace(/[^a-zA-Z0-9]/g, '');
+
+      const grupo = document.createElement('div');
+      grupo.style.cssText = "display:flex; flex-direction:column; gap:2px;";
+
+      const filaRaiz = crearFilaCategoriaVivo(raiz, false, hijas.length, idSeguro);
+      grupo.appendChild(filaRaiz);
+
+      const contHijas = document.createElement('div');
+      contHijas.id = 'subcats-' + idSeguro;
+      contHijas.style.display = 'none';
+      contHijas.style.flexDirection = 'column';
+      contHijas.style.gap = '2px';
+      hijas.forEach(h => contHijas.appendChild(crearFilaCategoriaVivo(h, true)));
+      grupo.appendChild(contHijas);
+
+      cont.appendChild(grupo);
+    });
+  }
+
+  window.productos_ToggleSubcategorias = function(idSeguro) {
+    const cont = document.getElementById('subcats-' + idSeguro);
+    const flecha = document.getElementById('flecha-' + idSeguro);
+    if (!cont) return;
+    const abierto = cont.style.display === 'flex';
+    cont.style.display = abierto ? 'none' : 'flex';
+    if (flecha) flecha.style.transform = abierto ? 'rotate(0deg)' : 'rotate(90deg)';
+  };
+
+  function crearFilaCategoriaVivo(cat, esHija, cantHijas, idSeguro) {
+    const fila = document.createElement('div');
+    fila.style.cssText = "display:flex; align-items:center; justify-content:space-between; gap:6px; padding:5px 6px; border-radius:4px; background:" + (esHija ? '#f8fafc' : '#ffffff') + "; border:1px solid #f1f5f9; " + (esHija ? 'margin-left:14px;' : 'cursor:pointer;');
+
+    const flechaHtml = (!esHija && cantHijas > 0)
+      ? ('<i id="flecha-' + idSeguro + '" class="fa-solid fa-chevron-right" style="font-size:9px; color:#94a3b8; margin-right:6px; transition:transform 0.15s;"></i>')
+      : (!esHija ? '<span style="display:inline-block; width:13px;"></span>' : '');
+
+    const nombreHtml = esHija
+      ? ('<span style="font-size:11px; color:#475569;"><i class="fa-solid fa-turn-down" style="color:#cbd5e1; margin-right:4px;"></i>' + cat.nombre + '</span>')
+      : (flechaHtml + '<span style="font-size:12px; font-weight:700; color:#1e293b;"><i class="fa-solid fa-folder" style="color:var(--accent); margin-right:4px;"></i>' + cat.nombre + '</span>' + (cantHijas > 0 ? ('<span style="font-size:9px; color:#94a3b8; margin-left:6px;">(' + cantHijas + ')</span>') : ''));
+
+    fila.innerHTML =
+      '<div style="flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:flex; align-items:center;">' + nombreHtml + '</div>' +
+      '<div style="display:flex; gap:4px; flex-shrink:0;">' +
+        '<button type="button" title="Editar" style="background:#e0f2fe; color:#0369a1; border:none; width:22px; height:22px; border-radius:4px; cursor:pointer; font-size:10px;"><i class="fa-solid fa-pen"></i></button>' +
+        '<button type="button" title="Eliminar" style="background:#fee2e2; color:#b91c1c; border:none; width:22px; height:22px; border-radius:4px; cursor:pointer; font-size:10px;"><i class="fa-solid fa-trash-can"></i></button>' +
+      '</div>';
+
+    if (!esHija && cantHijas > 0) {
+      fila.addEventListener('click', (e) => {
+        if (e.target.closest('button')) return;
+        window.productos_ToggleSubcategorias(idSeguro);
+      });
+    }
+
+    const botones = fila.querySelectorAll('button');
+    const btnEditar = botones[0];
+    const btnEliminar = botones[1];
+    btnEditar.addEventListener('click', (e) => { e.stopPropagation(); window.productos_EditarCategoria(cat.nombre, cat.padre || "NINGUNA"); });
+    btnEliminar.addEventListener('click', (e) => { e.stopPropagation(); window.productos_EliminarCategoria(cat.nombre, cat.padre || "NINGUNA"); });
+
+    return fila;
+  }
+
+  window.productos_EditarCategoria = async function(nombreOriginal, padreOriginal) {
+    const nuevoNombre = await window.erpPrompt("Editar nombre de la categoria:", nombreOriginal);
+    if (nuevoNombre === null) return;
+    const nuevoNombreLimpio = nuevoNombre.trim();
+    if (!nuevoNombreLimpio || nuevoNombreLimpio === nombreOriginal) return;
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+          CATEGORIAS_GLOBAL = res.categorias || [];
+          actualizarSelectoresCategorias();
+          renderizarListaCategoriasModal('');
+        })
+        .withFailureHandler(function(err) {
+          window.erpToast("Error al editar categoria: " + err.message, 'error');
+        })
+        .editarCategoriaServidor({ nombreOriginal: nombreOriginal, padreOriginal: padreOriginal, nombreNuevo: nuevoNombreLimpio });
+    }
+  };
+
+  window.productos_EliminarCategoria = async function(nombre, padre) {
+    const confirmar = await window.erpConfirm('¿Eliminar la categoria "' + nombre + '"?\nNo se podra eliminar si tiene productos o subcategorias asociadas.');
+    if (!confirmar) return;
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+          CATEGORIAS_GLOBAL = res.categorias || [];
+          actualizarSelectoresCategorias();
+          renderizarListaCategoriasModal('');
+        })
+        .withFailureHandler(function(err) {
+          window.erpToast("Error al eliminar categoria: " + err.message, 'error');
+        })
+        .eliminarCategoriaServidor({ nombre: nombre, padre: padre });
+    }
+  };
+
+  function actualizarSelectorGrupos() {
+    const select = document.getElementById('prod-tag-grupo');
+    if (select) {
+      const valorActual = select.value;
+      select.innerHTML = '<option value="">Es Grupo Nuevo</option>';
+      GRUPOS_ETIQUETAS.forEach(g => {
+        const opt = document.createElement('option');
+        opt.value = g;
+        opt.innerText = 'Pertenece a: ' + g;
+        select.appendChild(opt);
+      });
+      if (valorActual && GRUPOS_ETIQUETAS.includes(valorActual)) select.value = valorActual;
+    }
+  }
+
+  window.productos_AnadirTag = function() {
+    const inputNombre = document.getElementById('prod-tag-input');
+    const selectGrupo = document.getElementById('prod-tag-grupo');
+    const nombreEscrito = inputNombre ? inputNombre.value.trim() : '';
+    const grupoElegido = selectGrupo ? selectGrupo.value : '';
+
+    if (!nombreEscrito) {
+      window.erpToast("Escribe el nombre de la etiqueta o del grupo nuevo.", "error");
+      return;
+    }
+
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+
+    if (!grupoElegido) {
+      // "Es Grupo Nuevo": el nombre escrito crea SOLO el grupo (carpeta vacía), sin etiqueta dentro.
+      google.script.run
+        .withSuccessHandler(function(res) {
+          window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+          if(inputNombre) inputNombre.value = '';
+          GRUPOS_ETIQUETAS = res.grupos || [];
+          renderizarListaEtiquetasVivo();
+          actualizarSelectorGrupos();
+        })
+        .crearGrupoEtiquetaServidor(nombreEscrito);
+    } else {
+      // Se eligió un grupo existente: el nombre escrito es una etiqueta dentro de ese grupo.
+      google.script.run
+        .withSuccessHandler(function(res) {
+          window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+          if(inputNombre) inputNombre.value = '';
+          ETIQUETAS_GLOBALES = res.etiquetas || [];
+          renderizarListaEtiquetasVivo();
+          actualizarSelectorGrupos();
+        })
+        .crearEtiquetaServidor({ nombre: nombreEscrito, grupo: grupoElegido });
+    }
+  };
+
+  window.productos_AbrirModalTags = function() {
+    renderizarListaTagsModal('');
+    document.getElementById('modal-tags').showModal();
+  };
+
+  function renderizarListaTagsModal(filtro) {
+    const box = document.getElementById('box-lista-tags');
+    if (!box) return;
+
+    const filtroLimpio = (filtro || '').toLowerCase().trim();
+    const filtradas = ETIQUETAS_GLOBALES.filter(t => t.nombre.toLowerCase().includes(filtroLimpio));
+
+    box.innerHTML = '';
+
+    if (filtradas.length === 0) {
+      box.innerHTML = '<div style="text-align:center; color:#94a3b8; padding: 20px; font-size: 12px; width: 100%;">Sin etiquetas registradas todavia.</div>';
+      return;
+    }
+
+    const grupos = [...new Set(filtradas.map(t => t.grupo))].sort();
+    grupos.forEach(grupo => {
+      const bloque = document.createElement('div');
+      bloque.style.cssText = "width:100%; margin-bottom: 8px;";
+      const titulo = document.createElement('div');
+      titulo.style.cssText = "font-size:10px; font-weight:700; color:#64748b; text-transform:uppercase; margin-bottom:6px;";
+      titulo.innerText = grupo;
+      bloque.appendChild(titulo);
+
+      const chipsCont = document.createElement('div');
+      chipsCont.style.cssText = "display:flex; flex-wrap:wrap; gap:8px;";
+
+      filtradas.filter(t => t.grupo === grupo).forEach(t => {
+        const chip = document.createElement('span');
+        chip.style.cssText = "display: inline-flex; align-items: center; gap: 5px; background: #f1f5f9; color: #334155; border: 1px solid #e2e8f0; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer;";
+        chip.innerHTML = '<i class="fa-solid fa-tag" style="font-size: 9px; color:#64748b;"></i>' + t.nombre;
+        chip.title = "Clic para agregar a la variante";
+        chip.addEventListener('click', function() {
+          window.productos_AgregarEtiquetaAVariante(t.nombre);
+          document.getElementById('modal-tags').close();
+        });
+        chipsCont.appendChild(chip);
+      });
+
+      bloque.appendChild(chipsCont);
+      box.appendChild(bloque);
+    });
+  }
+
+  function renderizarListaEtiquetasVivo() {
+    const cont = document.getElementById('lista-etiquetas-vivo');
+    if (!cont) return;
+
+    cont.innerHTML = '';
+
+    if (GRUPOS_ETIQUETAS.length === 0) {
+      cont.innerHTML = '<div style="text-align:center; color:#94a3b8; padding: 12px; font-size: 11px;">Aun no hay grupos ni etiquetas.</div>';
+      return;
+    }
+
+    const grupos = [...GRUPOS_ETIQUETAS].sort();
+
+    grupos.forEach((grupo, idx) => {
+      const etiquetasDelGrupo = ETIQUETAS_GLOBALES.filter(t => t.grupo === grupo);
+      const idSeguro = 'tag' + idx + '_' + grupo.replace(/[^a-zA-Z0-9]/g, '');
+
+      const contenedorGrupo = document.createElement('div');
+      contenedorGrupo.style.cssText = "display:flex; flex-direction:column; gap:2px;";
+
+      const filaGrupo = crearFilaEtiquetaVivo({ nombre: grupo }, false, etiquetasDelGrupo.length, idSeguro);
+      contenedorGrupo.appendChild(filaGrupo);
+
+      const contHijas = document.createElement('div');
+      contHijas.id = 'subtags-' + idSeguro;
+      contHijas.style.display = 'none';
+      contHijas.style.flexDirection = 'column';
+      contHijas.style.gap = '2px';
+      etiquetasDelGrupo.forEach(t => contHijas.appendChild(crearFilaEtiquetaVivo(t, true)));
+      contenedorGrupo.appendChild(contHijas);
+
+      cont.appendChild(contenedorGrupo);
+    });
+  }
+
+  window.productos_ToggleGrupoEtiquetas = function(idSeguro) {
+    const cont = document.getElementById('subtags-' + idSeguro);
+    const flecha = document.getElementById('flecha-tag-' + idSeguro);
+    if (!cont) return;
+    const abierto = cont.style.display === 'flex';
+    cont.style.display = abierto ? 'none' : 'flex';
+    if (flecha) flecha.style.transform = abierto ? 'rotate(0deg)' : 'rotate(90deg)';
+  };
+
+  function crearFilaEtiquetaVivo(item, esHija, cantHijas, idSeguro) {
+    const fila = document.createElement('div');
+    fila.style.cssText = "display:flex; align-items:center; justify-content:space-between; gap:6px; padding:5px 6px; border-radius:4px; background:" + (esHija ? '#f8fafc' : '#ffffff') + "; border:1px solid #f1f5f9; " + (esHija ? 'margin-left:14px;' : 'cursor:pointer;');
+
+    const flechaHtml = (!esHija && cantHijas > 0)
+      ? ('<i id="flecha-tag-' + idSeguro + '" class="fa-solid fa-chevron-right" style="font-size:9px; color:#94a3b8; margin-right:6px; transition:transform 0.15s;"></i>')
+      : (!esHija ? '<span style="display:inline-block; width:13px;"></span>' : '');
+
+    const nombreHtml = esHija
+      ? ('<span style="font-size:11px; color:#475569;"><i class="fa-solid fa-tag" style="color:#cbd5e1; margin-right:4px; font-size:10px;"></i>' + item.nombre + '</span>')
+      : (flechaHtml + '<span style="font-size:12px; font-weight:700; color:#1e293b;"><i class="fa-solid fa-layer-group" style="color:var(--accent); margin-right:4px;"></i>' + item.nombre + '</span>' + (cantHijas > 0 ? ('<span style="font-size:9px; color:#94a3b8; margin-left:6px;">(' + cantHijas + ')</span>') : ''));
+
+    fila.innerHTML =
+      '<div style="flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:flex; align-items:center;">' + nombreHtml + '</div>' +
+      '<div style="display:flex; gap:4px; flex-shrink:0;">' +
+        '<button type="button" title="Editar" style="background:#e0f2fe; color:#0369a1; border:none; width:22px; height:22px; border-radius:4px; cursor:pointer; font-size:10px;"><i class="fa-solid fa-pen"></i></button>' +
+        '<button type="button" title="Eliminar" style="background:#fee2e2; color:#b91c1c; border:none; width:22px; height:22px; border-radius:4px; cursor:pointer; font-size:10px;"><i class="fa-solid fa-trash-can"></i></button>' +
+      '</div>';
+
+    if (!esHija && cantHijas > 0) {
+      fila.addEventListener('click', (e) => {
+        if (e.target.closest('button')) return;
+        window.productos_ToggleGrupoEtiquetas(idSeguro);
+      });
+    }
+
+    const botones = fila.querySelectorAll('button');
+    const btnEditar = botones[0];
+    const btnEliminar = botones[1];
+    if (esHija) {
+      btnEditar.addEventListener('click', (e) => { e.stopPropagation(); window.productos_EditarEtiqueta(item.nombre, item.grupo); });
+      btnEliminar.addEventListener('click', (e) => { e.stopPropagation(); window.productos_EliminarEtiqueta(item.nombre, item.grupo); });
+    } else {
+      btnEditar.title = "Editar Grupo";
+      btnEliminar.title = "Eliminar Grupo";
+      btnEditar.addEventListener('click', (e) => { e.stopPropagation(); window.productos_EditarGrupoEtiqueta(item.nombre); });
+      btnEliminar.addEventListener('click', (e) => { e.stopPropagation(); window.productos_EliminarGrupoEtiqueta(item.nombre); });
+    }
+
+    return fila;
+  }
+
+  window.productos_EditarEtiqueta = async function(nombreOriginal, grupoOriginal) {
+    const nuevoNombre = await window.erpPrompt("Editar nombre de la etiqueta:", nombreOriginal);
+    if (nuevoNombre === null) return;
+    const nuevoNombreLimpio = nuevoNombre.trim();
+    if (!nuevoNombreLimpio || nuevoNombreLimpio === nombreOriginal) return;
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+          ETIQUETAS_GLOBALES = res.etiquetas || [];
+          renderizarListaEtiquetasVivo();
+          renderizarListaTagsModal('');
+        })
+        .withFailureHandler(function(err) {
+          window.erpToast("Error al editar etiqueta: " + err.message, 'error');
+        })
+        .editarEtiquetaServidor({ nombreOriginal: nombreOriginal, grupoOriginal: grupoOriginal, nombreNuevo: nuevoNombreLimpio });
+    }
+  };
+
+  window.productos_EliminarEtiqueta = async function(nombre, grupo) {
+    const confirmar = await window.erpConfirm('¿Eliminar la etiqueta "' + nombre + '"?\nNo se podra eliminar si algun producto la tiene asignada.');
+    if (!confirmar) return;
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+          ETIQUETAS_GLOBALES = res.etiquetas || [];
+          renderizarListaEtiquetasVivo();
+          renderizarListaTagsModal('');
+        })
+        .withFailureHandler(function(err) {
+          window.erpToast("Error al eliminar etiqueta: " + err.message, 'error');
+        })
+        .eliminarEtiquetaServidor({ nombre: nombre, grupo: grupo });
+    }
+  };
+
+  window.productos_EditarGrupoEtiqueta = async function(nombreOriginal) {
+    const nuevoNombre = await window.erpPrompt("Editar nombre del grupo:", nombreOriginal);
+    if (nuevoNombre === null) return;
+    const nuevoNombreLimpio = nuevoNombre.trim();
+    if (!nuevoNombreLimpio || nuevoNombreLimpio === nombreOriginal) return;
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+          GRUPOS_ETIQUETAS = res.grupos || [];
+          ETIQUETAS_GLOBALES = res.etiquetas || ETIQUETAS_GLOBALES;
+          renderizarListaEtiquetasVivo();
+          actualizarSelectorGrupos();
+        })
+        .withFailureHandler(function(err) {
+          window.erpToast("Error al editar grupo: " + err.message, 'error');
+        })
+        .editarGrupoEtiquetaServidor({ nombreOriginal: nombreOriginal, nombreNuevo: nuevoNombreLimpio });
+    }
+  };
+
+  window.productos_EliminarGrupoEtiqueta = async function(nombre) {
+    const confirmar = await window.erpConfirm('¿Eliminar el grupo "' + nombre + '"?\nNo se podra eliminar si todavia tiene etiquetas asignadas.');
+    if (!confirmar) return;
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+          GRUPOS_ETIQUETAS = res.grupos || [];
+          renderizarListaEtiquetasVivo();
+          actualizarSelectorGrupos();
+        })
+        .withFailureHandler(function(err) {
+          window.erpToast("Error al eliminar grupo: " + err.message, 'error');
+        })
+        .eliminarGrupoEtiquetaServidor(nombre);
+    }
+  };
+
+  window.productos_ToggleFiltroTipo = function(tipo) {
+    const idx = FILTROS_TIPO_ACTIVOS.indexOf(tipo);
+    if (idx === -1) {
+      FILTROS_TIPO_ACTIVOS.push(tipo);
+    } else {
+      FILTROS_TIPO_ACTIVOS.splice(idx, 1);
+    }
+
+    const mapaBotones = {
+      'Producto': { id: 'filtro-tipo-producto', onBg: '#0369a1', onColor: '#ffffff', offBg: '#e0f2fe', offColor: '#0369a1' },
+      'Insumo': { id: 'filtro-tipo-insumo', onBg: '#b45309', onColor: '#ffffff', offBg: '#fef3c7', offColor: '#b45309' },
+      'Servicio': { id: 'filtro-tipo-servicio', onBg: '#15803d', onColor: '#ffffff', offBg: '#dcfce7', offColor: '#15803d' },
+      'Produccion': { id: 'filtro-tipo-produccion', onBg: '#6b21a8', onColor: '#ffffff', offBg: '#f3e8ff', offColor: '#6b21a8' }
+    };
+
+    Object.keys(mapaBotones).forEach(t => {
+      const cfg = mapaBotones[t];
+      const btn = document.getElementById(cfg.id);
+      if (!btn) return;
+      const activo = FILTROS_TIPO_ACTIVOS.includes(t) || FILTROS_TIPO_ACTIVOS.includes('Producción');
+      btn.style.background = activo ? cfg.onBg : cfg.offBg;
+      btn.style.color = activo ? cfg.onColor : cfg.offColor;
+    });
+
+    paginaActual = 1;
+    renderizarCatalogo();
+  };
+
+  function renderizarCatalogo() {
+    try {
+      const buscadorInput = document.getElementById('inventario-buscador');
+      const busqueda = buscadorInput ? buscadorInput.value.toLowerCase().trim() : '';
+
+      const contenedor = document.getElementById('catalogo-productos-contenedor');
+      if(!contenedor) return;
+
+      let filtrados = PRODUCTOS_GLOBAL.filter(p => {
+        const variantes = p.variantes || [];
+        const textoVariantes = variantes.map(v => v.sku + ' ' + v.etiqueta + ' ' + (v.tags||[]).join(' ')).join(' ').toLowerCase();
+        const coincideTexto = (p.nombre || '').toLowerCase().includes(busqueda) ||
+               (p.categoria || '').toLowerCase().includes(busqueda) ||
+               textoVariantes.includes(busqueda);
+        const coincideTipo = FILTROS_TIPO_ACTIVOS.length === 0 || FILTROS_TIPO_ACTIVOS.includes(p.tipo);
+        return coincideTexto && coincideTipo;
+      });
+
+      const totalItems = filtrados.length;
+      const totalPaginas = Math.ceil(totalItems / itemsPorPagina) || 1;
+      if (paginaActual > totalPaginas) paginaActual = totalPaginas;
+
+      const txtPag = document.getElementById('txt-paginacion');
+      if(txtPag) txtPag.innerText = 'Pag. ' + paginaActual + ' de ' + totalPaginas;
+
+      const inicio = (paginaActual - 1) * itemsPorPagina;
+      const itemsPagina = filtrados.slice(inicio, inicio + itemsPorPagina);
+
+      contenedor.innerHTML = "";
+
+      if (itemsPagina.length === 0) {
+        contenedor.innerHTML = '<div style="text-align:center; padding:30px; color:#94a3b8;"><i class="fa-solid fa-box-open" style="font-size:20px; margin-bottom:5px;"></i><br>Sin productos registrados o catalogo vacio.</div>';
+        return;
+      }
+
+      const nombresUnidad = { "805": "Unidad / Pieza (805)", "804": "Docena (804)", "801": "Millar (801)", "408": "Libra (408)", "406": "Kilogramo (406)", "404": "Quintal (404)", "103": "Metro (103)", "305": "Galon (305)", "306": "Litro (306)", "999": "Sin unidad (999)" };
+
+      itemsPagina.forEach(prod => {
+        let badgeTipo = '<span style="background: #e0f2fe; color: #0369a1; padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 600;"><i class="fa-solid fa-box"></i> Producto</span>';
+        if(prod.tipo === "Insumo") badgeTipo = '<span style="background: #fef3c7; color: #b45309; padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 600;"><i class="fa-solid fa-trowel-bricks"></i> Insumo</span>';
+        if(prod.tipo === "Servicio") badgeTipo = '<span style="background: #dcfce7; color: #15803d; padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 600;"><i class="fa-solid fa-user-gear"></i> Servicio</span>';
+        if(prod.tipo === "Producción") badgeTipo = '<span style="background: #f3e8ff; color: #6b21a8; padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 600;"><i class="fa-solid fa-industry"></i> Produccion</span>';
+
+        const flujos = prod.flujos || {};
+        let flujosHtml = '<div style="display:flex; gap:4px; flex-wrap:wrap;">';
+        if (flujos.compra) flujosHtml += '<span title="Se Compra" style="background:#f1f5f9; color:#475569; padding:2px 6px; border-radius:4px; font-size:9px; font-weight:700;"><i class="fa-solid fa-cart-shopping"></i></span>';
+        if (flujos.venta) flujosHtml += '<span title="Se Vende" style="background:#f1f5f9; color:#475569; padding:2px 6px; border-radius:4px; font-size:9px; font-weight:700;"><i class="fa-solid fa-hand-holding-dollar"></i></span>';
+        if (flujos.stock) flujosHtml += '<span title="Controla Stock" style="background:#f1f5f9; color:#475569; padding:2px 6px; border-radius:4px; font-size:9px; font-weight:700;"><i class="fa-solid fa-cubes"></i></span>';
+        if (flujos.activo) flujosHtml += '<span title="Activo Fijo" style="background:#f1f5f9; color:#475569; padding:2px 6px; border-radius:4px; font-size:9px; font-weight:700;"><i class="fa-solid fa-building-user"></i></span>';
+        flujosHtml += '</div>';
+
+        const variantes = prod.variantes || [];
+        const idSeguro = prod.idProducto.replace(/[^a-zA-Z0-9]/g, '');
+
+        const tarjeta = document.createElement('div');
+        tarjeta.style.cssText = "border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.02);";
+
+        tarjeta.innerHTML =
+          '<div style="padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;">' +
+            '<div onclick="window.productos_AlternarAcordeon(\'' + idSeguro + '\')" style="flex: 1; min-width: 200px; cursor: pointer; user-select: none;">' +
+              '<div style="font-weight: 600; color: #0f172a; font-size: 14px;">' + prod.nombre + '</div>' +
+              '<div style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 5px;">' +
+                badgeTipo +
+                '<span style="font-size: 11px; color: #64748b;">' + (prod.categoria || 'General') + (prod.subcategoria ? (' &rsaquo; ' + prod.subcategoria) : '') + '</span>' +
+                '<span style="font-size: 11px; color: #475569;">' + (nombresUnidad[prod.unidadDte] || prod.unidadDte || '-') + '</span>' +
+                flujosHtml +
+              '</div>' +
+            '</div>' +
+            '<div style="display:flex; align-items:center; gap:10px;">' +
+              '<span onclick="window.productos_AlternarAcordeon(\'' + idSeguro + '\')" style="cursor:pointer; background:#eff6ff; color:#1e40af; font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px;">' + variantes.length + ' variante' + (variantes.length === 1 ? '' : 's') + '</span>' +
+              '<div style="display:flex; gap:6px;">' +
+                '<button type="button" title="Agregar Variante" onclick="window.productos_AbrirModalVariante(\'' + prod.idProducto + '\', null)" style="background: var(--accent); color: white; border: none; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; font-size: 12px;"><i class="fa-solid fa-plus"></i></button>' +
+                '<button type="button" title="Editar Producto" onclick="window.productos_PrepararEdicionProducto(\'' + prod.idProducto + '\')" style="background: #e0f2fe; color: #0369a1; border: none; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; font-size: 12px;"><i class="fa-solid fa-pen-to-square"></i></button>' +
+                '<button type="button" title="Eliminar Producto" onclick="window.productos_EliminarProducto(\'' + prod.idProducto + '\', \'' + prod.nombre.replace(/'/g, "\\'") + '\')" style="background: #fee2e2; color: #b91c1c; border: none; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; font-size: 12px;"><i class="fa-solid fa-trash-can"></i></button>' +
+              '</div>' +
+              '<span id="flecha-' + idSeguro + '" onclick="window.productos_AlternarAcordeon(\'' + idSeguro + '\')" style="cursor:pointer; color: #94a3b8; transition: transform 0.2s; font-size: 12px;"><i class="fa-solid fa-chevron-down"></i></span>' +
+            '</div>' +
+          '</div>' +
+          '<div id="acordeon-' + idSeguro + '" style="display: none; background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 14px 18px;">' +
+            '<div id="variantes-lista-' + idSeguro + '" style="display: flex; flex-direction: column; gap: 8px;"></div>' +
+          '</div>';
+
+        contenedor.appendChild(tarjeta);
+        pintarVariantesDeProducto(idSeguro, prod);
+      });
+    } catch(errRender) {
+      console.error("Error en renderizado del catalogo:", errRender.message);
+    }
+  }
+
+  function pintarVariantesDeProducto(idSeguro, prod) {
+    const cont = document.getElementById('variantes-lista-' + idSeguro);
+    if (!cont) return;
+    cont.innerHTML = '';
+
+    const variantes = prod.variantes || [];
+    if (variantes.length === 0) {
+      cont.innerHTML = '<div style="text-align:center; padding:10px; color:#94a3b8; font-size:12px;">Sin variantes todavia. Agrega la primera.</div>';
+      return;
+    }
+
+    const nombresUnidad = { "805": "Unidad / Pieza (805)", "804": "Docena (804)", "801": "Millar (801)", "408": "Libra (408)", "406": "Kilogramo (406)", "404": "Quintal (404)", "103": "Metro (103)", "305": "Galon (305)", "306": "Litro (306)", "999": "Sin unidad (999)" };
+    const unidadTexto = nombresUnidad[prod.unidadDte] || prod.unidadDte || '-';
+
+    variantes.forEach(v => {
+      const fila = document.createElement('div');
+      fila.style.cssText = "background:white; border:1px solid #e2e8f0; border-radius:6px; padding:10px 12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;";
+
+      const btnQrHtml = productosLicenciaPro
+        ? ('<button type="button" title="Ver QR / Barras" onclick="window.productos_VerCodigos(\'' + v.sku + '\')" style="background:#deff9a; color:#000000; border:1px solid #b4e63b; width:26px; height:26px; border-radius:6px; cursor:pointer; font-size:11px;"><i class="fa-solid fa-qrcode"></i></button>')
+        : ('<button type="button" style="background:#f1f5f9; color:#cbd5e1; border:1px solid #e2e8f0; width:26px; height:26px; border-radius:6px; cursor:default; font-size:11px; pointer-events:none;"><i class="fa-solid fa-qrcode"></i></button>');
+
+      const todasLasEtiquetas = [v.etiqueta || 'Estandar'].concat(v.tags || []).filter(Boolean);
+      const descripcionItem = prod.nombre + ' - ' + todasLasEtiquetas.join(' / ');
+
+      fila.innerHTML =
+        '<div style="display:flex; flex-direction:column; gap:2px; min-width:180px; flex:1.5;">' +
+          '<span style="font-size:13px; font-weight:600; color:#0f172a;">' + descripcionItem + '</span>' +
+          '<span style="font-family:monospace; font-size:11px; color:#64748b;">SKU: ' + v.sku + '</span>' +
+        '</div>' +
+        '<div style="font-size:11px; color:#475569; min-width:90px;">' + unidadTexto + '</div>' +
+        '<div style="font-size:12px; color:#475569;">Costo: $' + parseFloat(v.costo||0).toFixed(2) + '</div>' +
+        '<div style="font-size:13px; font-weight:700; color:#0f172a;">PVP: $' + parseFloat(v.pvp||0).toFixed(2) + '</div>' +
+        '<div style="display:flex; gap:6px;">' +
+          btnQrHtml +
+          '<button type="button" title="Editar Variante" onclick="window.productos_AbrirModalVariante(\'' + prod.idProducto + '\', \'' + v.sku + '\')" style="background:#e0f2fe; color:#0369a1; border:none; width:26px; height:26px; border-radius:6px; cursor:pointer; font-size:11px;"><i class="fa-solid fa-pen-to-square"></i></button>' +
+          '<button type="button" title="Eliminar Variante" onclick="window.productos_EliminarVariante(\'' + v.sku + '\')" style="background:#fee2e2; color:#b91c1c; border:none; width:26px; height:26px; border-radius:6px; cursor:pointer; font-size:11px;"><i class="fa-solid fa-trash-can"></i></button>' +
+        '</div>';
+      cont.appendChild(fila);
+    });
+  }
+
+  window.productos_AlternarAcordeon = function(idSeguro) {
+    const panel = document.getElementById('acordeon-' + idSeguro);
+    const flecha = document.getElementById('flecha-' + idSeguro);
+    if (!panel) return;
+    const estabaAbierto = panel.style.display === 'block';
+
+    document.querySelectorAll('[id^="acordeon-"]').forEach(p => p.style.display = 'none');
+    document.querySelectorAll('[id^="flecha-"]').forEach(f => f.style.transform = 'rotate(0deg)');
+
+    if (!estabaAbierto) {
+      panel.style.display = 'block';
+      if (flecha) flecha.style.transform = 'rotate(180deg)';
+    }
+  };
+
+  window.productos_GuardarItem = function() {
+    const datosProducto = {
+      idProducto: idProductoEnEdicion,
+      nombre: document.getElementById('prod-nombre')?.value.trim() || '',
+      categoria: document.getElementById('prod-cat-padre')?.value || '',
+      subcategoria: document.getElementById('prod-subcategoria')?.value || '',
+      tributoDte: document.getElementById('prod-tributo-dte')?.value || '1',
+      unidadDte: document.getElementById('prod-unidad-dte')?.value || '805',
+      tipo: tipoSeleccionado,
+      flujos: {
+        compra: document.getElementById('flow-compra')?.checked || false,
+        venta: document.getElementById('flow-venta')?.checked || false,
+        stock: document.getElementById('flow-stock')?.checked || false,
+        activo: document.getElementById('flow-activo')?.checked || false
+      }
+    };
+
+    if (!datosProducto.nombre) {
+      window.erpToast("El nombre del producto es obligatorio.", "error");
+      return;
+    }
+    if (!datosProducto.categoria) {
+      window.erpToast("Selecciona una categoria para el producto.", "error");
+      return;
+    }
+
+    if (typeof google === 'undefined' || !google.script || !google.script.run) {
+      window.erpToast("Error: No se detecto el entorno de Google Apps Script.", "error");
+      return;
+    }
+
+    const esEdicion = !!idProductoEnEdicion;
+
+    if (esEdicion) {
+      google.script.run
+        .withSuccessHandler(function(resultado) {
+          window.erpToast(resultado.mensaje, resultado.exito ? 'exito' : 'error');
+          if (resultado.exito) {
+            window.productos_LimpiarFicha();
+            window.productos_CargarDatosDesdeHoja();
+          }
+        })
+        .withFailureHandler(function(error) {
+          window.erpToast("Error del servidor al actualizar producto: " + error.message, "error");
+        })
+        .actualizarProductoServidor(datosProducto);
+    } else {
+      google.script.run
+        .withSuccessHandler(function(resultado) {
+          if (!resultado.exito) {
+            window.erpToast(resultado.mensaje, 'error');
+            return;
+          }
+          window.erpToast(resultado.mensaje, 'exito');
+          window.productos_LimpiarFicha();
+          window.productos_CargarDatosDesdeHoja();
+        })
+        .withFailureHandler(function(error) {
+          window.erpToast("Error del servidor al guardar producto: " + error.message, "error");
+        })
+        .guardarProductoServidor(datosProducto);
+    }
+  };
+
+  window.productos_PrepararEdicionProducto = function(idProducto) {
+    const prod = PRODUCTOS_GLOBAL.find(p => p.idProducto.toString() === idProducto.toString());
+    if (!prod) return;
+
+    idProductoEnEdicion = prod.idProducto;
+
+    document.getElementById('prod-titulo-ficha').innerHTML = '<i class="fa-solid fa-pen-to-square" style="color: var(--accent);"></i> Editando Producto: ' + prod.nombre;
+    document.getElementById('prod-nombre').value = prod.nombre || '';
+    document.getElementById('prod-tributo-dte').value = prod.tributoDte || '1';
+    document.getElementById('prod-unidad-dte').value = prod.unidadDte || '805';
+
+    document.getElementById('prod-cat-padre').value = prod.categoria || '';
+    window.productos_AlCambiarCategoriaFicha();
+    setTimeout(() => {
+      document.getElementById('prod-subcategoria').value = prod.subcategoria || '';
+    }, 0);
+
+    tipoSeleccionado = prod.tipo || 'Producto';
+    document.querySelectorAll('.tarjeta-intencion').forEach(t => {
+      const esLaSeleccionada = t.getAttribute('data-tipo') === tipoSeleccionado;
+      t.classList.toggle('activo', esLaSeleccionada);
+      t.style.border = esLaSeleccionada ? "2px solid var(--accent)" : "1px solid #cbd5e1";
+    });
+
+    const flujos = prod.flujos || {};
+    document.getElementById('flow-compra').checked = !!flujos.compra;
+    document.getElementById('flow-venta').checked = !!flujos.venta;
+    document.getElementById('flow-stock').checked = !!flujos.stock;
+    document.getElementById('flow-activo').checked = !!flujos.activo;
+
+    document.getElementById('txt-btn-guardar-item').innerText = 'Actualizar Producto';
+    document.getElementById('btn-cancelar-edicion-item').style.display = 'inline-flex';
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  window.productos_CancelarEdicion = function() {
+    window.productos_LimpiarFicha();
+  };
+
+  window.productos_LimpiarFicha = function() {
+    idProductoEnEdicion = null;
+    document.getElementById('prod-titulo-ficha').innerHTML = '<i class="fa-solid fa-boxes-stacked" style="color: var(--accent);"></i> Catalogo Maestro de Items y Servicios';
+    document.getElementById('prod-nombre').value = '';
+    document.getElementById('prod-cat-padre').value = '';
+    document.getElementById('prod-subcategoria').innerHTML = '<option value="">-- Ninguna --</option>';
+    document.getElementById('prod-tributo-dte').value = '1';
+    document.getElementById('prod-unidad-dte').value = '805';
+    document.getElementById('flow-compra').checked = true;
+    document.getElementById('flow-venta').checked = true;
+    document.getElementById('flow-stock').checked = true;
+    document.getElementById('flow-activo').checked = false;
+
+    tipoSeleccionado = 'Producto';
+    document.querySelectorAll('.tarjeta-intencion').forEach(t => {
+      const esProducto = t.getAttribute('data-tipo') === 'Producto';
+      t.classList.toggle('activo', esProducto);
+      t.style.border = esProducto ? "2px solid var(--accent)" : "1px solid #cbd5e1";
+    });
+
+    document.getElementById('txt-btn-guardar-item').innerText = 'Guardar Producto';
+    document.getElementById('btn-cancelar-edicion-item').style.display = 'none';
+  };
+
+  window.productos_EliminarProducto = async function(idProducto, nombre) {
+    const confirmar = await window.erpConfirm('¿Eliminar el producto "' + nombre + '" Y TODAS sus variantes?\nEsta accion no se puede deshacer.');
+    if (!confirmar) return;
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+          window.productos_CargarDatosDesdeHoja();
+        })
+        .withFailureHandler(function(err) {
+          window.erpToast("Error al eliminar: " + err.message, 'error');
+        })
+        .eliminarProductoServidor(idProducto);
+    }
+  };
+
+  // ==========================================================================
+  // ETIQUETAS DE LA VARIANTE — buscador con sugerencias + chips multiples
+  // ==========================================================================
+  window.productos_BuscarEtiquetaVariante = function(texto) {
+    const cont = document.getElementById('var-etiqueta-sugerencias');
+    if (!cont) return;
+    const filtro = (texto || '').toLowerCase().trim();
+
+    if (!filtro) { cont.style.display = 'none'; return; }
+
+    const coincidencias = ETIQUETAS_GLOBALES.filter(t =>
+      t.nombre.toLowerCase().includes(filtro) && !ETIQUETAS_VARIANTE_SELECCIONADAS.includes(t.nombre)
+    );
+
+    if (coincidencias.length === 0) { cont.style.display = 'none'; return; }
+
+    cont.innerHTML = '';
+    coincidencias.slice(0, 6).forEach(t => {
+      const div = document.createElement('div');
+      div.style.cssText = "padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-size: 12px;";
+      div.innerHTML = '<span style="font-weight:600; color:#1e293b;">' + t.nombre + '</span> <span style="color:#94a3b8; font-size:10px;">(' + t.grupo + ')</span>';
+      div.addEventListener('click', () => {
+        window.productos_AgregarEtiquetaAVariante(t.nombre);
+        document.getElementById('var-etiqueta-buscar').value = '';
+        cont.style.display = 'none';
+      });
+      cont.appendChild(div);
+    });
+    cont.style.display = 'block';
+  };
+
+  window.productos_AgregarEtiquetaAVariante = function(nombre) {
+    if (ETIQUETAS_VARIANTE_SELECCIONADAS.includes(nombre)) return;
+    ETIQUETAS_VARIANTE_SELECCIONADAS.push(nombre);
+    pintarEtiquetasVarianteSeleccionadas();
+  };
+
+  window.productos_QuitarEtiquetaDeVariante = function(nombre) {
+    ETIQUETAS_VARIANTE_SELECCIONADAS = ETIQUETAS_VARIANTE_SELECCIONADAS.filter(t => t !== nombre);
+    pintarEtiquetasVarianteSeleccionadas();
+  };
+
+  function pintarEtiquetasVarianteSeleccionadas() {
+    const cont = document.getElementById('var-etiquetas-seleccionadas');
+    if (!cont) return;
+    cont.innerHTML = '';
+    ETIQUETAS_VARIANTE_SELECCIONADAS.forEach(nombre => {
+      const chip = document.createElement('span');
+      chip.style.cssText = "display:inline-flex; align-items:center; gap:6px; background:#eff6ff; color:#1e40af; border:1px solid #bfdbfe; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:600;";
+      chip.innerHTML = '<i class="fa-solid fa-tag" style="font-size:9px;"></i>' + nombre + ' <i class="fa-solid fa-xmark" style="cursor:pointer; color:#ef4444; font-size:10px;"></i>';
+      chip.querySelector('.fa-xmark').addEventListener('click', () => window.productos_QuitarEtiquetaDeVariante(nombre));
+      cont.appendChild(chip);
+    });
+  }
+
+  window.productos_AbrirModalVariante = function(idProducto, sku) {
+    const prod = PRODUCTOS_GLOBAL.find(p => p.idProducto.toString() === idProducto.toString());
+    if (!prod) return;
+
+    idProductoParaNuevaVariante = idProducto;
+    document.getElementById('var-id-producto').value = idProducto;
+    document.getElementById('var-nombre-producto-ref').innerText = prod.nombre;
+
+    const titulo = document.getElementById('modal-variante-titulo');
+    const btnTexto = document.getElementById('txt-btn-guardar-variante');
+
+    if (sku) {
+      const v = (prod.variantes || []).find(v => v.sku.toString() === sku.toString());
+      if (!v) return;
+      skuVarianteEnEdicion = v.sku;
+      document.getElementById('var-sku-original').value = v.sku;
+      document.getElementById('var-sku').value = v.sku;
+
+      ETIQUETAS_VARIANTE_SELECCIONADAS = [];
+      if (v.etiqueta && v.etiqueta !== 'Estándar') ETIQUETAS_VARIANTE_SELECCIONADAS.push(v.etiqueta);
+      (v.tags || []).forEach(t => {
+        if (!ETIQUETAS_VARIANTE_SELECCIONADAS.includes(t)) ETIQUETAS_VARIANTE_SELECCIONADAS.push(t);
+      });
+      pintarEtiquetasVarianteSeleccionadas();
+
+      document.getElementById('var-costo').value = parseFloat(v.costo || 0).toFixed(2);
+      document.getElementById('var-margen').value = parseFloat(v.margen || 0).toFixed(1);
+      document.getElementById('var-precio').value = parseFloat(v.pvp || 0).toFixed(2);
+      titulo.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Editar Variante';
+      btnTexto.innerText = 'Actualizar Variante';
+    } else {
+      skuVarianteEnEdicion = null;
+      document.getElementById('var-sku-original').value = '';
+      document.getElementById('var-sku').value = '';
+      ETIQUETAS_VARIANTE_SELECCIONADAS = [];
+      pintarEtiquetasVarianteSeleccionadas();
+      document.getElementById('var-costo').value = '0.00';
+      document.getElementById('var-margen').value = '30.0';
+      document.getElementById('var-precio').value = '0.00';
+      titulo.innerHTML = '<i class="fa-solid fa-layer-group"></i> Agregar Variante';
+      btnTexto.innerText = 'Guardar Variante';
+    }
+
+    const bufferBusqueda = document.getElementById('var-etiqueta-buscar');
+    if (bufferBusqueda) bufferBusqueda.value = '';
+    document.getElementById('modal-variante').showModal();
+  };
+
+  window.productos_GuardarVariante = function() {
+    const etiquetaPrincipal = ETIQUETAS_VARIANTE_SELECCIONADAS.length > 0 ? ETIQUETAS_VARIANTE_SELECCIONADAS[0] : '';
+    const tagsAdicionales = ETIQUETAS_VARIANTE_SELECCIONADAS.slice(1);
+
+    const datosVariante = {
+      idProducto: document.getElementById('var-id-producto').value,
+      sku: document.getElementById('var-sku').value.trim(),
+      skuOriginal: document.getElementById('var-sku-original').value.trim(),
+      etiqueta: etiquetaPrincipal,
+      costo: parseFloat(document.getElementById('var-costo').value) || 0,
+      margen: parseFloat(document.getElementById('var-margen').value) || 0,
+      pvp: parseFloat(document.getElementById('var-precio').value) || 0,
+      tags: tagsAdicionales
+    };
+
+    if (!datosVariante.sku) {
+      window.erpToast("El SKU de la variante es obligatorio.", "error");
+      return;
+    }
+    if (!etiquetaPrincipal) {
+      window.erpToast("Agrega al menos una etiqueta. Si no existe la que necesitas, creala primero en la Seccion 3 (Etiquetas Operacionales).", "error");
+      return;
+    }
+
+    if (typeof google === 'undefined' || !google.script || !google.script.run) {
+      window.erpToast("Error: No se detecto el entorno de Google Apps Script.", "error");
+      return;
+    }
+
+    const esEdicion = !!skuVarianteEnEdicion;
+    const llamada = esEdicion ? 'actualizarVarianteServidor' : 'agregarVarianteServidor';
+
+    google.script.run
+      .withSuccessHandler(function(resultado) {
+        if (!resultado.exito) {
+          window.erpToast(resultado.mensaje, 'error');
+          return;
+        }
+        window.erpToast(resultado.mensaje, 'exito');
+        document.getElementById('modal-variante').close();
+        window.productos_CargarDatosDesdeHoja();
+      })
+      .withFailureHandler(function(error) {
+        window.erpToast("Error del servidor al guardar variante: " + error.message, "error");
+      })
+      [llamada](datosVariante);
+  };
+
+  window.productos_EliminarVariante = async function(sku) {
+    const confirmar = await window.erpConfirm('¿Eliminar la variante con SKU "' + sku + '"?\nEsta accion no se puede deshacer.');
+    if (!confirmar) return;
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+          window.productos_CargarDatosDesdeHoja();
+        })
+        .withFailureHandler(function(err) {
+          window.erpToast("Error al eliminar variante: " + err.message, 'error');
+        })
+        .eliminarVarianteServidor(sku);
+    }
+  };
+
+  window.productos_VerCodigos = function(sku) {
+    let nombreMostrar = '(Sin registrar aun)';
+    for (const prod of PRODUCTOS_GLOBAL) {
+      const v = (prod.variantes || []).find(v => v.sku.toString() === sku.toString());
+      if (v) {
+        const todasLasEtiquetas = [v.etiqueta || 'Estandar'].concat(v.tags || []).filter(Boolean);
+        nombreMostrar = prod.nombre + ' - ' + todasLasEtiquetas.join(' / ');
+        break;
+      }
+    }
+
+    skuCodigosActual = sku.toString();
+    nombreCodigosActual = nombreMostrar;
+
+    document.getElementById('codigos-nombre-producto').innerText = nombreMostrar;
+    document.getElementById('codigos-sku-texto').innerText = 'SKU: ' + sku;
+
+    const qrContenedor = document.getElementById('codigos-qr-contenedor');
+    qrContenedor.innerHTML = '';
+    if (typeof QRCode !== 'undefined') {
+      new QRCode(qrContenedor, { text: sku.toString(), width: 140, height: 140 });
+    } else {
+      qrContenedor.innerHTML = '<span style="font-size:11px; color:#94a3b8;">No se pudo cargar el generador de QR.</span>';
+    }
+
+    try {
+      if (typeof JsBarcode !== 'undefined') {
+        JsBarcode("#codigos-barras-svg", sku.toString(), {
+          format: "CODE128",
+          displayValue: true,
+          fontSize: 14,
+          height: 50,
+          margin: 5
+        });
+      }
+    } catch(e) {
+      console.warn("No se pudo generar el codigo de barras:", e.message);
+    }
+
+    document.getElementById('modal-codigos').showModal();
+  };
+
+  window.productos_ImprimirEtiqueta = function() {
+    if (!skuCodigosActual) return;
+
+    const qrHtml = document.getElementById('codigos-qr-contenedor').innerHTML;
+    const barrasSvg = document.getElementById('codigos-barras-svg').outerHTML;
+
+    const ventana = window.open('', '_blank', 'width=400,height=500');
+    if (!ventana) {
+      window.erpToast("El navegador bloqueo la ventana de impresion. Permite ventanas emergentes para este sitio.", "error");
+      return;
+    }
+
+    const doc = ventana.document;
+    doc.title = 'Etiqueta ' + skuCodigosActual;
+
+    const style = doc.createElement('style');
+    style.textContent = 'body{font-family:sans-serif;text-align:center;padding:20px;} h3{margin-bottom:4px;} p{color:#555;font-family:monospace;margin-top:0;} .bloque{margin:20px 0;}';
+    doc.head.appendChild(style);
+
+    const h3 = doc.createElement('h3');
+    h3.textContent = nombreCodigosActual;
+    doc.body.appendChild(h3);
+
+    const p = doc.createElement('p');
+    p.textContent = 'SKU: ' + skuCodigosActual;
+    doc.body.appendChild(p);
+
+    const bloqueQr = doc.createElement('div');
+    bloqueQr.className = 'bloque';
+    bloqueQr.innerHTML = qrHtml;
+    doc.body.appendChild(bloqueQr);
+
+    const bloqueBarras = doc.createElement('div');
+    bloqueBarras.className = 'bloque';
+    bloqueBarras.innerHTML = barrasSvg;
+    doc.body.appendChild(bloqueBarras);
+
+    ventana.focus();
+    setTimeout(() => ventana.print(), 300);
+  };
+
+  document.addEventListener('click', function(e) {
+    const cont = document.getElementById('var-etiqueta-sugerencias');
+    if (cont && e.target.id !== 'var-etiqueta-buscar') cont.style.display = 'none';
+  });
+
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'erp_licencia_pro') sincronizarLicenciaLocal();
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) sincronizarLicenciaLocal();
+  });
+  document.addEventListener('mousemove', () => {
+    const checkActual = localStorage.getItem('erp_licencia_pro') === 'true';
+    if (checkActual !== productosLicenciaPro) sincronizarLicenciaLocal();
+  });
+
+})();
+</script>
