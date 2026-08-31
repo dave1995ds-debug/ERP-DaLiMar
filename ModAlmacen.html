@@ -1,0 +1,95 @@
+<div style="animation: fadeIn 0.3s ease; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+
+    <nav class="nav-buttons" style="display: flex; gap: 12px; margin-bottom: 20px; box-sizing: border-box;">
+        <button class="menu-btn active" id="almacen-tab-inventario" onclick="showPanel_Almacen('panel-almacen-inventario', this)" style="width: auto; background: var(--accent); color: white; font-weight: 600; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;">
+            <i class="fa-solid fa-boxes-stacked"></i> Inventario
+        </button>
+
+        <button class="menu-btn" onclick="showPanel_Almacen('panel-almacen-recepcion', this)" style="width: auto; background: #e2e8f0; color: var(--text); font-weight: 500; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;">
+            <i class="fa-solid fa-truck-ramp-box"></i> Recepción y Salidas
+        </button>
+    </nav>
+
+    <div id="panel-almacen-inventario" class="content-area active" style="display: block; box-sizing: border-box;">
+        <?!= include('ModInventarios'); ?>
+    </div>
+
+    <div id="panel-almacen-recepcion" class="content-area" style="display: none; box-sizing: border-box;">
+        <?!= include('ModRecepcion'); ?>
+    </div>
+
+</div>
+
+<script>
+  // showPanel_Almacen tiene nombre unico (no "showPanel" generico) porque
+  // ModConfig_Scripts.html TAMBIEN define una funcion global llamada
+  // "showPanel" -- como todos los include() de Index.html terminan en el
+  // mismo documento HTML final, dos funciones globales con el MISMO NOMBRE
+  // se pisan entre si (la que se procese despues gana), rompiendo
+  // silenciosamente la logica de quien pierda. Con nombres unicos por
+  // modulo, esto no puede volver a pasar.
+  function showPanel_Almacen(idPanel, boton) {
+    document.querySelectorAll('#panel-almacen-inventario, #panel-almacen-recepcion').forEach(p => {
+      p.style.display = 'none';
+      p.classList.remove('active');
+    });
+    const panel = document.getElementById(idPanel);
+    if (panel) { panel.style.display = 'block'; panel.classList.add('active'); }
+
+    document.querySelectorAll('.nav-buttons .menu-btn').forEach(b => {
+      // Solo afecta los botones DE ESTE nav especifico (Inventario/Recepcion),
+      // no los del menu lateral global que tambien usan la clase menu-btn.
+      if (b.closest('nav') === boton.closest('nav')) {
+        b.classList.remove('active');
+        b.style.background = '#e2e8f0';
+        b.style.color = 'var(--text)';
+        b.style.fontWeight = '500';
+      }
+    });
+    boton.classList.add('active');
+    boton.style.background = 'var(--accent)';
+    boton.style.color = 'white';
+    boton.style.fontWeight = '600';
+
+    // Al entrar a cada pestana, se recargan sus datos -- igual al patron ya
+    // usado en switchView de Index.html, para que la informacion siempre
+    // este fresca al cambiar de vista sin tener que recargar la pagina.
+    if (idPanel === 'panel-almacen-inventario' && typeof window.inv_CargarDatos === 'function') {
+      window.inv_CargarDatos();
+    }
+    if (idPanel === 'panel-almacen-recepcion' && typeof window.recep_CargarDatos === 'function') {
+      if (typeof window.recep_CambiarTab === 'function') window.recep_CambiarTab('pendientes');
+      window.recep_CargarDatos();
+    }
+  }
+
+  /**
+   * Re-aplica el estado correcto del shell de Almacen cada vez que se entra
+   * a esta vista desde el menu lateral -- se llama desde Index.html. NO
+   * fuerza siempre "Inventario": detecta cual de los dos paneles (Inventario
+   * o Recepcion) ya estaba activo, y simplemente vuelve a dispararle su
+   * propia carga de datos + sub-pestana interna, sin necesitar un boton DOM
+   * real. Esto evita que la pantalla quede en blanco al regresar, sin
+   * importar en cual pestana (incluyendo las sub-pestanas de Recepcion:
+   * Pendientes / Recibos) se haya quedado el usuario la ultima vez.
+   */
+  window.almacen_ForzarPanelInventario = function() {
+    const panelInventario = document.getElementById('panel-almacen-inventario');
+    const panelRecepcionEstaActivo = panelInventario && panelInventario.style.display === 'none';
+
+    if (panelRecepcionEstaActivo) {
+      // Recepcion ya estaba activa: vuelve a aplicar su estado completo,
+      // incluyendo cual de sus dos sub-pestanas (Pendientes/Recibos) estaba
+      // abierta, en vez de resetear siempre a "Pendientes".
+      const tabRecibosEstaActiva = document.getElementById('recep-panel-recibos') && document.getElementById('recep-panel-recibos').style.display !== 'none';
+      if (typeof window.recep_CambiarTab === 'function') {
+        window.recep_CambiarTab(tabRecibosEstaActiva ? 'recibos' : 'pendientes');
+      }
+      if (typeof window.recep_CargarDatos === 'function') window.recep_CargarDatos();
+    } else {
+      const botonInventario = document.getElementById('almacen-tab-inventario');
+      if (botonInventario) showPanel_Almacen('panel-almacen-inventario', botonInventario);
+    }
+  };
+
+</script>
