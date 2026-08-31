@@ -1,0 +1,39 @@
+<div style="animation: fadeIn 0.3s ease; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+    
+    <nav class="nav-buttons" style="display: flex; gap: 12px; margin-bottom: 20px; box-sizing: border-box;">
+        <button class="menu-btn active" id="config-tab-suscripciones" onclick="showPanel_Config('panel-suscripciones', this)" style="width: auto; background: var(--accent); color: white; font-weight: 600; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;">
+            <i class="fa-solid fa-credit-card"></i> Suscripciones
+        </button>
+        
+        <button class="menu-btn" onclick="showPanel_Config('panel-empresa', this)" style="width: auto; background: #e2e8f0; color: var(--text); font-weight: 500; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;">
+            <i class="fa-solid fa-building-user"></i> Datos de Empresa
+        </button>
+        
+        <button class="menu-btn" onclick="showPanel_Config('panel-productos', this)" style="width: auto; background: #e2e8f0; color: var(--text); font-weight: 500; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;">
+            <i class="fa-solid fa-boxes-stacked"></i> Catálogo de Productos
+        </button>
+        
+        <button class="menu-btn" onclick="showPanel_Config('panel-usuarios', this)" style="width: auto; background: #e2e8f0; color: var(--text); font-weight: 500; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s;">
+            <i class="fa-solid fa-user-gear"></i> Roles y Permisos
+        </button>
+    </nav>
+
+    <div id="panel-suscripciones" class="content-area active" style="display: block; box-sizing: border-box;">
+        <?!= include('ModConfig_Subscriptions'); ?>
+    </div>
+
+    <div id="panel-empresa" class="content-area" style="display: none; box-sizing: border-box;">
+        <?!= include('ModConfig_Empresa'); ?>
+    </div>
+
+    <div id="panel-productos" class="content-area" style="display: none; box-sizing: border-box;">
+        <?!= include('ModConfig_Productos'); ?>
+    </div>
+
+    <div id="panel-usuarios" class="content-area" style="display: none; box-sizing: border-box;">
+        <?!= include('ModConfig_Usuarios'); ?>
+    </div>
+
+</div>
+
+<?!= include('ModConfig_Scripts'); ?>
