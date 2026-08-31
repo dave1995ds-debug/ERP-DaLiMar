@@ -1,0 +1,1269 @@
+<div style="display: flex; flex-direction: column; gap: 25px; width: 100%; box-sizing: border-box;">
+
+  <div class="erp-main-card">
+    <div class="erp-card-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%; box-sizing: border-box; flex-wrap: wrap; gap: 12px;">
+      <h3 style="margin: 0;">
+        <i class="fa-solid fa-boxes-stacked" style="color: var(--accent);"></i> Inventario de Productos
+      </h3>
+      <div style="display: inline-flex; align-items: center; gap: 8px;">
+        <span id="inv-info-modo-estandar" style="display: inline-block; cursor: help; color: #64748b; font-size: 14px;" title="Especificaciones de la Licencia Activa: Alertas de stock minimo/maximo, sugerencia de cantidad a comprar, costeo promedio detallado por bodega, habilitar/deshabilitar venta o compra, y exportacion completa a Excel.">
+          <i class="fa-solid fa-circle-info"></i>
+        </span>
+        <div id="inv-badge-modo-pro" style="display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; border: 1px solid #cbd5e1; background: #f1f5f9; color: #64748b;">
+          MODULO ESTANDAR
+        </div>
+      </div>
+    </div>
+
+    <div class="erp-card-body" style="padding-top: 16px; box-sizing: border-box;">
+
+      <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;">
+        <button type="button" onclick="window.inv_AbrirModalMovimiento('entrada')" style="flex: 1; min-width: 170px; height: 44px; background: #16a34a; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+          <i class="fa-solid fa-sliders"></i> Ajuste Manual
+        </button>
+        <button type="button" onclick="window.inv_AbrirModalMovimiento('salida')" style="flex: 1; min-width: 170px; height: 44px; background: #ef4444; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+          <i class="fa-solid fa-triangle-exclamation"></i> Salida por Avería
+        </button>
+        <button type="button" title="Disponible cuando el módulo de Ventas esté listo" style="flex: 1; min-width: 170px; height: 44px; background: #f1f5f9; color: #94a3b8; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: not-allowed; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+          <i class="fa-solid fa-cash-register"></i> Salida por Venta
+        </button>
+        <button type="button" onclick="window.inv_AbrirModalBodegas()" style="flex: 1; min-width: 170px; height: 44px; background: #ffffff; color: #475569; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+          <i class="fa-solid fa-warehouse"></i> Bodegas
+        </button>
+        <button type="button" onclick="window.inv_AbrirModalDisponibilidad()" style="flex: 1; min-width: 170px; height: 44px; background: #ffffff; color: #475569; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+          <i class="fa-solid fa-toggle-on"></i> Disponibilidad
+        </button>
+        <button type="button" id="inv-btn-exportar" onclick="window.inv_ExportarExcel()" style="flex: 1; min-width: 170px; height: 44px; background: var(--accent); color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+          <i class="fa-solid fa-file-excel"></i> Exportar a Excel
+        </button>
+      </div>
+
+      <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center; margin-bottom: 15px;">
+        <div style="position: relative; flex: 1; min-width: 220px;">
+          <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 13px;"></i>
+          <input type="text" id="inv-buscador" class="form-control-erp" style="padding-left: 38px; border-radius: 50px; background: #ffffff; border: 1px solid #cbd5e1; height: 38px; font-size: 12px; color: #334155; box-sizing: border-box; width: 100%;" placeholder="Buscar producto, SKU, etiqueta...">
+        </div>
+        <select id="inv-filtro-bodega" onchange="window.inv_CambiarFiltroBodega()" style="height: 38px; padding: 0 14px; border-radius: 8px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; font-size: 12px;">
+          <option value="">Vista Global (todas las bodegas)</option>
+        </select>
+        <button type="button" id="inv-filtro-alertas" onclick="window.inv_ToggleFiltroAlertas()" style="height: 38px; padding: 0 16px; border-radius: 8px; border: 1px solid #fecaca; background: #fef2f2; color: #b91c1c; font-size: 12px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+          <i class="fa-solid fa-triangle-exclamation"></i> Solo con alerta
+        </button>
+      </div>
+
+      <div id="inv-catalogo-contenedor" style="display: flex; flex-direction: column; gap: 10px; box-sizing: border-box; width: 100%;">
+        <div style="text-align: center; padding: 30px; color: #94a3b8; font-style: italic;">
+          <i class="fa-solid fa-spinner fa-spin"></i> Cargando inventario...
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL: ENTRADA -->
+<dialog id="inv-modal-entrada" class="modal-dialog-erp" style="max-width: 440px !important;">
+  <div style="display: flex; justify-content: space-between; align-items: center; background: #16a34a; padding: 14px 20px; color: #ffffff;">
+    <h4 style="margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 8px;">
+      <i class="fa-solid fa-sliders"></i> Ajuste Manual de Inventario
+    </h4>
+    <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px; color: rgba(255,255,255,0.8);" onclick="this.closest('dialog').close()"></i>
+  </div>
+  <div style="padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px;">
+
+    <div style="font-size: 11px; color: #1e40af; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 10px 12px; display: flex; align-items: center; gap: 8px;">
+      <i class="fa-solid fa-circle-info"></i> Las entradas por compra (reventa o consumo interno) ahora se registran desde el módulo de <strong>Recepción</strong>, conectado a tus Órdenes de Compra. Aquí solo se hacen ajustes manuales (cargas iniciales o correcciones).
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Variante (SKU):</span>
+      <select id="inv-entrada-sku" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; width: 100%; background:#ffffff;">
+        <option value="">-- Selecciona una variante --</option>
+      </select>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Cantidad:</span>
+      <input type="number" id="inv-entrada-cantidad" min="1" step="1" class="form-control-erp" placeholder="0" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; box-sizing: border-box; width: 100%;">
+    </div>
+
+    <div id="inv-bloque-bodega" style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Bodega:</span>
+      <select id="inv-entrada-bodega" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; width: 100%; background:#ffffff;">
+        <option value="Sin Bodega">Sin Bodega</option>
+      </select>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Motivo del Ajuste:</span>
+      <input type="text" id="inv-entrada-motivo" class="form-control-erp" placeholder="Ej. Carga inicial de inventario existente" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; box-sizing: border-box; width: 100%;">
+    </div>
+
+    <button type="button" id="inv-btn-guardar-entrada" style="height: 42px; background: #16a34a; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+      <i class="fa-solid fa-floppy-disk"></i> Registrar Ajuste
+    </button>
+  </div>
+</dialog>
+
+<!-- MODAL: SALIDA POR AVERIA -->
+<dialog id="inv-modal-salida" class="modal-dialog-erp" style="max-width: 420px !important;">
+  <div style="display: flex; justify-content: space-between; align-items: center; background: #ef4444; padding: 14px 20px; color: #ffffff;">
+    <h4 style="margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 8px;">
+      <i class="fa-solid fa-triangle-exclamation"></i> Salida por Avería / Razón Justificable
+    </h4>
+    <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px; color: rgba(255,255,255,0.8);" onclick="this.closest('dialog').close()"></i>
+  </div>
+  <div style="padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px;">
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Variante (SKU):</span>
+      <select id="inv-salida-sku" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; width: 100%; background:#ffffff;">
+        <option value="">-- Selecciona una variante --</option>
+      </select>
+      <span id="inv-salida-stock-disponible" style="font-size: 10px; color: #94a3b8;"></span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Bodega:</span>
+      <select id="inv-salida-bodega" class="form-control-erp" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; width: 100%; background:#ffffff;">
+        <option value="Sin Bodega">Sin Bodega</option>
+      </select>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Cantidad:</span>
+      <input type="number" id="inv-salida-cantidad" min="1" step="1" class="form-control-erp" placeholder="0" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; box-sizing: border-box; width: 100%;">
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Motivo:</span>
+      <input type="text" id="inv-salida-motivo" class="form-control-erp" placeholder="Ej. Producto dañado, vencido, perdido" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; box-sizing: border-box; width: 100%;">
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Responsable:</span>
+      <input type="text" id="inv-salida-responsable" class="form-control-erp" placeholder="Opcional" style="height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; box-sizing: border-box; width: 100%;">
+    </div>
+
+    <button type="button" id="inv-btn-guardar-salida" style="height: 42px; background: #ef4444; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+      <i class="fa-solid fa-floppy-disk"></i> Registrar Salida
+    </button>
+  </div>
+</dialog>
+
+<!-- MODAL: BODEGAS -->
+<dialog id="inv-modal-bodegas" class="modal-dialog-erp" style="max-width: 380px !important;">
+  <div style="display: flex; justify-content: space-between; align-items: center; background: var(--accent); padding: 14px 20px; color: #ffffff;">
+    <h4 style="margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 8px;">
+      <i class="fa-solid fa-warehouse"></i> Bodegas / Puntos de Venta
+    </h4>
+    <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px; color: rgba(255,255,255,0.8);" onclick="this.closest('dialog').close()"></i>
+  </div>
+  <div style="padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px;">
+    <div style="display: flex; gap: 8px;">
+      <input type="text" id="inv-bodega-nombre" class="form-control-erp" placeholder="Nombre de la bodega (Ej. Tienda Centro)" style="flex:1; height: 40px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 12px; box-sizing: border-box;">
+      <button type="button" id="inv-btn-crear-bodega" style="width: 90px; height: 40px; background: var(--accent); color: white; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">Crear</button>
+    </div>
+    <div id="inv-lista-bodegas" style="display: flex; flex-direction: column; gap: 6px; max-height: 260px; overflow-y: auto;"></div>
+  </div>
+</dialog>
+
+<!-- MODAL: DISPONIBILIDAD VENTA/COMPRA -->
+<dialog id="inv-modal-disponibilidad" class="modal-dialog-erp" style="max-width: 460px !important;">
+  <div style="display: flex; justify-content: space-between; align-items: center; background: var(--accent); padding: 14px 20px; color: #ffffff;">
+    <h4 style="margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 8px;">
+      <i class="fa-solid fa-toggle-on"></i> Disponibilidad de Venta y Compra
+    </h4>
+    <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px; color: rgba(255,255,255,0.8);" onclick="this.closest('dialog').close()"></i>
+  </div>
+  <div style="padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px;">
+    <span style="font-size: 11px; color: #94a3b8;">Desactiva la venta o compra de un producto o categoría completa cuando no esté disponible (mientras se desarrollan o reestructuran esos módulos).</span>
+    <div style="display: flex; gap: 8px;">
+      <button type="button" id="inv-disp-tab-producto" onclick="window.inv_CambiarTabDisponibilidad('Producto')" style="flex:1; height: 36px; border-radius: 6px; border: 2px solid var(--accent); background: var(--accent); color: white; font-size: 11px; font-weight: 600; cursor: pointer;">Por Producto</button>
+      <button type="button" id="inv-disp-tab-categoria" onclick="window.inv_CambiarTabDisponibilidad('Categoria')" style="flex:1; height: 36px; border-radius: 6px; border: 2px solid #cbd5e1; background: #ffffff; color: #475569; font-size: 11px; font-weight: 600; cursor: pointer;">Por Categoría</button>
+    </div>
+    <div id="inv-lista-disponibilidad" style="display: flex; flex-direction: column; gap: 6px; max-height: 320px; overflow-y: auto;"></div>
+  </div>
+</dialog>
+
+<!-- MODAL: MINIMO / MAXIMO (PRO) -->
+<dialog id="inv-modal-limites" class="modal-dialog-erp" style="max-width: 380px !important;">
+  <div style="display: flex; justify-content: space-between; align-items: center; background: #deff9a; padding: 14px 20px; color: #000000;">
+    <h4 style="margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+      Límites de Stock
+    </h4>
+    <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px; color: rgba(0,0,0,0.6);" onclick="this.closest('dialog').close()"></i>
+  </div>
+  <div style="padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px;">
+    <input type="hidden" id="inv-limites-sku">
+    <div style="font-size: 12px; color: #64748b; background: #f8fafc; padding: 8px 10px; border-radius: 6px; border: 1px solid #e2e8f0;">
+      Variante: <strong id="inv-limites-nombre-ref" style="color: #1e293b;"></strong>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Aplica a:</span>
+      <select id="inv-limites-bodega" onchange="window.inv_AlCambiarBodegaLimites()" class="form-control-erp" style="height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; width: 100%; background:#ffffff;">
+        <option value="Global">Vista Global (todas las bodegas)</option>
+      </select>
+    </div>
+
+    <div style="display: flex; gap: 10px;">
+      <div style="flex:1; display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Stock Mínimo:</span>
+        <input type="number" id="inv-limites-minimo" min="0" step="1" class="form-control-erp" style="height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; width: 100%;">
+      </div>
+      <div style="flex:1; display: flex; flex-direction: column; gap: 6px;">
+        <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Stock Máximo:</span>
+        <input type="number" id="inv-limites-maximo" min="0" step="1" class="form-control-erp" style="height: 38px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 0 10px; box-sizing: border-box; width: 100%;">
+      </div>
+    </div>
+    <span style="font-size: 10px; color: #94a3b8;">Si manejas varias bodegas, cada una puede tener su propio límite. Cambia la bodega arriba para definir o revisar el límite de cada una sin cerrar esta ventana.</span>
+    <button type="button" id="inv-btn-guardar-limites" style="height: 40px; background: var(--accent); color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
+      <i class="fa-solid fa-floppy-disk"></i> Guardar Límites
+    </button>
+  </div>
+</dialog>
+
+<!-- MODAL: HISTORIAL DE MOVIMIENTOS -->
+<dialog id="inv-modal-historial" class="modal-dialog-erp" style="max-width: 620px !important;">
+  <div style="display: flex; justify-content: space-between; align-items: center; background: var(--accent); padding: 14px 20px; color: #ffffff;">
+    <h4 style="margin: 0; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 8px;">
+      <i class="fa-solid fa-clock-rotate-left"></i> Historial de Movimientos
+    </h4>
+    <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px; color: rgba(255,255,255,0.8);" onclick="this.closest('dialog').close()"></i>
+  </div>
+  <div style="padding: 20px; box-sizing: border-box;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+      <div style="font-size: 12px; color: #64748b;">Variante: <strong id="inv-historial-nombre-ref" style="color: #1e293b;"></strong></div>
+      <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <select id="inv-historial-filtro-bodega" onchange="window.inv_AlCambiarFiltroHistorial()" style="height: 32px; padding: 0 10px; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; color: #334155; font-size: 11px;">
+          <option value="">Vista Global</option>
+        </select>
+        <button type="button" id="inv-btn-exportar-historial" style="display:none; height: 32px; padding: 0 14px; background: var(--accent); color: white; border: none; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; align-items: center; gap: 6px;">
+          <i class="fa-solid fa-file-excel"></i> <span id="inv-btn-exportar-historial-texto">Descargar Todo</span>
+        </button>
+      </div>
+    </div>
+    <div style="overflow-x: auto; max-height: 420px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 8px;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+        <thead>
+          <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; position: sticky; top: 0;">
+            <th style="padding: 10px 12px; text-align: left; color: #64748b; font-weight: 700;">Descripción del Movimiento</th>
+            <th style="padding: 10px 12px; text-align: center; color: #16a34a; font-weight: 700;">Entrada</th>
+            <th style="padding: 10px 12px; text-align: center; color: #b91c1c; font-weight: 700;">Salida</th>
+            <th style="padding: 10px 12px; text-align: right; color: #475569; font-weight: 700;">Costo Unit.</th>
+            <th style="padding: 10px 12px; text-align: right; color: #1e293b; font-weight: 700;">Total</th>
+          </tr>
+        </thead>
+        <tbody id="inv-historial-tabla-cuerpo"></tbody>
+      </table>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  .modal-dialog-erp {
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 460px !important;
+    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25) !important;
+    background: #f8fafc !important;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    margin: 0 !important;
+  }
+  .modal-dialog-erp::backdrop {
+    background: rgba(15, 23, 42, 0.45) !important;
+    backdrop-filter: blur(2px) !important;
+  }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+(function() {
+  console.log("Core-Inventarios: script inicializado correctamente.");
+
+  let INVENTARIO_GLOBAL = [];
+  let TODAS_LAS_VARIANTES = [];
+  let BODEGAS_GLOBAL = [];
+  let CATEGORIAS_GLOBAL_INV = [];
+  let inventarioLicenciaPro = false;
+  let soloConAlerta = false;
+  let bodegaFiltroActual = '';
+  let tabDisponibilidadActual = 'Producto';
+
+  setTimeout(() => {
+    inicializarEventos();
+    sincronizarLicenciaLocal();
+    window.inv_CargarDatos();
+  }, 50);
+
+  function inicializarEventos() {
+    const buscador = document.getElementById('inv-buscador');
+    if (buscador) buscador.addEventListener('input', () => renderizarInventario());
+
+    const btnGuardarEntrada = document.getElementById('inv-btn-guardar-entrada');
+    if (btnGuardarEntrada) btnGuardarEntrada.addEventListener('click', () => window.inv_GuardarEntrada());
+
+    const btnGuardarSalida = document.getElementById('inv-btn-guardar-salida');
+    if (btnGuardarSalida) btnGuardarSalida.addEventListener('click', () => window.inv_GuardarSalida());
+
+    const btnGuardarLimites = document.getElementById('inv-btn-guardar-limites');
+    if (btnGuardarLimites) btnGuardarLimites.addEventListener('click', () => window.inv_GuardarLimites());
+
+    const btnExportarHistorial = document.getElementById('inv-btn-exportar-historial');
+    if (btnExportarHistorial) btnExportarHistorial.addEventListener('click', () => window.inv_ExportarHistorialInteligente());
+
+    const btnCrearBodega = document.getElementById('inv-btn-crear-bodega');
+    if (btnCrearBodega) btnCrearBodega.addEventListener('click', () => window.inv_CrearBodega());
+
+    const selectSalidaSku = document.getElementById('inv-salida-sku');
+    if (selectSalidaSku) selectSalidaSku.addEventListener('change', actualizarStockDisponibleSalida);
+  }
+
+  function sincronizarLicenciaLocal() {
+    const estadoFresco = localStorage.getItem('erp_licencia_pro') === 'true';
+    window.actualizarModuloInventariosPorLicencia(estadoFresco);
+  }
+
+  window.actualizarModuloInventariosPorLicencia = function(esPro) {
+    try {
+      inventarioLicenciaPro = (esPro === true || esPro === "true");
+      const badge = document.getElementById('inv-badge-modo-pro');
+      const infoIcon = document.getElementById('inv-info-modo-estandar');
+      const btnFiltroAlertas = document.getElementById('inv-filtro-alertas');
+      const btnExportarHistorial = document.getElementById('inv-btn-exportar-historial');
+
+      if (inventarioLicenciaPro) {
+        if (badge) {
+          badge.style.display = 'inline-block';
+          badge.innerHTML = '<i class="fa-solid fa-star"></i> MODULO PRO ACTIVO';
+          badge.style.background = "#deff9a";
+          badge.style.color = "#000000";
+          badge.style.borderColor = "#b4e63b";
+        }
+        if (infoIcon) infoIcon.style.display = 'none';
+        if (btnFiltroAlertas) btnFiltroAlertas.style.display = 'inline-flex';
+        if (btnExportarHistorial) btnExportarHistorial.style.display = 'inline-flex';
+      } else {
+        if (badge) {
+          badge.style.display = 'inline-block';
+          badge.innerHTML = 'MODULO ESTANDAR';
+          badge.style.background = "#f1f5f9";
+          badge.style.color = "#64748b";
+          badge.style.borderColor = "#cbd5e1";
+        }
+        if (infoIcon) infoIcon.style.display = 'inline-block';
+        if (btnFiltroAlertas) btnFiltroAlertas.style.display = 'none';
+        if (btnExportarHistorial) btnExportarHistorial.style.display = 'none';
+        soloConAlerta = false; // En Estandar no debe quedar activo el filtro PRO
+      }
+      renderizarInventario();
+    } catch (e) {
+      console.error("Error en actualizacion de licencia (Inventarios):", e.message);
+    }
+  };
+
+  window.inv_CargarDatos = function() {
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+
+    google.script.run
+      .withSuccessHandler(function(datos) {
+        // Siempre se trae SIN filtro de bodega: el backend ya manda el desglose
+        // completo en v.stockPorBodega, asi que el filtro se aplica despues en
+        // el navegador sin necesidad de volver a llamar al servidor (mas rapido).
+        INVENTARIO_GLOBAL = datos || [];
+        construirListaPlanaDeVariantes();
+        poblarSelectsDeVariantes();
+        renderizarInventario();
+      })
+      .withFailureHandler(function(err) {
+        window.erpToast ? window.erpToast("Error al cargar inventario: " + err.message, "error") : console.error(err);
+      })
+      .obtenerInventarioAgrupadoServidor(null);
+
+    google.script.run
+      .withSuccessHandler(function(bodegas) {
+        BODEGAS_GLOBAL = bodegas || [];
+        poblarSelectoresDeBodega();
+      })
+      .obtenerBodegasServidor();
+
+    google.script.run
+      .withSuccessHandler(function(categorias) {
+        CATEGORIAS_GLOBAL_INV = categorias || [];
+      })
+      .obtenerCategoriasServidor();
+  };
+
+  function construirListaPlanaDeVariantes() {
+    TODAS_LAS_VARIANTES = [];
+    INVENTARIO_GLOBAL.forEach(p => {
+      (p.variantes || []).forEach(v => {
+        TODAS_LAS_VARIANTES.push({
+          sku: v.sku,
+          descripcion: p.nombre + ' - ' + (v.etiqueta || 'Estandar'),
+          stock: v.stock || 0
+        });
+      });
+    });
+  }
+
+  function poblarSelectsDeVariantes() {
+    const selects = [document.getElementById('inv-entrada-sku'), document.getElementById('inv-salida-sku')];
+    selects.forEach(select => {
+      if (!select) return;
+      const valorActual = select.value;
+      select.innerHTML = '<option value="">-- Selecciona una variante --</option>';
+      TODAS_LAS_VARIANTES.forEach(v => {
+        const opt = document.createElement('option');
+        opt.value = v.sku;
+        opt.innerText = v.descripcion + ' (SKU: ' + v.sku + ')';
+        select.appendChild(opt);
+      });
+      if (valorActual) select.value = valorActual;
+    });
+  }
+
+  function poblarSelectoresDeBodega() {
+    const selects = [
+      document.getElementById('inv-entrada-bodega'),
+      document.getElementById('inv-salida-bodega'),
+      document.getElementById('inv-filtro-bodega')
+    ];
+    selects.forEach(select => {
+      if (!select) return;
+      const esFiltro = select.id === 'inv-filtro-bodega';
+      const valorActual = select.value;
+      select.innerHTML = esFiltro
+        ? '<option value="">Vista Global (todas las bodegas)</option>'
+        : '<option value="Sin Bodega">Sin Bodega</option>';
+      BODEGAS_GLOBAL.forEach(b => {
+        const opt = document.createElement('option');
+        opt.value = b;
+        opt.innerText = b;
+        select.appendChild(opt);
+      });
+      if (valorActual) select.value = valorActual;
+    });
+  }
+
+  function actualizarStockDisponibleSalida() {
+    const sku = document.getElementById('inv-salida-sku').value;
+    const span = document.getElementById('inv-salida-stock-disponible');
+    if (!span) return;
+    const variante = TODAS_LAS_VARIANTES.find(v => v.sku === sku);
+    span.innerText = variante ? ('Stock disponible: ' + variante.stock) : '';
+  }
+
+  window.inv_CambiarFiltroBodega = function() {
+    bodegaFiltroActual = document.getElementById('inv-filtro-bodega').value;
+    renderizarInventario();
+  };
+
+  // ==========================================================================
+  // RENDER PRINCIPAL
+  // ==========================================================================
+  /**
+   * Devuelve una copia de INVENTARIO_GLOBAL con el stock recalculado segun
+   * bodegaFiltroActual, usando el desglose v.stockPorBodega que ya viene del
+   * servidor. No vuelve a llamar a Apps Script: es instantaneo.
+   */
+  function obtenerInventarioFiltradoPorBodega() {
+    if (!bodegaFiltroActual) return INVENTARIO_GLOBAL;
+
+    return INVENTARIO_GLOBAL.map(p => {
+      let totalProducto = 0;
+      const variantesRecalculadas = (p.variantes || []).map(v => {
+        const stockEnBodega = (v.stockPorBodega || {})[bodegaFiltroActual] || 0;
+        totalProducto += stockEnBodega;
+        return Object.assign({}, v, { stock: stockEnBodega });
+      });
+      return Object.assign({}, p, { variantes: variantesRecalculadas, stockTotal: totalProducto });
+    });
+  }
+
+  function renderizarInventario() {
+    const cont = document.getElementById('inv-catalogo-contenedor');
+    if (!cont) return;
+
+    const busqueda = (document.getElementById('inv-buscador').value || '').toLowerCase().trim();
+    const inventarioVista = obtenerInventarioFiltradoPorBodega();
+
+    let filtrados = inventarioVista.filter(p => {
+      const textoVariantes = (p.variantes || []).map(v => v.sku + ' ' + (v.etiqueta || '')).join(' ').toLowerCase();
+      const coincideTexto = (p.nombre || '').toLowerCase().includes(busqueda) ||
+        (p.categoria || '').toLowerCase().includes(busqueda) ||
+        textoVariantes.includes(busqueda);
+      const coincideAlerta = !soloConAlerta || p.alerta !== 'normal';
+      // Al filtrar por una bodega especifica, ocultamos productos sin stock en esa bodega
+      // (en Vista Global si se muestran, aunque esten en 0, para no perder visibilidad del catalogo).
+      const tieneStockEnBodega = !bodegaFiltroActual || p.stockTotal > 0;
+      return coincideTexto && coincideAlerta && tieneStockEnBodega;
+    });
+
+    cont.innerHTML = '';
+
+    if (filtrados.length === 0) {
+      cont.innerHTML = '<div style="text-align:center; padding:30px; color:#94a3b8;"><i class="fa-solid fa-box-open" style="font-size:20px; margin-bottom:5px;"></i><br>No hay productos que coincidan con la busqueda.</div>';
+      return;
+    }
+
+    filtrados.forEach(p => {
+      const idSeguro = p.idProducto.replace(/[^a-zA-Z0-9]/g, '');
+
+      let badgeAlerta = '';
+      if (inventarioLicenciaPro) {
+        if (p.alerta === 'agotado') {
+          badgeAlerta = '<span style="background:#fee2e2; color:#b91c1c; font-size:10px; font-weight:700; padding:3px 8px; border-radius:10px;"><i class="fa-solid fa-circle-exclamation"></i> AGOTADO</span>';
+        } else if (p.alerta === 'bajo') {
+          badgeAlerta = '<span style="background:#fef3c7; color:#b45309; font-size:10px; font-weight:700; padding:3px 8px; border-radius:10px;"><i class="fa-solid fa-triangle-exclamation"></i> STOCK BAJO</span>';
+        }
+      }
+
+      let badgeDisponibilidad = '';
+      if (!p.disponibleVenta) {
+        badgeDisponibilidad += '<span style="background:#f1f5f9; color:#64748b; font-size:10px; font-weight:700; padding:3px 8px; border-radius:10px;"><i class="fa-solid fa-ban"></i> Venta deshabilitada</span>';
+      }
+      if (!p.disponibleCompra) {
+        badgeDisponibilidad += '<span style="background:#f1f5f9; color:#64748b; font-size:10px; font-weight:700; padding:3px 8px; border-radius:10px; margin-left:4px;"><i class="fa-solid fa-ban"></i> Compra deshabilitada</span>';
+      }
+
+      const tarjeta = document.createElement('div');
+      tarjeta.style.cssText = "border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.02);";
+
+      tarjeta.innerHTML =
+        '<div style="padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; cursor:pointer;" onclick="window.inv_AlternarAcordeon(\'' + idSeguro + '\')">' +
+          '<div style="flex: 1; min-width: 200px;">' +
+            '<div style="font-weight: 600; color: #0f172a; font-size: 14px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">' + p.nombre + ' ' + badgeAlerta + '</div>' +
+            '<div style="font-size: 11px; color: #64748b; margin-top:4px;">' + (p.categoria || 'General') + (p.subcategoria ? (' &rsaquo; ' + p.subcategoria) : '') + '</div>' +
+            (badgeDisponibilidad ? '<div style="margin-top:6px;">' + badgeDisponibilidad + '</div>' : '') +
+          '</div>' +
+          '<div style="display:flex; align-items:center; gap:14px;">' +
+            '<span style="background:#eff6ff; color:#1e40af; font-size:13px; font-weight:700; padding:5px 12px; border-radius:20px;">Stock' + (bodegaFiltroActual ? (' (' + bodegaFiltroActual + ')') : ' total') + ': ' + p.stockTotal + '</span>' +
+            '<span id="flecha-inv-' + idSeguro + '" style="color: #94a3b8; transition: transform 0.2s; font-size: 12px;"><i class="fa-solid fa-chevron-down"></i></span>' +
+          '</div>' +
+        '</div>' +
+        '<div id="acordeon-inv-' + idSeguro + '" style="display: none; background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 14px 18px;">' +
+          '<div id="variantes-inv-' + idSeguro + '" style="display: flex; flex-direction: column; gap: 8px;"></div>' +
+        '</div>';
+
+      cont.appendChild(tarjeta);
+      pintarVariantesInventario(idSeguro, p);
+    });
+  }
+
+  function pintarVariantesInventario(idSeguro, p) {
+    const cont = document.getElementById('variantes-inv-' + idSeguro);
+    if (!cont) return;
+    cont.innerHTML = '';
+
+    const variantesAMostrar = bodegaFiltroActual
+      ? (p.variantes || []).filter(v => v.stock > 0)
+      : (p.variantes || []);
+
+    if (variantesAMostrar.length === 0) {
+      cont.innerHTML = '<div style="text-align:center; padding:10px; color:#94a3b8; font-size:12px;">Sin stock de ninguna variante en esta bodega.</div>';
+      return;
+    }
+
+    variantesAMostrar.forEach(v => {
+      const fila = document.createElement('div');
+      fila.style.cssText = "background:white; border:1px solid #e2e8f0; border-radius:6px; padding:10px 12px; display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;";
+
+      let colorStock = '#0f172a';
+      let etiquetaAlerta = '';
+      if (inventarioLicenciaPro) {
+        if (v.alerta === 'agotado') {
+          colorStock = '#b91c1c';
+          etiquetaAlerta = '<div style="color:#b91c1c; font-size:10px; font-weight:700; margin-top:2px;">Agotado</div>';
+        } else if (v.alerta === 'bajo') {
+          colorStock = '#b45309';
+          etiquetaAlerta = '<div style="color:#b45309; font-size:10px; font-weight:700; margin-top:2px;">Stock bajo</div>';
+        }
+      }
+
+      let bloqueCostoHtml;
+      if (inventarioLicenciaPro) {
+        bloqueCostoHtml = '<div style="font-size:11px; color:#475569; min-width:110px;">Costo prom: $' + parseFloat(v.costoPromedio || 0).toFixed(2) + '</div>';
+      } else {
+        bloqueCostoHtml = '';
+      }
+
+      let bloqueLimitesHtml;
+      let bloqueRequisicionHtml = '';
+      if (inventarioLicenciaPro) {
+        const sugerenciaHtml = v.sugerenciaCompra > 0
+          ? ('<div style="font-size:11px; color:#1e40af; margin-top:2px;">Sugerido: <strong>' + v.sugerenciaCompra + '</strong></div>')
+          : '';
+        bloqueLimitesHtml =
+          '<div style="font-size:11px; color:#475569; width:120px; flex-shrink:0;">' +
+            'Min: ' + (v.minimo || 0) + ' / Max: ' + (v.maximo || 0) +
+            sugerenciaHtml +
+          '</div>' +
+          '<button type="button" title="Definir Limites (PRO)" onclick="window.inv_AbrirModalLimites(\'' + v.sku + '\')" style="background:#deff9a; color:#000000; border:1px solid #b4e63b; width:30px; height:30px; border-radius:6px; cursor:pointer; font-size:11px; flex-shrink:0;"><i class="fa-solid fa-sliders"></i></button>';
+
+        if (v.sugerenciaCompra > 0) {
+          const bodegaParaRequisicion = bodegaFiltroActual || (v.bodegasEnAlerta && v.bodegasEnAlerta.length > 0 ? v.bodegasEnAlerta[0].bodega : '');
+          bloqueRequisicionHtml = '<button type="button" title="Crear Requisición de Compra" onclick="window.inv_IrARequisicion(\'' + v.sku + '\', ' + v.sugerenciaCompra + ', this, \'' + bodegaParaRequisicion + '\')" style="background:#eff6ff; color:#1e40af; border:1px solid #bfdbfe; width:30px; height:30px; border-radius:6px; cursor:pointer; font-size:12px; flex-shrink:0;"><i class="fa-solid fa-cart-plus"></i></button>';
+        } else {
+          bloqueRequisicionHtml = '<button type="button" title="Sin necesidad de compra por ahora" style="background:#f1f5f9; color:#cbd5e1; border:1px solid #e2e8f0; width:30px; height:30px; border-radius:6px; cursor:default; font-size:12px; flex-shrink:0; pointer-events:none;"><i class="fa-solid fa-cart-plus"></i></button>';
+        }
+      } else {
+        bloqueLimitesHtml =
+          '<button type="button" style="background:#f1f5f9; color:#cbd5e1; border:1px solid #e2e8f0; width:30px; height:30px; border-radius:6px; cursor:default; font-size:11px; pointer-events:none; flex-shrink:0;"><i class="fa-solid fa-sliders"></i></button>';
+      }
+
+      // Chips de bodega: si una bodega especifica esta en alerta (PRO), su
+      // chip se pinta en rojo/ambar con el detalle (stock/minimo) en vez de
+      // mostrar un texto largo aparte debajo del Stock total -- mas
+      // compacto y la informacion vive junto a la bodega a la que pertenece.
+      const mapaAlertaPorBodega = {};
+      (v.bodegasEnAlerta || []).forEach(b => { mapaAlertaPorBodega[b.bodega] = b; });
+
+      const bodegasConStock = Object.entries(v.stockPorBodega || {}).filter(([b, c]) => c !== 0 || mapaAlertaPorBodega[b]);
+      let bloqueBodegasHtml = '';
+      if (bodegasConStock.length > 0) {
+        bloqueBodegasHtml = '<div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:4px;">' +
+          bodegasConStock.map(([b, c]) => {
+            const alertaBodega = mapaAlertaPorBodega[b];
+            if (alertaBodega) {
+              const esAgotado = alertaBodega.alerta === 'agotado';
+              const bg = esAgotado ? '#fee2e2' : '#fef3c7';
+              const color = esAgotado ? '#b91c1c' : '#b45309';
+              return '<span title="Mínimo: ' + alertaBodega.minimo + '" style="background:' + bg + '; color:' + color + '; font-size:10px; font-weight:700; padding:2px 7px; border-radius:8px;"><i class="fa-solid fa-triangle-exclamation" style="font-size:9px; margin-right:3px;"></i>' + b + ': ' + c + '</span>';
+            }
+            return '<span style="background:#f1f5f9; color:#475569; font-size:10px; font-weight:600; padding:2px 7px; border-radius:8px;"><i class="fa-solid fa-warehouse" style="font-size:9px; margin-right:3px;"></i>' + b + ': ' + c + '</span>';
+          }).join('') +
+          '</div>';
+      }
+
+      fila.innerHTML =
+        '<div style="display:flex; flex-direction:column; gap:2px; min-width:170px; flex:1.5;">' +
+          '<span style="font-size:13px; font-weight:600; color:#0f172a;">' + (v.etiqueta || 'Estandar') + '</span>' +
+          '<span style="font-family:monospace; font-size:11px; color:#64748b;">SKU: ' + v.sku + '</span>' +
+          bloqueBodegasHtml +
+        '</div>' +
+        '<div style="min-width:90px; text-align:center;"><div style="font-size:15px; font-weight:700; color:' + colorStock + ';">Stock: ' + v.stock + '</div>' + etiquetaAlerta + '</div>' +
+        bloqueCostoHtml +
+        bloqueLimitesHtml +
+        bloqueRequisicionHtml +
+        '<button type="button" title="Ver Historial" onclick="window.inv_VerHistorial(\'' + v.sku + '\', \'' + (p.nombre + ' - ' + (v.etiqueta || 'Estandar')).replace(/'/g, "\\'") + '\')" style="background:#e0f2fe; color:#0369a1; border:none; width:30px; height:30px; border-radius:6px; cursor:pointer; font-size:11px;"><i class="fa-solid fa-clock-rotate-left"></i></button>';
+
+      cont.appendChild(fila);
+    });
+  }
+
+  window.inv_AlternarAcordeon = function(idSeguro) {
+    const panel = document.getElementById('acordeon-inv-' + idSeguro);
+    const flecha = document.getElementById('flecha-inv-' + idSeguro);
+    if (!panel) return;
+    const estabaAbierto = panel.style.display === 'block';
+
+    document.querySelectorAll('[id^="acordeon-inv-"]').forEach(p => p.style.display = 'none');
+    document.querySelectorAll('[id^="flecha-inv-"]').forEach(f => f.style.transform = 'rotate(0deg)');
+
+    if (!estabaAbierto) {
+      panel.style.display = 'block';
+      if (flecha) flecha.style.transform = 'rotate(180deg)';
+    }
+  };
+
+  window.inv_ToggleFiltroAlertas = function() {
+    soloConAlerta = !soloConAlerta;
+    const btn = document.getElementById('inv-filtro-alertas');
+    if (btn) {
+      btn.style.background = soloConAlerta ? '#b91c1c' : '#fef2f2';
+      btn.style.color = soloConAlerta ? '#ffffff' : '#b91c1c';
+    }
+    renderizarInventario();
+  };
+
+  // ==========================================================================
+  // ENTRADA
+  // ==========================================================================
+  window.inv_AbrirModalMovimiento = function(tipo) {
+    if (tipo === 'entrada') {
+      document.getElementById('inv-entrada-sku').value = '';
+      document.getElementById('inv-entrada-cantidad').value = '';
+      document.getElementById('inv-entrada-motivo').value = '';
+      document.getElementById('inv-modal-entrada').showModal();
+    } else if (tipo === 'salida') {
+      document.getElementById('inv-salida-sku').value = '';
+      document.getElementById('inv-salida-cantidad').value = '';
+      document.getElementById('inv-salida-motivo').value = '';
+      document.getElementById('inv-salida-responsable').value = '';
+      document.getElementById('inv-salida-stock-disponible').innerText = '';
+      document.getElementById('inv-modal-salida').showModal();
+    }
+  };
+
+  window.inv_GuardarEntrada = function() {
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+
+    const sku = document.getElementById('inv-entrada-sku').value;
+    const cantidad = parseFloat(document.getElementById('inv-entrada-cantidad').value) || 0;
+    const bodega = document.getElementById('inv-entrada-bodega').value;
+
+    if (!sku) { window.erpToast("Selecciona una variante.", "error"); return; }
+    if (cantidad <= 0) { window.erpToast("Ingresa una cantidad mayor a cero.", "error"); return; }
+
+    const datos = {
+      sku: sku, cantidad: cantidad, bodega: bodega,
+      motivo: document.getElementById('inv-entrada-motivo').value.trim() || 'Ajuste de inventario'
+    };
+    google.script.run
+      .withSuccessHandler(function(res) {
+        window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+        if (res.exito) { document.getElementById('inv-modal-entrada').close(); window.inv_CargarDatos(); }
+      })
+      .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+      .registrarAjusteManualServidor(datos);
+  };
+
+  // ==========================================================================
+  // SALIDA POR AVERIA
+  // ==========================================================================
+  window.inv_GuardarSalida = function() {
+    const datos = {
+      sku: document.getElementById('inv-salida-sku').value,
+      bodega: document.getElementById('inv-salida-bodega').value,
+      cantidad: parseFloat(document.getElementById('inv-salida-cantidad').value) || 0,
+      motivo: document.getElementById('inv-salida-motivo').value.trim(),
+      responsable: document.getElementById('inv-salida-responsable').value.trim()
+    };
+
+    if (!datos.sku) { window.erpToast("Selecciona una variante.", "error"); return; }
+    if (datos.cantidad <= 0) { window.erpToast("Ingresa una cantidad mayor a cero.", "error"); return; }
+    if (!datos.motivo) { window.erpToast("Indica el motivo de la salida.", "error"); return; }
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+          if (res.exito) { document.getElementById('inv-modal-salida').close(); window.inv_CargarDatos(); }
+        })
+        .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+        .registrarSalidaAveriaServidor(datos);
+    }
+  };
+
+  // ==========================================================================
+  // BODEGAS
+  // ==========================================================================
+  window.inv_AbrirModalBodegas = function() {
+    document.getElementById('inv-bodega-nombre').value = '';
+    renderizarListaBodegasModal();
+    document.getElementById('inv-modal-bodegas').showModal();
+  };
+
+  window.inv_CrearBodega = function() {
+    const nombre = document.getElementById('inv-bodega-nombre').value.trim();
+    if (!nombre) { window.erpToast("Escribe el nombre de la bodega.", "error"); return; }
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+          if (res.exito) {
+            document.getElementById('inv-bodega-nombre').value = '';
+            BODEGAS_GLOBAL = res.bodegas || [];
+            poblarSelectoresDeBodega();
+            renderizarListaBodegasModal();
+          }
+        })
+        .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+        .crearBodegaServidor(nombre);
+    }
+  };
+
+  function renderizarListaBodegasModal() {
+    const cont = document.getElementById('inv-lista-bodegas');
+    if (!cont) return;
+    cont.innerHTML = '';
+    if (BODEGAS_GLOBAL.length === 0) {
+      cont.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:14px; font-size:12px;">Aun no hay bodegas creadas.</div>';
+      return;
+    }
+    BODEGAS_GLOBAL.forEach(b => {
+      const fila = document.createElement('div');
+      fila.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:#ffffff; border:1px solid #e2e8f0; border-radius:6px; padding:8px 12px;";
+      fila.innerHTML =
+        '<span style="font-size:12px; color:#1e293b; font-weight:600;"><i class="fa-solid fa-warehouse" style="color:var(--accent); margin-right:6px;"></i>' + b + '</span>' +
+        '<button type="button" style="background:#fee2e2; color:#b91c1c; border:none; width:26px; height:26px; border-radius:4px; cursor:pointer; font-size:10px;"><i class="fa-solid fa-trash-can"></i></button>';
+      fila.querySelector('button').addEventListener('click', () => window.inv_EliminarBodega(b));
+      cont.appendChild(fila);
+    });
+  }
+
+  window.inv_EliminarBodega = async function(nombre) {
+    const confirmar = window.erpConfirm ? await window.erpConfirm('¿Eliminar la bodega "' + nombre + '"?') : confirm('¿Eliminar la bodega "' + nombre + '"?');
+    if (!confirmar) return;
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+          BODEGAS_GLOBAL = res.bodegas || [];
+          poblarSelectoresDeBodega();
+          renderizarListaBodegasModal();
+        })
+        .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+        .eliminarBodegaServidor(nombre);
+    }
+  };
+
+  // ==========================================================================
+  // DISPONIBILIDAD VENTA / COMPRA
+  // ==========================================================================
+  window.inv_AbrirModalDisponibilidad = function() {
+    window.inv_CambiarTabDisponibilidad('Producto');
+    document.getElementById('inv-modal-disponibilidad').showModal();
+  };
+
+  window.inv_CambiarTabDisponibilidad = function(tipo) {
+    tabDisponibilidadActual = tipo;
+    const tabProd = document.getElementById('inv-disp-tab-producto');
+    const tabCat = document.getElementById('inv-disp-tab-categoria');
+    const activo = tipo === 'Producto';
+    tabProd.style.background = activo ? 'var(--accent)' : '#ffffff';
+    tabProd.style.color = activo ? 'white' : '#475569';
+    tabProd.style.border = activo ? '2px solid var(--accent)' : '2px solid #cbd5e1';
+    tabCat.style.background = !activo ? 'var(--accent)' : '#ffffff';
+    tabCat.style.color = !activo ? 'white' : '#475569';
+    tabCat.style.border = !activo ? '2px solid var(--accent)' : '2px solid #cbd5e1';
+    renderizarListaDisponibilidad();
+  };
+
+  function renderizarListaDisponibilidad() {
+    const cont = document.getElementById('inv-lista-disponibilidad');
+    if (!cont) return;
+    cont.innerHTML = '';
+
+    let nombres = [];
+    if (tabDisponibilidadActual === 'Producto') {
+      nombres = [...new Set(INVENTARIO_GLOBAL.map(p => p.nombre))];
+    } else {
+      nombres = [...new Set(CATEGORIAS_GLOBAL_INV.filter(c => !c.padre || c.padre === 'NINGUNA').map(c => c.nombre))];
+    }
+
+    if (nombres.length === 0) {
+      cont.innerHTML = '<div style="text-align:center; color:#94a3b8; padding:14px; font-size:12px;">Sin elementos para mostrar.</div>';
+      return;
+    }
+
+    nombres.forEach(nombre => {
+      const infoActual = tabDisponibilidadActual === 'Producto'
+        ? INVENTARIO_GLOBAL.find(p => p.nombre === nombre)
+        : null;
+      const ventaInicial = infoActual ? infoActual.disponibleVenta : true;
+      const compraInicial = infoActual ? infoActual.disponibleCompra : true;
+
+      const fila = document.createElement('div');
+      fila.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:#ffffff; border:1px solid #e2e8f0; border-radius:6px; padding:10px 12px; gap:10px; flex-wrap:wrap;";
+      fila.innerHTML =
+        '<span style="font-size:12px; color:#1e293b; font-weight:600; flex:1; min-width:140px;">' + nombre + '</span>' +
+        '<label style="display:flex; align-items:center; gap:6px; font-size:11px; color:#475569; cursor:pointer;"><input type="checkbox" class="chk-venta" ' + (ventaInicial ? 'checked' : '') + ' style="accent-color: var(--accent);"> Venta</label>' +
+        '<label style="display:flex; align-items:center; gap:6px; font-size:11px; color:#475569; cursor:pointer;"><input type="checkbox" class="chk-compra" ' + (compraInicial ? 'checked' : '') + ' style="accent-color: var(--accent);"> Compra</label>';
+
+      const chkVenta = fila.querySelector('.chk-venta');
+      const chkCompra = fila.querySelector('.chk-compra');
+      const guardar = () => {
+        if (typeof google !== 'undefined' && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(function(res) { window.erpToast(res.mensaje, res.exito ? 'exito' : 'error'); if (res.exito) window.inv_CargarDatos(); })
+            .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+            .guardarDisponibilidadServidor({ tipo: tabDisponibilidadActual, nombre: nombre, disponibleVenta: chkVenta.checked, disponibleCompra: chkCompra.checked });
+        }
+      };
+      chkVenta.addEventListener('change', guardar);
+      chkCompra.addEventListener('change', guardar);
+
+      cont.appendChild(fila);
+    });
+  }
+
+  // ==========================================================================
+  // LIMITES MIN/MAX (PRO)
+  // ==========================================================================
+  const requisicionesEnProceso = new Set(); // evita doble envio aunque el boton se re-renderice antes de que la respuesta vuelva
+
+  window.inv_IrARequisicion = async function(sku, cantidadSugerida, btnElemento, bodegaEspecifica) {
+    if (requisicionesEnProceso.has(sku)) {
+      window.erpToast("Esa requisición ya se está procesando, espera un momento.", "info");
+      return;
+    }
+    requisicionesEnProceso.add(sku);
+
+    if (btnElemento) {
+      btnElemento.disabled = true;
+      btnElemento.style.opacity = '0.5';
+      btnElemento.style.cursor = 'wait';
+    }
+
+    function liberar() {
+      requisicionesEnProceso.delete(sku);
+      if (btnElemento) { btnElemento.disabled = false; btnElemento.style.opacity = '1'; btnElemento.style.cursor = 'pointer'; }
+    }
+
+    if (typeof google === 'undefined' || !google.script || !google.script.run) { liberar(); return; }
+
+    // Aviso (no bloqueo): si ya existe una requisicion pendiente con este mismo
+    // SKU, se pregunta antes de crear otra para evitar duplicados por accidente.
+    const yaPendiente = await new Promise((resolve) => {
+      google.script.run
+        .withSuccessHandler(function(reqs) {
+          const existe = (reqs || []).some(r =>
+            r.estado !== 'Cancelada' &&
+            (r.items || []).some(it => it.sku === sku && (it.estadoItem || 'Pendiente de Compra') === 'Pendiente de Compra')
+          );
+          resolve(existe);
+        })
+        .withFailureHandler(function() { resolve(false); })
+        .obtenerRequisicionesServidor();
+    });
+
+    if (yaPendiente) {
+      const continuar = await window.erpConfirm(
+        "Ya existe una requisición pendiente para este ítem. ¿Deseas crear otra de todos modos?",
+        { textoAceptar: "Crear otra", colorAceptar: "#2563eb" }
+      );
+      if (!continuar) { liberar(); return; }
+    }
+
+    const variante = TODAS_LAS_VARIANTES.find(v => v.sku === sku);
+    const descripcion = variante ? variante.descripcion : sku;
+    const nombreBodega = bodegaEspecifica || bodegaFiltroActual || "Bodega General";
+
+    google.script.run
+      .withSuccessHandler(function(perfil) {
+        google.script.run
+          .withSuccessHandler(function(res) {
+            window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+            if (res.exito) {
+              window.erpToast("Ve al módulo de Compras para convertirla en Orden de Compra.", "info");
+            }
+            liberar();
+          })
+          .withFailureHandler(function(err) {
+            window.erpToast("Error: " + err.message, "error");
+            liberar();
+          })
+          .crearRequisicionServidor({
+            items: [{ sku: sku, descripcion: descripcion, cantidad: cantidadSugerida, comentario: "Recibir en: " + nombreBodega, bodegaOrigen: nombreBodega }],
+            departamento: perfil && perfil.departamento ? perfil.departamento : "",
+            notas: "Generada automáticamente desde Inventarios (sugerencia de stock bajo)."
+          });
+      })
+      .withFailureHandler(function(err) {
+        window.erpToast("Error: " + err.message, "error");
+        liberar();
+      })
+      .obtenerPerfilActualServidor();
+  };
+
+  let limitesVarianteActual = {};
+
+  window.inv_AbrirModalLimites = function(sku) {
+    if (!inventarioLicenciaPro) return;
+
+    const variante = TODAS_LAS_VARIANTES.find(v => v.sku === sku);
+    const nombreRef = variante ? variante.descripcion : sku;
+
+    document.getElementById('inv-limites-sku').value = sku;
+    document.getElementById('inv-limites-nombre-ref').innerText = nombreRef;
+
+    const select = document.getElementById('inv-limites-bodega');
+    select.innerHTML = '<option value="Global">Vista Global (todas las bodegas)</option>';
+    BODEGAS_GLOBAL.forEach(b => {
+      const opt = document.createElement('option');
+      opt.value = b;
+      opt.innerText = b;
+      select.appendChild(opt);
+    });
+    select.value = bodegaFiltroActual || 'Global';
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(limites) {
+          limitesVarianteActual = limites || { "Global": { minimo: 0, maximo: 0 } };
+          aplicarLimitesAlFormulario();
+        })
+        .withFailureHandler(function(err) { window.erpToast("Error al cargar límites: " + err.message, "error"); })
+        .obtenerLimitesDeVarianteServidor(sku);
+    }
+
+    document.getElementById('inv-modal-limites').showModal();
+  };
+
+  window.inv_AlCambiarBodegaLimites = function() {
+    aplicarLimitesAlFormulario();
+  };
+
+  function aplicarLimitesAlFormulario() {
+    const bodegaSeleccionada = document.getElementById('inv-limites-bodega').value;
+    const limites = limitesVarianteActual[bodegaSeleccionada] || { minimo: 0, maximo: 0 };
+    document.getElementById('inv-limites-minimo').value = limites.minimo || 0;
+    document.getElementById('inv-limites-maximo').value = limites.maximo || 0;
+  }
+
+  window.inv_GuardarLimites = function() {
+    const datos = {
+      sku: document.getElementById('inv-limites-sku').value,
+      bodega: document.getElementById('inv-limites-bodega').value,
+      minimo: parseFloat(document.getElementById('inv-limites-minimo').value) || 0,
+      maximo: parseFloat(document.getElementById('inv-limites-maximo').value) || 0
+    };
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(res) {
+          window.erpToast(res.mensaje, res.exito ? 'exito' : 'error');
+          if (res.exito) {
+            limitesVarianteActual[datos.bodega] = { minimo: datos.minimo, maximo: datos.maximo };
+            window.inv_CargarDatos();
+          }
+        })
+        .withFailureHandler(function(err) { window.erpToast("Error: " + err.message, "error"); })
+        .guardarLimitesInventarioServidor(datos);
+    }
+  };
+
+  // ==========================================================================
+  // HISTORIAL DE MOVIMIENTOS
+  // ==========================================================================
+  let skuHistorialActual = null;
+  let movimientosHistorialActual = [];
+
+  window.inv_VerHistorial = function(sku, nombreRef) {
+    skuHistorialActual = sku;
+    document.getElementById('inv-historial-nombre-ref').innerText = nombreRef;
+    const tbody = document.getElementById('inv-historial-tabla-cuerpo');
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:#94a3b8;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando...</td></tr>';
+    document.getElementById('inv-modal-historial').showModal();
+
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(function(movs) {
+          movimientosHistorialActual = movs || [];
+          poblarSelectorBodegaHistorial();
+          pintarTablaHistorial();
+        })
+        .withFailureHandler(function(err) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:#b91c1c; font-size:12px;">Error al cargar historial: ' + err.message + '</td></tr>';
+        })
+        .obtenerHistorialMovimientosServidor(sku);
+    }
+  };
+
+  function poblarSelectorBodegaHistorial() {
+    const select = document.getElementById('inv-historial-filtro-bodega');
+    if (!select) return;
+    select.innerHTML = '<option value="">Vista Global</option>';
+    const bodegasUsadas = [...new Set(movimientosHistorialActual.filter(m => m.bodega).map(m => m.bodega))].sort();
+    bodegasUsadas.forEach(b => {
+      const opt = document.createElement('option');
+      opt.value = b;
+      opt.innerText = b;
+      select.appendChild(opt);
+    });
+    select.value = '';
+    actualizarTextoBotonExportarHistorial();
+  }
+
+  window.inv_AlCambiarFiltroHistorial = function() {
+    pintarTablaHistorial();
+    actualizarTextoBotonExportarHistorial();
+  };
+
+  function actualizarTextoBotonExportarHistorial() {
+    const bodegaFiltro = document.getElementById('inv-historial-filtro-bodega').value;
+    const texto = document.getElementById('inv-btn-exportar-historial-texto');
+    if (texto) texto.innerText = bodegaFiltro ? 'Descargar esta vista' : 'Descargar Todo';
+  }
+
+  function pintarTablaHistorial() {
+    const tbody = document.getElementById('inv-historial-tabla-cuerpo');
+    const bodegaFiltro = document.getElementById('inv-historial-filtro-bodega').value;
+
+    // Vista Global: todos los movimientos. Bodega especifica: solo los de esa bodega
+    // (los registros "Solo Costo" nunca tienen bodega, asi que solo aparecen en Global).
+    const movsFiltrados = bodegaFiltro
+      ? movimientosHistorialActual.filter(m => m.bodega === bodegaFiltro)
+      : movimientosHistorialActual;
+
+    tbody.innerHTML = '';
+    if (movsFiltrados.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:#94a3b8; font-size:12px;">Sin movimientos registrados para esta vista.</td></tr>';
+      return;
+    }
+
+    // El backend devuelve mas reciente primero. Para calcular el TOTAL
+    // acumulado correctamente necesitamos recorrer en orden cronologico
+    // (mas antiguo primero), y luego mostramos la tabla mas reciente arriba.
+    const cronologico = [...movsFiltrados].reverse();
+    let acumulado = 0;
+    const filasConTotal = cronologico.map(m => {
+      const esSoloCosto = m.tipo === 'Solo Costo';
+      if (!esSoloCosto) {
+        acumulado += (m.tipo === 'Entrada') ? m.cantidad : -m.cantidad;
+      }
+      return Object.assign({}, m, { totalAcumulado: acumulado });
+    });
+
+    filasConTotal.reverse().forEach(m => {
+      const esEntrada = m.tipo === 'Entrada';
+      const esSoloCosto = m.tipo === 'Solo Costo';
+      const fechaTexto = m.fecha ? new Date(m.fecha).toLocaleString() : '';
+      const bodegaTexto = m.bodega ? (' · Bodega: ' + m.bodega) : '';
+      const descripcion = m.origen + (m.motivo ? (' — ' + m.motivo) : '') + '<br><span style="font-size:10px; color:#94a3b8;">' + fechaTexto + bodegaTexto + '</span>';
+
+      const tr = document.createElement('tr');
+      tr.style.cssText = "border-bottom: 1px solid #f1f5f9;";
+      tr.innerHTML =
+        '<td style="padding:10px 12px; color:#334155;">' + descripcion + '</td>' +
+        '<td style="padding:10px 12px; text-align:center; color:#16a34a; font-weight:700;">' + (esEntrada && !esSoloCosto ? m.cantidad : '') + '</td>' +
+        '<td style="padding:10px 12px; text-align:center; color:#b91c1c; font-weight:700;">' + (!esEntrada && !esSoloCosto ? m.cantidad : '') + '</td>' +
+        '<td style="padding:10px 12px; text-align:right; color:#64748b;">$' + parseFloat(m.costoUnitario || 0).toFixed(2) + '</td>' +
+        '<td style="padding:10px 12px; text-align:right; font-weight:700; color:#0f172a;">' + (esSoloCosto ? '—' : m.totalAcumulado) + '</td>';
+      tbody.appendChild(tr);
+    });
+  }
+
+  // ==========================================================================
+  // EXPORTAR A EXCEL
+  // ==========================================================================
+  window.inv_ExportarExcel = function() {
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+
+    const btn = document.getElementById('inv-btn-exportar');
+    if (btn) btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando...';
+
+    google.script.run
+      .withSuccessHandler(function(filas) {
+        if (btn) btn.innerHTML = '<i class="fa-solid fa-file-excel"></i> Exportar a Excel';
+        try {
+          const ws = XLSX.utils.aoa_to_sheet(filas);
+          const wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, "Inventario");
+          const fecha = new Date().toISOString().slice(0, 10);
+          XLSX.writeFile(wb, "Inventario_" + fecha + ".xlsx");
+          window.erpToast("Archivo generado con exito.", "exito");
+        } catch (e) {
+          window.erpToast("Error al generar el archivo Excel: " + e.message, "error");
+        }
+      })
+      .withFailureHandler(function(err) {
+        if (btn) btn.innerHTML = '<i class="fa-solid fa-file-excel"></i> Exportar a Excel';
+        window.erpToast("Error al obtener datos: " + err.message, "error");
+      })
+      .obtenerDatosExportacionInventarioServidor(inventarioLicenciaPro);
+  };
+
+  window.inv_ExportarHistorialInteligente = function() {
+    const bodegaFiltro = document.getElementById('inv-historial-filtro-bodega').value;
+    if (bodegaFiltro) {
+      window.inv_ExportarVistaHistorial();
+    } else {
+      window.inv_ExportarHistorial();
+    }
+  };
+
+  window.inv_ExportarVistaHistorial = function() {
+    if (!inventarioLicenciaPro) { window.erpToast("Descargar el historial es una función del Módulo PRO.", "info"); return; }
+    if (!skuHistorialActual) return;
+
+    const bodegaFiltro = document.getElementById('inv-historial-filtro-bodega').value;
+    const movsFiltrados = bodegaFiltro
+      ? movimientosHistorialActual.filter(m => m.bodega === bodegaFiltro)
+      : movimientosHistorialActual;
+
+    if (movsFiltrados.length === 0) {
+      window.erpToast("No hay movimientos para descargar en esta vista.", "info");
+      return;
+    }
+
+    try {
+      const encabezado = ["Fecha", "SKU", "Tipo", "Origen", "Cantidad", "Bodega", "Costo Unitario", "Valor Total", "Motivo"];
+      const cronologico = [...movsFiltrados].reverse();
+      let acumulado = 0;
+      const filas = [encabezado];
+      cronologico.forEach(m => {
+        if (m.tipo !== 'Solo Costo') acumulado += (m.tipo === 'Entrada') ? m.cantidad : -m.cantidad;
+        filas.push([
+          m.fecha ? new Date(m.fecha).toLocaleString() : "",
+          m.sku, m.tipo, m.origen, m.cantidad, m.bodega || "",
+          m.costoUnitario || 0, m.valorTotal || 0, m.motivo || ""
+        ]);
+      });
+
+      const ws = XLSX.utils.aoa_to_sheet(filas);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, (bodegaFiltro || 'Global').substring(0, 31));
+      const fecha = new Date().toISOString().slice(0, 10);
+      XLSX.writeFile(wb, "Historial_" + skuHistorialActual + "_" + (bodegaFiltro || 'Global') + "_" + fecha + ".xlsx");
+      window.erpToast("Vista descargada con éxito.", "exito");
+    } catch (e) {
+      window.erpToast("Error al generar el archivo: " + e.message, "error");
+    }
+  };
+
+  window.inv_ExportarHistorial = function() {
+    if (!inventarioLicenciaPro) { window.erpToast("Descargar el historial es una función del Módulo PRO.", "info"); return; }
+    if (!skuHistorialActual) return;
+    if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+
+    const btn = document.getElementById('inv-btn-exportar-historial');
+    if (btn) btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando...';
+
+    google.script.run
+      .withSuccessHandler(function(hojasPorBodega) {
+        if (btn) btn.innerHTML = '<i class="fa-solid fa-file-excel"></i> Descargar Todo';
+        try {
+          const wb = XLSX.utils.book_new();
+
+          // La hoja "Global" siempre va primera; el resto, una hoja por bodega.
+          const nombresHojas = Object.keys(hojasPorBodega);
+          const ordenadas = ['Global', ...nombresHojas.filter(n => n !== 'Global').sort()];
+
+          ordenadas.forEach(nombreHoja => {
+            if (!hojasPorBodega[nombreHoja]) return;
+            const ws = XLSX.utils.aoa_to_sheet(hojasPorBodega[nombreHoja]);
+            // Excel no permite nombres de hoja mayores a 31 caracteres ni con ciertos simbolos
+            const nombreSeguro = nombreHoja.replace(/[\\/?*\[\]:]/g, '').substring(0, 31);
+            XLSX.utils.book_append_sheet(wb, ws, nombreSeguro || 'Hoja');
+          });
+
+          const fecha = new Date().toISOString().slice(0, 10);
+          XLSX.writeFile(wb, "Historial_" + skuHistorialActual + "_" + fecha + ".xlsx");
+          window.erpToast("Historial descargado con éxito (incluye Global y cada bodega).", "exito");
+        } catch (e) {
+          window.erpToast("Error al generar el archivo: " + e.message, "error");
+        }
+      })
+      .withFailureHandler(function(err) {
+        if (btn) btn.innerHTML = '<i class="fa-solid fa-file-excel"></i> Descargar Todo';
+        window.erpToast("Error al obtener datos: " + err.message, "error");
+      })
+      .obtenerDatosExportacionHistorialCompletoServidor(skuHistorialActual);
+  };
+
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'erp_licencia_pro') sincronizarLicenciaLocal();
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) sincronizarLicenciaLocal();
+  });
+  document.addEventListener('mousemove', () => {
+    const checkActual = localStorage.getItem('erp_licencia_pro') === 'true';
+    if (checkActual !== inventarioLicenciaPro) sincronizarLicenciaLocal();
+  });
+
+})();
+</script>
